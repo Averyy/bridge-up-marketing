@@ -1,26 +1,108 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary Brand - Blue spectrum */
+  --primary: #0A84FF;
+  --primary-dark: #0066CC;
+  --primary-light: #40A9FF;
+
+  /* Backgrounds - Light mode */
+  --background: #FFFFFF;
+  --background-secondary: #F5F5F7;
+  --foreground: #1C1C1E;
+  --foreground-muted: #6B7280;
+
+  /* Dark section colors (used in alternating sections) */
+  --dark-bg: #0B1929;
+  --dark-bg-deeper: #060F18;
+  --dark-card: #132F4C;
+  --dark-text: #FFFFFF;
+  --dark-text-muted: #9CA3AF;
+
+  /* Bridge Status Colors */
+  --status-open: #30D158;
+  --status-closing-soon: #FF9F0A;
+  --status-closed: #FF453A;
+  --status-opening: #FFD60A;
+  --status-unknown: #8E8E93;
+
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, #0A84FF 0%, #00C7BE 100%);
+  --gradient-dark: linear-gradient(180deg, #0B1929 0%, #132F4C 100%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Custom colors for Tailwind */
+  --color-dark: var(--dark-bg);
+  --color-dark-deeper: var(--dark-bg-deeper);
+  --color-dark-card: var(--dark-card);
+
+  --color-status-open: var(--status-open);
+  --color-status-closing: var(--status-closing-soon);
+  --color-status-closed: var(--status-closed);
+  --color-status-opening: var(--status-opening);
+  --color-status-unknown: var(--status-unknown);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Fade in up animation */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
 }
