@@ -1,0 +1,146 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "display-p3:0.38403,0.64839,1.04685,1.00000",
+      "extended-srgb:0.00000,0.53333,1.00000,1.00000"
+    ],
+    "orientation" : {
+      "start" : {
+        "x" : 0.5,
+        "y" : 0
+      },
+      "stop" : {
+        "x" : 0.5,
+        "y" : 0.7
+      }
+    }
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "Gemini_Generated_Image_srmjjysrmjjysrmj.png",
+          "name" : "Gemini_Generated_Image_srmjjysrmjjysrmj",
+          "position" : {
+            "scale" : 1.2000000000000002,
+            "translation-in-points" : [
+              769.070069315022,
+              -20.731965097777447
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "blend-mode" : "normal",
+      "blur-material" : null,
+      "hidden" : true,
+      "layers" : [
+        {
+          "image-name" : "Front 2.svg",
+          "name" : "Front 2"
+        }
+      ],
+      "lighting" : "individual",
+      "opacity" : 0.5,
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.6
+      }
+    },
+    {
+      "blend-mode" : "normal",
+      "blur-material" : null,
+      "hidden" : true,
+      "layers" : [
+        {
+          "image-name" : "Middle 2.svg",
+          "name" : "Middle 2"
+        }
+      ],
+      "lighting" : "individual",
+      "opacity" : 0.5,
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.8
+      }
+    },
+    {
+      "blend-mode" : "normal",
+      "blur-material" : null,
+      "hidden" : true,
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "Back 2.svg",
+          "name" : "Back 2"
+        }
+      ],
+      "lighting" : "individual",
+      "opacity" : 0.5,
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 1
+      }
+    },
+    {
+      "hidden" : true,
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "fill" : "none",
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "Gemini_Generated_Image_7mfequ7mfequ7mfe-4.png",
+          "name" : "Gemini_Generated_Image_7mfequ7mfequ7mfe-4",
+          "position" : {
+            "scale" : 0.8,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name" : "Background",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

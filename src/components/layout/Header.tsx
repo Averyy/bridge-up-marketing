@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -59,23 +60,28 @@ export function Header({ forceScrolled = false }: HeaderProps) {
         <div className={`flex items-center justify-between ${showPillNav ? "px-4" : "px-0"}`}>
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div
-              className={`rounded-xl flex items-center justify-center transition-all duration-300 ${
-                showPillNav ? "w-9 h-9 bg-white" : "w-10 h-10"
-              } ${!showPillNav && useLightText ? "bg-white" : !showPillNav ? "bg-[var(--foreground)]" : ""}`}
-            >
-              <svg
-                className={`w-5 h-5 ${showPillNav ? "text-[var(--foreground)]" : useLightText ? "text-[var(--foreground)]" : "text-white"}`}
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M7 14v-2h2v2H7zm4 0v-2h2v2h-2zm4 0v-2h2v2h-2zm-8 4v-2h2v2H7zm4 0v-2h2v2h-2zm4 0v-2h2v2h-2zM4 10V8h16v2H4zm0 10v-2h2v-4h2v4h2v-4h2v4h2v-4h2v4h2v-4h2v4h2v2H4z"/>
-              </svg>
-            </div>
+            <Image
+              src="/BridgeUp-Icon.png"
+              alt="Bridge Up"
+              width={40}
+              height={40}
+              className={`transition-all duration-300 ${
+                showPillNav ? "w-9 h-9" : "w-10 h-10"
+              }`}
+              priority
+            />
             <span
               className={`font-semibold text-lg overflow-hidden whitespace-nowrap transition-all duration-300 ${
                 showPillNav ? "w-0 opacity-0" : "w-auto opacity-100"
-              } ${useLightText ? "text-white" : "text-[var(--foreground)]"}`}
+              }`}
+              style={{
+                background: useLightText
+                  ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(220,220,220,1) 100%)"
+                  : "linear-gradient(180deg, rgba(28,28,30,1) 0%, rgba(60,60,67,1) 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
             >
               Bridge Up
             </span>

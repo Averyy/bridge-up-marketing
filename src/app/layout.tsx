@@ -34,6 +34,20 @@ export const metadata: Metadata = {
     "Victoria Bridge",
   ],
   authors: [{ name: "Bridge Up" }],
+  icons: {
+    icon: [
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
+  appleWebApp: {
+    title: "Bridge Up",
+  },
   openGraph: {
     title: "Bridge Up - Real-Time Bridge Status",
     description:

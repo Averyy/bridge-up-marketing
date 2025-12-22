@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const footerLinks = {
   product: [
@@ -32,10 +33,24 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center">
-                <span className="text-white font-bold text-sm">B</span>
-              </div>
-              <span className="font-semibold text-lg">Bridge Up</span>
+              <Image
+                src="/BridgeUp-Icon.png"
+                alt="Bridge Up"
+                width={32}
+                height={32}
+                className="w-8 h-8"
+              />
+              <span
+                className="font-semibold text-lg"
+                style={{
+                  background: "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(200,200,200,1) 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Bridge Up
+              </span>
             </Link>
             <p className="text-sm text-[var(--dark-text-muted)] max-w-xs">
               Real-time bridge status for the St. Lawrence Seaway region. Know
