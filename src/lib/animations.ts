@@ -1,5 +1,5 @@
 // Framer Motion animation variants
-// Based on Flighty's spring animations (damping: 30, stiffness: 400)
+// Spring animations (damping: 30, stiffness: 400)
 
 export const springTransition = {
   type: "spring" as const,

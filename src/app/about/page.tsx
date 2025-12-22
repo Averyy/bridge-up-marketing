@@ -90,7 +90,7 @@ export default function AboutPage() {
         </section>
 
         {/* Stats */}
-        <section className="py-16 border-t border-white/10">
+        <section className="py-16 border-t border-b border-white/10 bg-[var(--dark-bg-deeper)]">
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
               {[

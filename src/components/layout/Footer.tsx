@@ -118,7 +118,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Bridge Up. All rights reserved.
           </p>
           <p className="text-sm text-[var(--dark-text-muted)]">
-            Free during beta
+            Coming soon to the App Store
           </p>
         </div>
       </div>

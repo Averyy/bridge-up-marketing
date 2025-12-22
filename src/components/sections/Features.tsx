@@ -7,7 +7,7 @@ import { RegionCards } from "@/components/RegionCards";
 export function Features() {
   return (
     <>
-      {/* Two Feature Boxes Section - Flighty Style */}
+      {/* Two Feature Boxes Section */}
       <section className="relative bg-[var(--dark-bg)] py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Section Header */}

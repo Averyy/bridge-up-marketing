@@ -100,8 +100,30 @@ export function Header({ forceScrolled = false }: HeaderProps) {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
+          {/* CTA Button + Coffee */}
+          <div className="hidden md:flex items-center gap-4">
+            {/* Buy Me a Coffee */}
+            <a
+              href="https://buymeacoffee.com/averyy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group relative inline-flex items-center justify-center rounded-full transition-all duration-300 ${
+                showPillNav ? "w-9 h-9" : "w-10 h-10"
+              } ${
+                showPillNav || useLightText
+                  ? "bg-white/10 hover:bg-white/20"
+                  : "bg-amber-100 hover:bg-amber-200"
+              }`}
+              aria-label="Buy me a coffee"
+            >
+              <span className="text-base">☕</span>
+              {/* Tooltip */}
+              <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[var(--foreground)] text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
+                Like Bridge Up? Buy me a coffee!
+                <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[var(--foreground)] rotate-45" />
+              </span>
+            </a>
+
             <a
               href="#download"
               className={`inline-flex items-center justify-center rounded-full text-sm font-medium transition-all duration-300 ${
@@ -192,6 +214,16 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Get the app
+                </a>
+                <a
+                  href="https://buymeacoffee.com/averyy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full text-center rounded-full border border-gray-200 px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors mt-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>☕</span>
+                  Buy me a coffee
                 </a>
               </div>
             </motion.div>
