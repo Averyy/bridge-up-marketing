@@ -8,9 +8,10 @@ const footerLinks = {
     { href: "/pricing", label: "Pricing" },
     { href: "/#download", label: "Download" },
   ],
-  company: [
+  more: [
     { href: "/about", label: "About" },
     { href: "mailto:support@bridgeup.app", label: "Contact" },
+    { href: "https://buymeacoffee.com/averyy", label: "Buy me a coffee", external: true },
   ],
   legal: [
     { href: "/privacy", label: "Privacy Policy" },
@@ -23,6 +24,7 @@ const regions = [
   "Port Colborne",
   "Montreal South Shore",
   "Salaberry-de-Valleyfield",
+  "Kahnawake",
 ];
 
 export function Footer() {
@@ -43,7 +45,7 @@ export function Footer() {
               <span
                 className="font-semibold text-lg"
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(200,200,200,1) 100%)",
+                  backgroundImage: "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(200,200,200,1) 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -53,8 +55,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm text-[var(--dark-text-muted)] max-w-xs">
-              Real-time bridge status for the St. Lawrence Seaway region. Know
-              before you go.
+              Real-time bridge status for the St. Lawrence Seaway region.
             </p>
           </div>
 
@@ -75,18 +76,29 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* More Links */}
           <div>
-            <h3 className="font-semibold text-sm mb-4">Company</h3>
+            <h3 className="font-semibold text-sm mb-4">More</h3>
             <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
+              {footerLinks.more.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
-                  >
-                    {link.label}
-                  </Link>
+                  {link.external ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -132,9 +144,14 @@ export function Footer() {
           <p className="text-sm text-[var(--dark-text-muted)]">
             &copy; {new Date().getFullYear()} Bridge Up. All rights reserved.
           </p>
-          <p className="text-sm text-[var(--dark-text-muted)]">
-            Coming soon to the App Store
-          </p>
+          <a
+            href="https://www.linkedin.com/in/avery-levitt/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
+          >
+            Made with 💙 in St. Catharines
+          </a>
         </div>
       </div>
     </footer>

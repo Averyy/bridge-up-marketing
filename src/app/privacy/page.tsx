@@ -2,8 +2,8 @@ import { Header, Footer } from "@/components/layout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - Bridge Up",
-  description: "Bridge Up privacy policy. Learn how we protect your data.",
+  title: "Privacy Policy",
+  description: "Bridge Up privacy policy. Your location data stays on your device. We collect minimal analytics and never sell your information.",
 };
 
 export default function PrivacyPage() {

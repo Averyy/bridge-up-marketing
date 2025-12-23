@@ -2,8 +2,8 @@ import { Header, Footer } from "@/components/layout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service - Bridge Up",
-  description: "Bridge Up terms of service and conditions of use.",
+  title: "Terms of Service",
+  description: "Bridge Up terms of service. By using the app, you agree to these terms for the free bridge status service.",
 };
 
 export default function TermsPage() {

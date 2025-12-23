@@ -1,18 +1,18 @@
 # Bridge Up
 
-Marketing website for **Bridge Up** - a real-time bridge status app for commuters in the St. Lawrence Seaway region.
+Marketing website for **Bridge Up** - a real-time bridge status app for the St. Lawrence Seaway region.
 
 ## About Bridge Up
 
-Bridge Up helps thousands of commuters navigate lift bridges across Ontario and Quebec. Never get stuck waiting at a closed bridge again.
+Never wait at a closed bridge again. Bridge Up provides real-time bridge status and reopening predictions for lift bridges across Ontario and Quebec.
 
 ### Key Features
 
 - **Real-time Status** - Know instantly whether a bridge is open, closed, or closing soon
-- **Predictive Reopening Times** - AI-powered predictions based on 300+ analyzed closures per bridge with 95% confidence intervals
-- **Push Notifications** - Get alerted the moment a bridge status changes, before you leave home
+- **Predictive Reopening Times** - Predictions based on 300+ analyzed closures per bridge with 95% confidence intervals
 - **CarPlay Support** - Glanceable bridge status while driving
-- **Interactive Map** - See all 13 bridges across 4 regions at a glance
+- **Interactive Map** - See all 15 bridges across 5 regions at a glance
+- **Always Free** - No subscriptions, no paywalls
 
 ### Coverage Area
 
@@ -20,6 +20,7 @@ Bridge Up helps thousands of commuters navigate lift bridges across Ontario and 
 - **Port Colborne** - Clarence St, Main St, Mellanby Ave
 - **Montreal** - Ste-Catherine, Victoria Downstream, Victoria Upstream
 - **Beauharnois** - Larocque Bridge, St-Louis-de-Gonzague
+- **Kahnawake** - CP Railway Bridge 7A, CP Railway Bridge 7B
 
 ## Tech Stack
 

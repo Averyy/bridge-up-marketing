@@ -27,7 +27,7 @@ const item = {
   },
 };
 
-// Floating notification cards - closer to phone in zigzag pattern
+// Floating notification cards - responsive positions
 const notificationCards = [
   {
     id: 1,
@@ -39,9 +39,10 @@ const notificationCards = [
     ),
     title: "Highway 20 • Now Open",
     subtitle: "Clear for the next 2+ hours",
-    position: "left-[25%] top-[2%]",
+    position: "-left-16 sm:-left-8 lg:left-[25%] top-[5%] lg:top-[2%]",
     delay: 0.6,
     floatDuration: 5,
+    side: "left",
   },
   {
     id: 2,
@@ -54,9 +55,10 @@ const notificationCards = [
     title: "Carlton St • Closed",
     subtitle: "Opens in 12-20 min",
     highlight: true,
-    position: "left-[5%] top-[25%]",
+    position: "-left-24 sm:-left-12 lg:left-[5%] top-[28%] lg:top-[25%]",
     delay: 0.7,
     floatDuration: 5.5,
+    side: "left",
   },
   {
     id: 3,
@@ -68,9 +70,10 @@ const notificationCards = [
     ),
     title: "Glendale Ave • Closing",
     subtitle: "Closes in 3-7 minutes",
-    position: "left-[30%] top-[48%]",
+    position: "-left-12 sm:-left-4 lg:left-[30%] top-[52%] lg:top-[48%]",
     delay: 0.8,
     floatDuration: 6,
+    side: "left",
   },
   {
     id: 4,
@@ -82,9 +85,10 @@ const notificationCards = [
     ),
     title: "Queenston St",
     subtitle: "Open • No scheduled closures",
-    position: "left-[8%] bottom-[20%]",
+    position: "-left-20 sm:-left-10 lg:left-[8%] bottom-[25%] lg:bottom-[20%]",
     delay: 0.9,
     floatDuration: 5.2,
+    side: "left",
   },
   {
     id: 5,
@@ -97,9 +101,10 @@ const notificationCards = [
     ),
     title: "3 bridges nearby",
     subtitle: "2 open, 1 closing soon",
-    position: "right-[25%] top-[2%]",
+    position: "-right-16 sm:-right-8 lg:right-[25%] top-[5%] lg:top-[2%]",
     delay: 0.65,
     floatDuration: 5.3,
+    side: "right",
   },
   {
     id: 6,
@@ -112,9 +117,10 @@ const notificationCards = [
     title: "Main St • Opens Soon",
     subtitle: "2-5 minutes remaining",
     highlight: true,
-    position: "right-[5%] top-[25%]",
+    position: "-right-24 sm:-right-12 lg:right-[5%] top-[28%] lg:top-[25%]",
     delay: 0.75,
     floatDuration: 5.8,
+    side: "right",
   },
   {
     id: 7,
@@ -126,9 +132,10 @@ const notificationCards = [
     ),
     title: "Status Changed",
     subtitle: "Lakeshore Rd is now open",
-    position: "right-[30%] top-[48%]",
+    position: "-right-12 sm:-right-4 lg:right-[30%] top-[52%] lg:top-[48%]",
     delay: 0.85,
     floatDuration: 6.2,
+    side: "right",
   },
   {
     id: 8,
@@ -140,9 +147,10 @@ const notificationCards = [
     ),
     title: "Route Clear",
     subtitle: "All bridges on route are open",
-    position: "right-[8%] bottom-[20%]",
+    position: "-right-20 sm:-right-10 lg:right-[8%] bottom-[25%] lg:bottom-[20%]",
     delay: 0.95,
     floatDuration: 5.6,
+    side: "right",
   },
 ];
 
@@ -163,7 +171,7 @@ export function Hero() {
         }}
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-24 lg:pt-16 lg:pb-32">
         <motion.div
           variants={container}
           initial="hidden"
@@ -176,7 +184,7 @@ export function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--status-open)] opacity-75"></span>
               <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--status-open)]"></span>
             </span>
-            <span className="text-sm font-medium text-gray-700">Now tracking 13 bridges in real-time</span>
+            <span className="text-sm font-medium text-gray-700">Now tracking 15 bridges in real-time</span>
           </motion.div>
 
           {/* Main Headline */}
@@ -184,9 +192,9 @@ export function Hero() {
             variants={item}
             className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-[var(--foreground)]"
           >
-            Know before you go.
+            Never wait at a closed
             <br />
-            <span className="text-[var(--primary)]">Cross with confidence.</span>
+            <span className="text-[var(--primary)]">bridge again.</span>
           </motion.h1>
 
           {/* Subheadline */}
@@ -194,27 +202,22 @@ export function Hero() {
             variants={item}
             className="mt-6 text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
           >
-            Real-time status updates, predictive reopening times, and instant alerts.
-            The essential app for commuters in St. Catharines, Welland, Port Colborne, and Montreal.
+            Real-time bridge status and reopening predictions with CarPlay support. Built for St. Catharines, Welland, Port Colborne, and Montreal.
           </motion.p>
 
           {/* Badges */}
           <motion.div variants={item} className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-              </span>
-              <span className="text-sm font-medium text-gray-700">Free During Beta</span>
+              <span className="text-base">🎉</span>
+              <span className="text-sm font-medium text-gray-700">Always Free</span>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
-              <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-              </svg>
+              <span className="text-base">📱</span>
               <span className="text-sm font-medium text-gray-700">iOS & CarPlay</span>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
-              <span className="text-sm font-medium text-gray-700">13 Bridges • 4 Regions</span>
+              <span className="text-base">🌉</span>
+              <span className="text-sm font-medium text-gray-700">15 Bridges • 5 Regions</span>
             </div>
           </motion.div>
 
@@ -232,14 +235,14 @@ export function Hero() {
         </motion.div>
 
         {/* Phone with Floating Notification Cards */}
-        <div className="relative mt-16 lg:mt-20">
+        <div className="relative mt-24 lg:mt-28">
           <div className="relative mx-auto max-w-6xl">
             {/* Left Side Floating Cards */}
-            <div className="absolute left-0 top-0 bottom-0 w-[280px] hidden lg:block">
-              {notificationCards.slice(0, 4).map((card, index) => (
+            <div className="absolute left-1/2 -translate-x-[240px] sm:-translate-x-[300px] lg:translate-x-0 lg:left-0 top-0 bottom-0 w-[200px] lg:w-[280px]">
+              {notificationCards.filter(c => c.side === "left").map((card, index) => (
                 <motion.div
                   key={card.id}
-                  initial={{ opacity: 0, x: -50 }}
+                  initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
                     delay: card.delay,
@@ -250,7 +253,7 @@ export function Hero() {
                   className={`absolute ${card.position}`}
                 >
                   <motion.div
-                    animate={{ y: [0, -10, 0] }}
+                    animate={{ y: [0, -8, 0] }}
                     transition={{
                       duration: card.floatDuration,
                       repeat: Infinity,
@@ -261,15 +264,15 @@ export function Hero() {
                     <motion.div
                       whileHover={{ scale: 1.05, x: 8 }}
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-3.5 max-w-[220px] cursor-pointer"
+                      className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${card.iconBg}`}>
+                      <div className="flex items-center gap-2 lg:gap-3">
+                        <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center shrink-0 ${card.iconBg}`}>
                           {card.icon}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold text-sm text-gray-900 truncate">{card.title}</p>
-                          <p className="text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
+                          <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">{card.title}</p>
+                          <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
                         </div>
                       </div>
                     </motion.div>
@@ -279,11 +282,11 @@ export function Hero() {
             </div>
 
             {/* Right Side Floating Cards */}
-            <div className="absolute right-0 top-0 bottom-0 w-[280px] hidden lg:block">
-              {notificationCards.slice(4).map((card, index) => (
+            <div className="absolute left-1/2 translate-x-[80px] sm:translate-x-[140px] lg:translate-x-0 lg:left-auto lg:right-0 top-0 bottom-0 w-[200px] lg:w-[280px]">
+              {notificationCards.filter(c => c.side === "right").map((card, index) => (
                 <motion.div
                   key={card.id}
-                  initial={{ opacity: 0, x: 50 }}
+                  initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
                     delay: card.delay,
@@ -294,7 +297,7 @@ export function Hero() {
                   className={`absolute ${card.position}`}
                 >
                   <motion.div
-                    animate={{ y: [0, -10, 0] }}
+                    animate={{ y: [0, -8, 0] }}
                     transition={{
                       duration: card.floatDuration,
                       repeat: Infinity,
@@ -305,15 +308,15 @@ export function Hero() {
                     <motion.div
                       whileHover={{ scale: 1.05, x: -8 }}
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-3.5 max-w-[220px] cursor-pointer"
+                      className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${card.iconBg}`}>
+                      <div className="flex items-center gap-2 lg:gap-3">
+                        <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center shrink-0 ${card.iconBg}`}>
                           {card.icon}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold text-sm text-gray-900 truncate">{card.title}</p>
-                          <p className="text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
+                          <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">{card.title}</p>
+                          <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
                         </div>
                       </div>
                     </motion.div>

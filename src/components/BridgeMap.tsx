@@ -23,6 +23,9 @@ const bridges = [
   // Salaberry / Beauharnois
   { name: "St-Louis-de-Gonzague Bridge", region: "Beauharnois", regionId: "beauharnois", lat: 45.2326, lng: -74.0030, status: "open" },
   { name: "Larocque Bridge", region: "Beauharnois", regionId: "beauharnois", lat: 45.2259, lng: -74.1148, status: "open" },
+  // Kahnawake
+  { name: "CP Railway Bridge 7A", region: "Kahnawake", regionId: "kahnawake", lat: 45.4113, lng: -73.6621, status: "open" },
+  { name: "CP Railway Bridge 7B", region: "Kahnawake", regionId: "kahnawake", lat: 45.4113, lng: -73.6620, status: "open" },
 ];
 
 interface SelectedBridge {

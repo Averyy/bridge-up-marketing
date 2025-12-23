@@ -83,7 +83,7 @@ export function Features() {
               <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-gradient-to-br from-cyan-500/20 via-blue-500/15 to-transparent rounded-full blur-3xl -translate-y-1/4 -translate-x-1/4" />
 
               {/* Content */}
-              <div className="relative p-8 lg:p-10">
+              <div className="relative p-8 lg:p-10 pb-4">
                 <p className="text-lg lg:text-xl text-white leading-relaxed">
                   <span className="font-semibold">Know before you wait.</span>{" "}
                   <span className="text-white/70">
@@ -94,41 +94,43 @@ export function Features() {
                 </p>
               </div>
 
-              {/* UI Screenshots - Stacked/Tilted */}
-              <div className="absolute bottom-0 right-0 left-0 h-[500px] overflow-hidden">
-                {/* Background Screenshot - Tilted */}
+              {/* UI Screenshots - Centered and overlapping */}
+              <div className="relative mt-4 flex justify-center items-end h-[450px] lg:h-[520px]">
+                {/* Background Screenshot - Right, tilted */}
                 <motion.div
-                  className="absolute bottom-4 right-4 w-[240px] lg:w-[280px] rotate-6 origin-bottom-right"
+                  className="absolute w-[200px] sm:w-[220px] lg:w-[260px] rotate-6 translate-x-[60px] sm:translate-x-[80px] lg:translate-x-[100px]"
                   initial={{ opacity: 0, x: 50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.3 }}
+                  style={{ transform: 'translateX(80px) rotate(6deg)' }}
                 >
                   <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                     <Image
                       src="/screenshots/detail-open.png"
                       alt="Bridge detail showing statistics for an open bridge"
-                      width={280}
-                      height={600}
+                      width={260}
+                      height={560}
                       className="w-full h-auto"
                     />
                   </div>
                 </motion.div>
 
-                {/* Foreground Screenshot */}
+                {/* Foreground Screenshot - Left, tilted opposite */}
                 <motion.div
-                  className="absolute bottom-8 left-4 w-[240px] lg:w-[280px] -rotate-3 origin-bottom-left"
+                  className="absolute w-[200px] sm:w-[220px] lg:w-[260px] -rotate-3 -translate-x-[60px] sm:-translate-x-[80px] lg:-translate-x-[100px] z-10"
                   initial={{ opacity: 0, x: -50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.4 }}
+                  style={{ transform: 'translateX(-80px) rotate(-3deg)' }}
                 >
                   <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                     <Image
                       src="/screenshots/detail-closed.png"
                       alt="Bridge detail showing reopening prediction"
-                      width={280}
-                      height={600}
+                      width={260}
+                      height={560}
                       className="w-full h-auto"
                     />
                   </div>
@@ -178,7 +180,7 @@ export function Features() {
                   </svg>
                 ),
                 title: "Interactive Map",
-                desc: "See all 13 bridges with color-coded status markers. Tap any marker for full details.",
+                desc: "See all 15 bridges with color-coded status markers. Tap any marker for full details.",
                 gradient: "from-emerald-500 to-teal-600",
                 glowColor: "emerald",
               },
@@ -246,7 +248,7 @@ export function Features() {
               Coverage Area
             </span>
             <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--foreground)] leading-tight">
-              13 bridges across 4 regions
+              15 bridges across 5 regions
             </h2>
             <p className="mt-6 text-lg text-gray-600">
               Complete coverage of bridges in the St. Lawrence Seaway region.
@@ -265,7 +267,7 @@ export function Features() {
             </a>
           </motion.div>
 
-          <RegionCards variant="light" />
+          <RegionCards variant="light" layout="masonry" />
         </div>
       </section>
     </>

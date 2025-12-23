@@ -23,8 +23,7 @@ export function Download() {
             Have a smooth crossing
           </h2>
           <p className="mt-6 text-lg text-[var(--dark-text-muted)] max-w-2xl mx-auto">
-            Bridge Up is coming soon to the App Store. Never get stuck waiting at a closed bridge again.
-            Free during beta—all features unlocked.
+            Real time bridge status, reopening predictions, and CarPlay support. All features included, completely free.
           </p>
 
           <motion.div

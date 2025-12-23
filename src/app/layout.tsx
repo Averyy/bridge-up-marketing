@@ -14,7 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Bridge Up - Real-Time Bridge Status | St. Catharines, Welland, Montreal",
+  metadataBase: new URL("https://bridgeup.app"),
+  title: {
+    default: "Bridge Up - Real-Time Bridge Status | St. Catharines, Welland, Montreal",
+    template: "%s | Bridge Up",
+  },
   description:
     "Know before you go. Real-time bridge status and predictions for St. Catharines, Welland Canal, Port Colborne, and Montreal. Never get stuck waiting at a closed bridge again.",
   keywords: [
@@ -23,6 +27,7 @@ export const metadata: Metadata = {
     "Welland Canal bridge",
     "Port Colborne bridge",
     "Montreal bridge",
+    "Kahnawake bridge",
     "Highway 20 bridge",
     "Glendale Avenue bridge",
     "Queenston Street bridge",
@@ -32,8 +37,17 @@ export const metadata: Metadata = {
     "bridge closure alerts",
     "Beauharnois bridge",
     "Victoria Bridge",
+    "CP Railway Bridge",
+    "iOS bridge app",
+    "CarPlay bridge status",
   ],
   authors: [{ name: "Bridge Up" }],
+  creator: "Bridge Up",
+  publisher: "Bridge Up",
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: [
       { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
@@ -47,13 +61,16 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
   appleWebApp: {
     title: "Bridge Up",
+    capable: true,
+    statusBarStyle: "black-translucent",
   },
   openGraph: {
     title: "Bridge Up - Real-Time Bridge Status",
     description:
       "Real-time bridge status for St. Catharines, Welland, Port Colborne & Montreal. Predictions tell you when bridges reopen.",
     type: "website",
-    locale: "en_US",
+    locale: "en_CA",
+    siteName: "Bridge Up",
   },
   twitter: {
     card: "summary_large_image",
@@ -68,8 +85,41 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Bridge Up",
+    operatingSystem: "iOS",
+    applicationCategory: "NavigationApplication",
+    description:
+      "Real-time bridge status and predictions for the St. Lawrence Seaway region. Know before you go.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "CAD",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "5",
+      ratingCount: "1",
+    },
+    featureList: [
+      "Real-time bridge status",
+      "Reopening predictions",
+      "CarPlay support",
+      "15 bridges monitored",
+      "Interactive map",
+    ],
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
