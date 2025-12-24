@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useBridges } from "@/lib/useBridges";
+import { Bridge } from "@/lib/bridges";
 
 const container = {
   hidden: { opacity: 0 },
@@ -27,134 +29,184 @@ const item = {
   },
 };
 
-// Floating notification cards - responsive positions
-const notificationCards = [
-  {
-    id: 1,
-    iconBg: "bg-green-500",
-    icon: (
-      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-    ),
-    title: "Highway 20 • Now Open",
-    subtitle: "Clear for the next 2+ hours",
-    position: "-left-16 sm:-left-8 lg:left-[25%] top-[5%] lg:top-[2%]",
-    delay: 0.6,
-    floatDuration: 5,
-    side: "left",
-  },
-  {
-    id: 2,
-    iconBg: "bg-red-500",
-    icon: (
-      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-      </svg>
-    ),
-    title: "Carlton St • Closed",
-    subtitle: "Opens in 12-20 min",
-    highlight: true,
-    position: "-left-24 sm:-left-12 lg:left-[5%] top-[28%] lg:top-[25%]",
-    delay: 0.7,
-    floatDuration: 5.5,
-    side: "left",
-  },
-  {
-    id: 3,
-    iconBg: "bg-amber-500",
-    icon: (
-      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    title: "Glendale Ave • Closing",
-    subtitle: "Closes in 3-7 minutes",
-    position: "-left-12 sm:-left-4 lg:left-[30%] top-[52%] lg:top-[48%]",
-    delay: 0.8,
-    floatDuration: 6,
-    side: "left",
-  },
-  {
-    id: 4,
-    iconBg: "bg-green-500",
-    icon: (
-      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
-    ),
-    title: "Queenston St",
-    subtitle: "Open • No scheduled closures",
-    position: "-left-20 sm:-left-10 lg:left-[8%] bottom-[25%] lg:bottom-[20%]",
-    delay: 0.9,
-    floatDuration: 5.2,
-    side: "left",
-  },
-  {
-    id: 5,
-    iconBg: "bg-blue-500",
-    icon: (
-      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    ),
-    title: "3 bridges nearby",
-    subtitle: "2 open, 1 closing soon",
-    position: "-right-16 sm:-right-8 lg:right-[25%] top-[5%] lg:top-[2%]",
-    delay: 0.65,
-    floatDuration: 5.3,
-    side: "right",
-  },
-  {
-    id: 6,
-    iconBg: "bg-orange-500",
-    icon: (
-      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-    title: "Main St • Opens Soon",
-    subtitle: "2-5 minutes remaining",
-    highlight: true,
-    position: "-right-24 sm:-right-12 lg:right-[5%] top-[28%] lg:top-[25%]",
-    delay: 0.75,
-    floatDuration: 5.8,
-    side: "right",
-  },
-  {
-    id: 7,
-    iconBg: "bg-[var(--primary)]",
-    icon: (
-      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-      </svg>
-    ),
-    title: "Status Changed",
-    subtitle: "Lakeshore Rd is now open",
-    position: "-right-12 sm:-right-4 lg:right-[30%] top-[52%] lg:top-[48%]",
-    delay: 0.85,
-    floatDuration: 6.2,
-    side: "right",
-  },
-  {
-    id: 8,
-    iconBg: "bg-emerald-500",
-    icon: (
-      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-      </svg>
-    ),
-    title: "Route Clear",
-    subtitle: "All bridges on route are open",
-    position: "-right-20 sm:-right-10 lg:right-[8%] bottom-[25%] lg:bottom-[20%]",
-    delay: 0.95,
-    floatDuration: 5.6,
-    side: "right",
-  },
+// Position configs for left cards (St. Catharines - 5 bridges)
+// Spread from 0% to 85% for full vertical coverage
+const leftPositions = [
+  { position: "-left-16 sm:-left-8 lg:left-[22%] top-[0%] lg:top-[0%]", delay: 0.6, floatDuration: 5 },
+  { position: "-left-24 sm:-left-12 lg:left-[5%] top-[22%] lg:top-[20%]", delay: 0.7, floatDuration: 5.5 },
+  { position: "-left-12 sm:-left-4 lg:left-[28%] top-[44%] lg:top-[42%]", delay: 0.8, floatDuration: 6 },
+  { position: "-left-20 sm:-left-10 lg:left-[8%] top-[66%] lg:top-[64%]", delay: 0.9, floatDuration: 5.2 },
+  { position: "-left-16 sm:-left-6 lg:left-[22%] top-[88%] lg:top-[86%]", delay: 1.0, floatDuration: 5.4 },
 ];
 
+// Position configs for right cards (Montreal + 1 Port Colborne - 4 bridges)
+// Spread from 5% to 80% and vertically centered
+const rightPositions = [
+  { position: "-right-16 sm:-right-8 lg:right-[22%] top-[5%] lg:top-[5%]", delay: 0.65, floatDuration: 5.3 },
+  { position: "-right-24 sm:-right-12 lg:right-[5%] top-[30%] lg:top-[30%]", delay: 0.75, floatDuration: 5.8 },
+  { position: "-right-12 sm:-right-4 lg:right-[28%] top-[55%] lg:top-[55%]", delay: 0.85, floatDuration: 6.2 },
+  { position: "-right-20 sm:-right-10 lg:right-[8%] top-[80%] lg:top-[80%]", delay: 0.95, floatDuration: 5.5 },
+];
+
+// Icons for different statuses
+const StatusIcons = {
+  open: (
+    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+    </svg>
+  ),
+  closed: (
+    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  ),
+  closing: (
+    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  ),
+  closingSoon: (
+    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  opening: (
+    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  construction: (
+    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+  ),
+  unknown: (
+    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+};
+
+// Background colors for different statuses
+function getStatusBg(status: string): string {
+  switch (status) {
+    case "open": return "bg-green-500";
+    case "closed": return "bg-red-500";
+    case "closing": return "bg-red-500";
+    case "closingSoon": return "bg-amber-500";
+    case "opening": return "bg-yellow-500";
+    case "construction": return "bg-red-500";
+    default: return "bg-gray-500";
+  }
+}
+
+// Status label for title
+function getStatusLabel(status: string): string {
+  switch (status) {
+    case "open": return "Open";
+    case "closed": return "Closed";
+    case "closing": return "Closing";
+    case "closingSoon": return "Closing Soon";
+    case "opening": return "Opening";
+    case "construction": return "Work";
+    default: return "Unknown";
+  }
+}
+
+// Generate subtitle based on status and prediction
+function getSubtitle(bridge: Bridge): string {
+  const prediction = bridge.prediction;
+
+  if (bridge.status === "open") {
+    if (prediction?.closesIn) {
+      return `Closes in ${prediction.closesIn.min}-${prediction.closesIn.max} min`;
+    }
+    return "Clear to cross";
+  }
+
+  if (bridge.status === "closed" || bridge.status === "closing") {
+    if (prediction?.opensIn) {
+      return `Opens in ${prediction.opensIn.min}-${prediction.opensIn.max} min`;
+    }
+    return "You shall not pass";
+  }
+
+  if (bridge.status === "closingSoon") {
+    if (prediction?.closesIn) {
+      return `Closing in ${prediction.closesIn.min}-${prediction.closesIn.max} min`;
+    }
+    return "Prepare for closure";
+  }
+
+  if (bridge.status === "opening") {
+    if (prediction?.opensIn) {
+      return `Opens in ${prediction.opensIn.min}-${prediction.opensIn.max} min`;
+    }
+    return "Opening soon";
+  }
+
+  if (bridge.status === "construction") {
+    return "Maintenance in progress";
+  }
+
+  return "Status unavailable";
+}
+
+// Fallback static cards for loading state
+const fallbackCards = {
+  left: [
+    { id: "f1", name: "Highway 20", status: "open", subtitle: "Clear to cross" },
+    { id: "f2", name: "Carlton St", status: "closed", subtitle: "You shall not pass" },
+    { id: "f3", name: "Glendale Ave", status: "closingSoon", subtitle: "Closes in 3-7 min" },
+    { id: "f4", name: "Queenston St", status: "open", subtitle: "Clear to cross" },
+    { id: "f5", name: "Lakeshore Rd", status: "open", subtitle: "Clear to cross" },
+  ],
+  right: [
+    { id: "f6", name: "Victoria Upstream", status: "open", subtitle: "Clear to cross" },
+    { id: "f7", name: "Victoria Downstream", status: "closed", subtitle: "You shall not pass" },
+    { id: "f8", name: "Ste-Catherine", status: "open", subtitle: "Clear to cross" },
+    { id: "f9", name: "Clarence St", status: "open", subtitle: "Clear to cross" },
+  ],
+};
+
 export function Hero() {
+  const { bridges } = useBridges();
+
+  // Filter bridges by region
+  const stCatharinesBridges = bridges.filter(b => b.regionId === "st-catharines");
+  const montrealBridges = bridges.filter(b => b.regionId === "montreal");
+  const portColborneBridges = bridges.filter(b => b.regionId === "port-colborne");
+
+  // Right side: Montreal (3) + first Port Colborne bridge (1) = 4
+  const rightSideBridges = [...montrealBridges, ...portColborneBridges.slice(0, 1)];
+
+  // Use live data or fallback
+  const leftCards = stCatharinesBridges.length > 0
+    ? stCatharinesBridges.map((bridge, i) => ({
+        id: bridge.id,
+        name: bridge.name,
+        status: bridge.status,
+        subtitle: getSubtitle(bridge),
+        ...leftPositions[i % leftPositions.length],
+      }))
+    : fallbackCards.left.map((card, i) => ({
+        ...card,
+        ...leftPositions[i % leftPositions.length],
+      }));
+
+  const rightCards = rightSideBridges.length > 0
+    ? rightSideBridges.map((bridge, i) => ({
+        id: bridge.id,
+        name: bridge.name,
+        status: bridge.status,
+        subtitle: getSubtitle(bridge),
+        ...rightPositions[i % rightPositions.length],
+      }))
+    : fallbackCards.right.map((card, i) => ({
+        ...card,
+        ...rightPositions[i % rightPositions.length],
+      }));
+
   return (
     <section className="relative min-h-screen pt-20 overflow-hidden bg-gradient-to-b from-[#f0f7ff] via-white to-white">
       {/* Radial gradient glow effects */}
@@ -216,8 +268,8 @@ export function Hero() {
               <span className="text-sm font-medium text-gray-700">iOS & CarPlay</span>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
-              <span className="text-base">🌉</span>
-              <span className="text-sm font-medium text-gray-700">15 Bridges • 5 Regions</span>
+              <span className="text-base">🌎</span>
+              <span className="text-sm font-medium text-gray-700">English, Spanish, and French</span>
             </div>
           </motion.div>
 
@@ -237,9 +289,9 @@ export function Hero() {
         {/* Phone with Floating Notification Cards */}
         <div className="relative mt-24 lg:mt-28">
           <div className="relative mx-auto max-w-6xl">
-            {/* Left Side Floating Cards */}
+            {/* Left Side Floating Cards - St. Catharines */}
             <div className="absolute left-1/2 -translate-x-[240px] sm:-translate-x-[300px] lg:translate-x-0 lg:left-0 top-0 bottom-0 w-[200px] lg:w-[280px]">
-              {notificationCards.filter(c => c.side === "left").map((card, index) => (
+              {leftCards.map((card, index) => (
                 <motion.div
                   key={card.id}
                   initial={{ opacity: 0, x: -30 }}
@@ -267,11 +319,13 @@ export function Hero() {
                       className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
                     >
                       <div className="flex items-center gap-2 lg:gap-3">
-                        <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center shrink-0 ${card.iconBg}`}>
-                          {card.icon}
+                        <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center shrink-0 ${getStatusBg(card.status)}`}>
+                          {StatusIcons[card.status as keyof typeof StatusIcons] || StatusIcons.unknown}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">{card.title}</p>
+                          <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">
+                            {card.name}: {getStatusLabel(card.status)}
+                          </p>
                           <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
                         </div>
                       </div>
@@ -281,9 +335,9 @@ export function Hero() {
               ))}
             </div>
 
-            {/* Right Side Floating Cards */}
+            {/* Right Side Floating Cards - Montreal */}
             <div className="absolute left-1/2 translate-x-[80px] sm:translate-x-[140px] lg:translate-x-0 lg:left-auto lg:right-0 top-0 bottom-0 w-[200px] lg:w-[280px]">
-              {notificationCards.filter(c => c.side === "right").map((card, index) => (
+              {rightCards.map((card, index) => (
                 <motion.div
                   key={card.id}
                   initial={{ opacity: 0, x: 30 }}
@@ -311,11 +365,13 @@ export function Hero() {
                       className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
                     >
                       <div className="flex items-center gap-2 lg:gap-3">
-                        <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center shrink-0 ${card.iconBg}`}>
-                          {card.icon}
+                        <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center shrink-0 ${getStatusBg(card.status)}`}>
+                          {StatusIcons[card.status as keyof typeof StatusIcons] || StatusIcons.unknown}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">{card.title}</p>
+                          <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">
+                            {card.name}: {getStatusLabel(card.status)}
+                          </p>
                           <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
                         </div>
                       </div>
@@ -342,6 +398,7 @@ export function Hero() {
                     src="/screenshots/home.png"
                     alt="Bridge Up app showing real-time bridge status"
                     fill
+                    sizes="(max-width: 640px) 252px, (max-width: 1024px) 288px, 324px"
                     className="object-cover object-top"
                     priority
                   />

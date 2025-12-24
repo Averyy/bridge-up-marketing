@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useBridges } from "@/lib/useBridges";
 
 const navLinks = [
   {
@@ -54,6 +55,8 @@ export function Header({ forceScrolled = false }: HeaderProps) {
   const [scrolled, setScrolled] = useState(forceScrolled);
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+  const { connectionStatus } = useBridges();
+  const isLive = connectionStatus === "connected";
 
   useEffect(() => {
     if (forceScrolled) return;
@@ -80,17 +83,17 @@ export function Header({ forceScrolled = false }: HeaderProps) {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8">
         <nav
-          className={`mx-auto transition-all duration-500 ${
+          className={`mx-auto transition-all duration-500 border rounded-full ${
             showPillNav
-              ? "max-w-3xl mt-3 py-2 rounded-full border border-white/10"
-              : "max-w-7xl py-4 bg-transparent"
+              ? "max-w-3xl mt-3 py-2 border-white/10"
+              : "max-w-7xl py-4 border-transparent"
           }`}
-          style={showPillNav ? {
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            backgroundColor: "rgba(10, 10, 10, 0.5)",
-            boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 1px 0.5px, rgba(0, 0, 0, 0.08) 0px 3px 3px 1.5px, rgba(0, 0, 0, 0.06) 0px 6px 6px -3px, rgba(0, 0, 0, 0.04) 0px 12px 12px -6px, rgba(0, 0, 0, 0.02) 0px 24px 24px -12px",
-          } : {}}
+          style={{
+            backdropFilter: showPillNav ? "blur(24px)" : "none",
+            WebkitBackdropFilter: showPillNav ? "blur(24px)" : "none",
+            backgroundColor: showPillNav ? "rgba(10, 10, 10, 0.5)" : "transparent",
+            boxShadow: showPillNav ? "rgba(0, 0, 0, 0.1) 0px 1px 1px 0.5px, rgba(0, 0, 0, 0.08) 0px 3px 3px 1.5px, rgba(0, 0, 0, 0.06) 0px 6px 6px -3px, rgba(0, 0, 0, 0.04) 0px 12px 12px -6px, rgba(0, 0, 0, 0.02) 0px 24px 24px -12px" : "none",
+          }}
         >
           <div className={`flex items-center justify-between ${showPillNav ? "px-4" : "px-0"}`}>
             {/* Logo */}
@@ -128,15 +131,23 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 text-sm font-medium transition-colors rounded-full ${
-                    showPillNav || useLightText ? "hover:bg-white/10" : "hover:bg-black/5"
-                  } ${
+                  className={`px-4 py-2 text-sm font-medium transition-colors rounded-full flex items-center gap-2 ${
                     pathname === link.href
-                      ? "text-[var(--primary)]"
-                      : showPillNav || useLightText ? "text-white/80" : "text-gray-700"
+                      ? showPillNav || useLightText
+                        ? "bg-white/15 text-white"
+                        : "bg-[var(--primary)]/10 text-[var(--primary)]"
+                      : showPillNav || useLightText
+                        ? "text-white/80 hover:bg-white/10"
+                        : "text-gray-700 hover:bg-black/5"
                   }`}
                 >
                   {link.label}
+                  {link.href === "/bridges" && isLive && (
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -315,6 +326,12 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                         {link.icon}
                       </span>
                       <span className="font-medium">{link.label}</span>
+                      {link.href === "/bridges" && isLive && (
+                        <span className="relative flex h-2 w-2 ml-auto">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        </span>
+                      )}
                     </Link>
                   ))}
                 </div>

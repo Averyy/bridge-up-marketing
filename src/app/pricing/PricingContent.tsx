@@ -4,14 +4,14 @@ import { Header, Footer } from "@/components/layout";
 import { motion } from "framer-motion";
 
 const features = [
-  "Real-time bridge status",
-  "All 15 bridges monitored",
-  "Interactive map view",
-  "Reopening predictions",
+  "Real-time status",
+  "15 bridges tracked",
+  "Interactive map",
+  "Predictions",
   "CarPlay support",
   "Sort by distance",
-  "Historical statistics",
-  "Offline mode",
+  "Historical stats",
+  "Multilingual",
 ];
 
 export default function PricingContent() {
@@ -95,7 +95,7 @@ export default function PricingContent() {
                     <p className="text-white/60 text-sm uppercase tracking-wider mb-4">
                       What&apos;s included
                     </p>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
                       {features.map((feature, i) => (
                         <motion.li
                           key={i}
@@ -109,7 +109,7 @@ export default function PricingContent() {
                               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                           </div>
-                          <span className="text-sm">{feature}</span>
+                          <span className="text-sm whitespace-nowrap">{feature}</span>
                         </motion.li>
                       ))}
                     </ul>

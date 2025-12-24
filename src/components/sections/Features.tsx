@@ -63,6 +63,7 @@ export function Features() {
                         src="/screenshots/list.png"
                         alt="Bridge Up list view showing all bridge statuses"
                         fill
+                        sizes="(max-width: 1024px) 260px, 300px"
                         className="object-cover object-top"
                       />
                     </div>
