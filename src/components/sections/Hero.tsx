@@ -267,8 +267,12 @@ export function Hero() {
               <span className="text-sm font-medium text-gray-700">{t("badgeFree")}</span>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
-              <span className="text-base">📱</span>
+              <span className="text-base">🚙</span>
               <span className="text-sm font-medium text-gray-700">{t("badgePlatform")}</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
+              <span className="text-base">⛴️</span>
+              <span className="text-sm font-medium text-gray-700">{t("badgeBoatTracking")}</span>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
               <span className="text-base">🌎</span>

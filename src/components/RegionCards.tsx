@@ -122,6 +122,7 @@ export function RegionCards({
             style={{
               backgroundColor: area.glowColor,
               opacity: isHovered ? 0.4 : 0,
+              transform: "translateZ(0)",
             }}
           />
 

@@ -46,9 +46,10 @@
     "headline": "N'attendez plus jamais à un",
     "headlineHighlight": "pont fermé.",
     "subheadline": "État des ponts et prédictions de réouverture en temps réel avec support CarPlay. Conçu pour St. Catharines, Welland, Port Colborne et Montréal.",
-    "badgeFree": "Toujours gratuit",
-    "badgePlatform": "iOS et CarPlay",
-    "badgeLanguages": "Anglais, espagnol et français",
+    "badgeFree": "Gratuit",
+    "badgePlatform": "CarPlay",
+    "badgeBoatTracking": "Suivi des bateaux",
+    "badgeLanguages": "Anglais, espagnol, français",
     "ctaButton": "Bientôt sur iOS",
     "appScreenshotAlt": "L'application Bridge Up montrant l'état des ponts en temps réel"
   },

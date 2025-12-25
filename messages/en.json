@@ -46,9 +46,10 @@
     "headline": "Never wait at a closed",
     "headlineHighlight": "bridge again.",
     "subheadline": "Real-time bridge status and reopening predictions with CarPlay support. Built for St. Catharines, Welland, Port Colborne, and Montréal.",
-    "badgeFree": "Always Free",
-    "badgePlatform": "iOS & CarPlay",
-    "badgeLanguages": "English, Spanish, and French",
+    "badgeFree": "Free",
+    "badgePlatform": "CarPlay",
+    "badgeBoatTracking": "Boat Tracking",
+    "badgeLanguages": "English, Spanish, French",
     "ctaButton": "Coming Soon on iOS",
     "appScreenshotAlt": "Bridge Up app showing real-time bridge status"
   },

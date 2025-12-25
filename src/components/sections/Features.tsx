@@ -218,7 +218,8 @@ export function Features() {
                   className="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none"
                   style={{
                     backgroundColor: feature.glowColor === 'emerald' ? '#10b981' :
-                                     feature.glowColor === 'blue' ? '#3b82f6' : '#8b5cf6'
+                                     feature.glowColor === 'blue' ? '#3b82f6' : '#8b5cf6',
+                    transform: 'translateZ(0)'
                   }}
                 />
 
