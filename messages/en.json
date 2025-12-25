@@ -1,0 +1,200 @@
+{
+  "metadata": {
+    "title": {
+      "default": "Bridge Up - Real-Time Bridge Status | St. Catharines, Welland, Montréal",
+      "template": "{title} | Bridge Up"
+    },
+    "description": "Know before you go. Real-time bridge status and predictions for St. Catharines, Welland Canal, Port Colborne, and Montréal. Never get stuck waiting at a closed bridge again.",
+    "openGraph": {
+      "title": "Bridge Up - Real-Time Bridge Status",
+      "description": "Real-time bridge status for St. Catharines, Welland, Port Colborne & Montréal. Predictions tell you when bridges reopen."
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "bridges": "Bridges",
+    "pricing": "Pricing",
+    "about": "About",
+    "getApp": "Get app",
+    "getTheApp": "Get the app",
+    "comingSoon": "Coming Soon",
+    "buyMeCoffee": "Buy me a coffee",
+    "coffeeTooltip": "Like Bridge Up? Buy me a coffee!",
+    "toggleMenu": "Toggle menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "brandDescription": "Real-time bridge status for the St. Lawrence Seaway region.",
+    "product": "Product",
+    "more": "More",
+    "legal": "Legal",
+    "home": "Home",
+    "bridges": "Bridges",
+    "pricing": "Pricing",
+    "download": "Download",
+    "about": "About",
+    "contact": "Contact",
+    "buyMeCoffee": "Buy me a coffee",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "monitoringBridges": "Monitoring bridges in:",
+    "copyright": "Bridge Up. All rights reserved.",
+    "madeWith": "Made with 💙 in St. Catharines"
+  },
+  "hero": {
+    "eyebrow": "Now tracking 15 bridges in real-time",
+    "headline": "Never wait at a closed",
+    "headlineHighlight": "bridge again.",
+    "subheadline": "Real-time bridge status and reopening predictions with CarPlay support. Built for St. Catharines, Welland, Port Colborne, and Montréal.",
+    "badgeFree": "Always Free",
+    "badgePlatform": "iOS & CarPlay",
+    "badgeLanguages": "English, Spanish, and French",
+    "ctaButton": "Coming Soon on iOS",
+    "appScreenshotAlt": "Bridge Up app showing real-time bridge status"
+  },
+  "bridgeStatus": {
+    "open": "Open",
+    "closed": "Closed",
+    "closing": "Closing",
+    "closingSoon": "Closing Soon",
+    "opening": "Opening",
+    "construction": "Work",
+    "unknown": "Unknown",
+    "clearToCross": "Clear to cross",
+    "shallNotPass": "You shall not pass",
+    "closesIn": "Closes in {min}-{max} min",
+    "opensIn": "Opens in {min}-{max} min",
+    "closingIn": "Closing in {min}-{max} min",
+    "openingSoon": "Opening soon",
+    "prepareForClosure": "Prepare for closure",
+    "maintenanceInProgress": "Maintenance in progress",
+    "statusUnavailable": "Status unavailable"
+  },
+  "features": {
+    "smartTracking": {
+      "tag": "Smart Bridge Tracking",
+      "heading": "Real-time status meets",
+      "headingHighlight": "predictive intelligence",
+      "leftBox": {
+        "title": "First to know. First to go.",
+        "description": "Get instant push notifications the moment any bridge changes status. Know about closures before you leave home."
+      },
+      "rightBox": {
+        "title": "Know before you wait.",
+        "description": "Powerful predictions based on 300+ analyzed closures per bridge. Get estimated reopening times with 95% confidence intervals—so you can decide whether to wait or take an alternate route."
+      },
+      "listViewAlt": "Bridge Up list view showing all bridge statuses",
+      "detailOpenAlt": "Bridge detail showing statistics for an open bridge",
+      "detailClosedAlt": "Bridge detail showing reopening prediction"
+    },
+    "builtForDrivers": {
+      "tag": "Built for Drivers",
+      "heading": "Glanceable info while you drive",
+      "description": "CarPlay support means you can check bridge status without taking your eyes off the road. The map view shows all bridges at a glance with color-coded markers.",
+      "interactiveMap": {
+        "title": "Interactive Map",
+        "description": "See all 15 bridges with color-coded status markers. Tap any marker for full details."
+      },
+      "carPlayReady": {
+        "title": "CarPlay Ready",
+        "description": "Full CarPlay support for safe, glanceable bridge status while driving."
+      },
+      "locationAware": {
+        "title": "Location Aware",
+        "description": "Sort bridges by distance or show only nearby ones. Your location stays private."
+      }
+    },
+    "coverageArea": {
+      "tag": "Coverage Area",
+      "heading": "15 bridges across 5 regions",
+      "description": "Complete coverage of bridges in the St. Lawrence Seaway region.",
+      "viewAllBridges": "View all bridges on map"
+    }
+  },
+  "download": {
+    "heading": "Have a smooth crossing",
+    "description": "Real time bridge status, reopening predictions, and CarPlay support. All features included, completely free.",
+    "ctaButton": "Coming Soon on the App Store",
+    "requirements": "Requires iOS 16.0 or later • Works with CarPlay"
+  },
+  "about": {
+    "title": "About",
+    "metaDescription": "The story behind Bridge Up - a real-time bridge status app for the St. Lawrence Seaway region.",
+    "heading": "The bridge was up.",
+    "story": {
+      "paragraph1": "If you live near the Welland Canal, you know the frustration. You're running late, you hit the bridge, and the bridge is up. No idea how long you'll be waiting.",
+      "paragraph2": "The official Seaway website exists, but it's clunky and not something you can safely check while driving. They've been promising a redesign for years. They eventually added Google and Waze integration, but in practice it's slow and unreliable. I wanted something I could actually glance at on CarPlay.",
+      "paragraph3": "So I built Bridge Up. A simple app that does one thing well: tells you if the bridge is open before you get there.",
+      "paragraph4": "Bridge Up is a work in progress. Got ideas or feedback? Reach out via",
+      "email": "email",
+      "or": "or",
+      "linkedin": "LinkedIn",
+      "paragraph4End": ". And if you find it useful, you can",
+      "buyMeCoffee": "buy me a coffee"
+    },
+    "stats": {
+      "bridgesMonitored": "Bridges monitored",
+      "regionsCovered": "Regions covered",
+      "closuresAnalyzed": "Closures analyzed per bridge",
+      "predictionConfidence": "Prediction confidence"
+    }
+  },
+  "pricing": {
+    "title": "Pricing",
+    "metaDescription": "Bridge Up is completely free with all features included. No subscriptions, no paywalls.",
+    "tag": "Pricing",
+    "heading": "Completely",
+    "headingHighlight": "free",
+    "subheading": "All features. No subscriptions. No paywalls.",
+    "card": {
+      "badge": "Everything included",
+      "price": "$0",
+      "priceDescription": "forever",
+      "description": "Bridge Up is free for everyone. All features, all bridges, no limits.",
+      "whatsIncluded": "What's included"
+    },
+    "features": {
+      "realTimeStatus": "Real-time status",
+      "bridgesTracked": "15 bridges tracked",
+      "interactiveMap": "Interactive map",
+      "predictions": "Predictions",
+      "carPlaySupport": "CarPlay support",
+      "sortByDistance": "Sort by distance",
+      "historicalStats": "Historical stats",
+      "multilingual": "Multilingual"
+    },
+    "support": {
+      "heading": "Want to support Bridge Up?",
+      "description": "This is a side project, not a startup. If you find Bridge Up useful and want to help cover the costs of keeping it running (Apple developer fees, server hosting, etc.), you can buy me a coffee",
+      "button": "Buy me a coffee"
+    },
+    "faq": {
+      "heading": "Frequently Asked Questions",
+      "q1": "Is Bridge Up really free?",
+      "a1": "Yes! Bridge Up is completely free with all features unlocked. No subscriptions, no in-app purchases, no paywalls.",
+      "q2": "Why is it free?",
+      "a2": "Bridge Up is a passion project. I built it because I was tired of getting stuck at bridges myself. My costs are minimal, so I'd rather make it free and useful for everyone.",
+      "q3": "How accurate are the predictions?",
+      "a3": "Our predictions use 95% confidence intervals based on the 300 most recent closures for each bridge. Most predictions are accurate within a few minutes. Keep in mind it's only an estimate using past closure data as a guide, meaning it can be wildly wrong at times.",
+      "q4": "Do you support Android?",
+      "a4": "Currently Bridge Up is iOS only, with full CarPlay support. Android support is on the roadmap for future development."
+    }
+  },
+  "bridges": {
+    "title": "Bridge Map",
+    "metaDescription": "Interactive map of all 15 monitored bridges in St. Catharines, Port Colborne, Montréal, Salaberry-de-Valleyfield, and Kahnawake.",
+    "loadingMap": "Loading map..."
+  },
+  "legal": {
+    "englishOnlyNotice": "This document is available in English only for legal accuracy.",
+    "viewInEnglish": "View in English",
+    "privacy": {
+      "title": "Privacy Policy",
+      "metaDescription": "Bridge Up privacy policy - how we handle your data and protect your privacy."
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "metaDescription": "Bridge Up terms of service - the legal agreement between you and Bridge Up."
+    }
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "metadata": {
+    "title": {
+      "default": "Bridge Up - État des ponts en temps réel | St. Catharines, Welland, Montréal",
+      "template": "{title} | Bridge Up"
+    },
+    "description": "Sachez avant de partir. État des ponts et prédictions en temps réel pour St. Catharines, le canal Welland, Port Colborne et Montréal. Ne restez plus jamais coincé à un pont fermé.",
+    "openGraph": {
+      "title": "Bridge Up - État des ponts en temps réel",
+      "description": "État des ponts en temps réel pour St. Catharines, Welland, Port Colborne et Montréal. Les prédictions vous indiquent quand les ponts rouvrent."
+    }
+  },
+  "nav": {
+    "home": "Accueil",
+    "bridges": "Ponts",
+    "pricing": "Tarifs",
+    "about": "À propos",
+    "getApp": "App",
+    "getTheApp": "Obtenir l'app",
+    "comingSoon": "Bientôt",
+    "buyMeCoffee": "M'offrir un café",
+    "coffeeTooltip": "Vous aimez Bridge Up? Offrez-moi un café!",
+    "toggleMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "footer": {
+    "brandDescription": "État des ponts en temps réel pour la région de la Voie maritime du Saint-Laurent.",
+    "product": "Produit",
+    "more": "Plus",
+    "legal": "Légal",
+    "home": "Accueil",
+    "bridges": "Ponts",
+    "pricing": "Tarifs",
+    "download": "Télécharger",
+    "about": "À propos",
+    "contact": "Contact",
+    "buyMeCoffee": "M'offrir un café",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfService": "Conditions d'utilisation",
+    "monitoringBridges": "Surveillance des ponts à :",
+    "copyright": "Bridge Up. Tous droits réservés.",
+    "madeWith": "Fait avec 💙 à St. Catharines"
+  },
+  "hero": {
+    "eyebrow": "Suivi de 15 ponts en temps réel",
+    "headline": "N'attendez plus jamais à un",
+    "headlineHighlight": "pont fermé.",
+    "subheadline": "État des ponts et prédictions de réouverture en temps réel avec support CarPlay. Conçu pour St. Catharines, Welland, Port Colborne et Montréal.",
+    "badgeFree": "Toujours gratuit",
+    "badgePlatform": "iOS et CarPlay",
+    "badgeLanguages": "Anglais, espagnol et français",
+    "ctaButton": "Bientôt sur iOS",
+    "appScreenshotAlt": "L'application Bridge Up montrant l'état des ponts en temps réel"
+  },
+  "bridgeStatus": {
+    "open": "Ouvert",
+    "closed": "Fermé",
+    "closing": "Fermeture",
+    "closingSoon": "Fermeture imminente",
+    "opening": "Ouverture",
+    "construction": "Travaux",
+    "unknown": "Inconnu",
+    "clearToCross": "Passage libre",
+    "shallNotPass": "Passage interdit",
+    "closesIn": "Ferme dans {min}-{max} min",
+    "opensIn": "Ouvre dans {min}-{max} min",
+    "closingIn": "Fermeture dans {min}-{max} min",
+    "openingSoon": "Ouverture imminente",
+    "prepareForClosure": "Préparez-vous à la fermeture",
+    "maintenanceInProgress": "Maintenance en cours",
+    "statusUnavailable": "État indisponible"
+  },
+  "features": {
+    "smartTracking": {
+      "tag": "Suivi intelligent des ponts",
+      "heading": "L'état en temps réel rencontre",
+      "headingHighlight": "l'intelligence prédictive",
+      "leftBox": {
+        "title": "Premier informé. Premier passé.",
+        "description": "Recevez des notifications instantanées dès qu'un pont change d'état. Soyez au courant des fermetures avant de partir de chez vous."
+      },
+      "rightBox": {
+        "title": "Sachez avant d'attendre.",
+        "description": "Des prédictions puissantes basées sur plus de 300 fermetures analysées par pont. Obtenez des estimations de réouverture avec des intervalles de confiance de 95 % — pour décider si vous attendez ou prenez un itinéraire alternatif."
+      },
+      "listViewAlt": "Vue liste de Bridge Up montrant l'état de tous les ponts",
+      "detailOpenAlt": "Détail du pont montrant les statistiques d'un pont ouvert",
+      "detailClosedAlt": "Détail du pont montrant la prédiction de réouverture"
+    },
+    "builtForDrivers": {
+      "tag": "Conçu pour les conducteurs",
+      "heading": "Info visible en un coup d'œil en conduisant",
+      "description": "Le support CarPlay vous permet de vérifier l'état des ponts sans quitter la route des yeux. La vue carte affiche tous les ponts d'un coup d'œil avec des marqueurs colorés.",
+      "interactiveMap": {
+        "title": "Carte interactive",
+        "description": "Voyez les 15 ponts avec des marqueurs de statut colorés. Touchez n'importe quel marqueur pour tous les détails."
+      },
+      "carPlayReady": {
+        "title": "Compatible CarPlay",
+        "description": "Support CarPlay complet pour un état des ponts sécuritaire et visible en conduisant."
+      },
+      "locationAware": {
+        "title": "Géolocalisation",
+        "description": "Triez les ponts par distance ou affichez uniquement ceux à proximité. Votre position reste privée."
+      }
+    },
+    "coverageArea": {
+      "tag": "Zone de couverture",
+      "heading": "15 ponts dans 5 régions",
+      "description": "Couverture complète des ponts de la région de la Voie maritime du Saint-Laurent.",
+      "viewAllBridges": "Voir tous les ponts sur la carte"
+    }
+  },
+  "download": {
+    "heading": "Traversez en toute tranquillité",
+    "description": "État des ponts en temps réel, prédictions de réouverture et support CarPlay. Toutes les fonctionnalités incluses, entièrement gratuit.",
+    "ctaButton": "Bientôt sur l'App Store",
+    "requirements": "Nécessite iOS 16.0 ou ultérieur • Compatible CarPlay"
+  },
+  "about": {
+    "title": "À propos",
+    "metaDescription": "L'histoire derrière Bridge Up - une application d'état des ponts en temps réel pour la région de la Voie maritime du Saint-Laurent.",
+    "heading": "Le pont était levé.",
+    "story": {
+      "paragraph1": "Si vous habitez près du canal Welland, vous connaissez la frustration. Vous êtes en retard, vous arrivez au pont, et le pont est levé. Aucune idée de combien de temps vous allez attendre.",
+      "paragraph2": "Le site officiel de la Voie maritime existe, mais il est maladroit et pas pratique à consulter en conduisant. Ils promettent une refonte depuis des années. Ils ont finalement ajouté l'intégration Google et Waze, mais en pratique c'est lent et peu fiable. Je voulais quelque chose que je pourrais vraiment consulter d'un coup d'œil sur CarPlay.",
+      "paragraph3": "Alors j'ai créé Bridge Up. Une application simple qui fait une seule chose bien : vous dit si le pont est ouvert avant d'y arriver.",
+      "paragraph4": "Bridge Up est un travail en cours. Vous avez des idées ou des commentaires? Contactez-moi par",
+      "email": "courriel",
+      "or": "ou",
+      "linkedin": "LinkedIn",
+      "paragraph4End": ". Et si vous trouvez ça utile, vous pouvez",
+      "buyMeCoffee": "m'offrir un café"
+    },
+    "stats": {
+      "bridgesMonitored": "Ponts surveillés",
+      "regionsCovered": "Régions couvertes",
+      "closuresAnalyzed": "Fermetures analysées par pont",
+      "predictionConfidence": "Confiance des prédictions"
+    }
+  },
+  "pricing": {
+    "title": "Tarifs",
+    "metaDescription": "Bridge Up est entièrement gratuit avec toutes les fonctionnalités incluses. Pas d'abonnements, pas de contenu payant.",
+    "tag": "Tarifs",
+    "heading": "Entièrement",
+    "headingHighlight": "gratuit",
+    "subheading": "Toutes les fonctionnalités. Pas d'abonnements. Pas de contenu payant.",
+    "card": {
+      "badge": "Tout est inclus",
+      "price": "0 $",
+      "priceDescription": "pour toujours",
+      "description": "Bridge Up est gratuit pour tous. Toutes les fonctionnalités, tous les ponts, sans limites.",
+      "whatsIncluded": "Ce qui est inclus"
+    },
+    "features": {
+      "realTimeStatus": "État en temps réel",
+      "bridgesTracked": "15 ponts suivis",
+      "interactiveMap": "Carte interactive",
+      "predictions": "Prédictions",
+      "carPlaySupport": "Support CarPlay",
+      "sortByDistance": "Tri par distance",
+      "historicalStats": "Statistiques historiques",
+      "multilingual": "Multilingue"
+    },
+    "support": {
+      "heading": "Envie de soutenir Bridge Up?",
+      "description": "C'est un projet personnel, pas une startup. Si vous trouvez Bridge Up utile et voulez aider à couvrir les coûts de fonctionnement (frais développeur Apple, hébergement serveur, etc.), vous pouvez m'offrir un café",
+      "button": "M'offrir un café"
+    },
+    "faq": {
+      "heading": "Questions fréquemment posées",
+      "q1": "Bridge Up est-il vraiment gratuit?",
+      "a1": "Oui! Bridge Up est entièrement gratuit avec toutes les fonctionnalités débloquées. Pas d'abonnements, pas d'achats intégrés, pas de contenu payant.",
+      "q2": "Pourquoi est-ce gratuit?",
+      "a2": "Bridge Up est un projet passion. Je l'ai créé parce que j'en avais marre de rester coincé aux ponts moi-même. Mes coûts sont minimes, alors je préfère le rendre gratuit et utile pour tout le monde.",
+      "q3": "Quelle est la précision des prédictions?",
+      "a3": "Nos prédictions utilisent des intervalles de confiance de 95% basés sur les 300 fermetures les plus récentes pour chaque pont. La plupart des prédictions sont précises à quelques minutes près. Gardez à l'esprit que ce n'est qu'une estimation basée sur les données de fermeture passées, ce qui signifie qu'elle peut parfois être très inexacte.",
+      "q4": "Supportez-vous Android?",
+      "a4": "Actuellement, Bridge Up est uniquement sur iOS, avec un support CarPlay complet. Le support Android est prévu pour un développement futur."
+    }
+  },
+  "bridges": {
+    "title": "Carte des ponts",
+    "metaDescription": "Carte interactive des 15 ponts surveillés à St. Catharines, Port Colborne, Montréal, Salaberry-de-Valleyfield et Kahnawake.",
+    "loadingMap": "Chargement de la carte..."
+  },
+  "legal": {
+    "englishOnlyNotice": "Ce document est disponible en anglais uniquement pour des raisons de précision juridique.",
+    "viewInEnglish": "Voir en anglais",
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "metaDescription": "Politique de confidentialité de Bridge Up - comment nous gérons vos données et protégeons votre vie privée."
+    },
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "metaDescription": "Conditions d'utilisation de Bridge Up - l'accord légal entre vous et Bridge Up."
+    }
+  }
+}

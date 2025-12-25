@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useBridges } from "@/lib/useBridges";
 import { Bridge } from "@/lib/bridges";
 
@@ -100,77 +101,79 @@ function getStatusBg(status: string): string {
   }
 }
 
-// Status label for title
-function getStatusLabel(status: string): string {
-  switch (status) {
-    case "open": return "Open";
-    case "closed": return "Closed";
-    case "closing": return "Closing";
-    case "closingSoon": return "Closing Soon";
-    case "opening": return "Opening";
-    case "construction": return "Work";
-    default: return "Unknown";
-  }
-}
-
-// Generate subtitle based on status and prediction
-function getSubtitle(bridge: Bridge): string {
-  const prediction = bridge.prediction;
-
-  if (bridge.status === "open") {
-    if (prediction?.closesIn) {
-      return `Closes in ${prediction.closesIn.min}-${prediction.closesIn.max} min`;
-    }
-    return "Clear to cross";
-  }
-
-  if (bridge.status === "closed" || bridge.status === "closing") {
-    if (prediction?.opensIn) {
-      return `Opens in ${prediction.opensIn.min}-${prediction.opensIn.max} min`;
-    }
-    return "You shall not pass";
-  }
-
-  if (bridge.status === "closingSoon") {
-    if (prediction?.closesIn) {
-      return `Closing in ${prediction.closesIn.min}-${prediction.closesIn.max} min`;
-    }
-    return "Prepare for closure";
-  }
-
-  if (bridge.status === "opening") {
-    if (prediction?.opensIn) {
-      return `Opens in ${prediction.opensIn.min}-${prediction.opensIn.max} min`;
-    }
-    return "Opening soon";
-  }
-
-  if (bridge.status === "construction") {
-    return "Maintenance in progress";
-  }
-
-  return "Status unavailable";
-}
-
-// Fallback static cards for loading state
-const fallbackCards = {
-  left: [
-    { id: "f1", name: "Highway 20", status: "open", subtitle: "Clear to cross" },
-    { id: "f2", name: "Carlton St", status: "closed", subtitle: "You shall not pass" },
-    { id: "f3", name: "Glendale Ave", status: "closingSoon", subtitle: "Closes in 3-7 min" },
-    { id: "f4", name: "Queenston St", status: "open", subtitle: "Clear to cross" },
-    { id: "f5", name: "Lakeshore Rd", status: "open", subtitle: "Clear to cross" },
-  ],
-  right: [
-    { id: "f6", name: "Victoria Upstream", status: "open", subtitle: "Clear to cross" },
-    { id: "f7", name: "Victoria Downstream", status: "closed", subtitle: "You shall not pass" },
-    { id: "f8", name: "Ste-Catherine", status: "open", subtitle: "Clear to cross" },
-    { id: "f9", name: "Clarence St", status: "open", subtitle: "Clear to cross" },
-  ],
-};
-
 export function Hero() {
   const { bridges } = useBridges();
+  const t = useTranslations("hero");
+  const tStatus = useTranslations("bridgeStatus");
+
+  // Status label for title
+  function getStatusLabel(status: string): string {
+    switch (status) {
+      case "open": return tStatus("open");
+      case "closed": return tStatus("closed");
+      case "closing": return tStatus("closing");
+      case "closingSoon": return tStatus("closingSoon");
+      case "opening": return tStatus("opening");
+      case "construction": return tStatus("construction");
+      default: return tStatus("unknown");
+    }
+  }
+
+  // Generate subtitle based on status and prediction
+  function getSubtitle(bridge: Bridge): string {
+    const prediction = bridge.prediction;
+
+    if (bridge.status === "open") {
+      if (prediction?.closesIn) {
+        return tStatus("closesIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
+      }
+      return tStatus("clearToCross");
+    }
+
+    if (bridge.status === "closed" || bridge.status === "closing") {
+      if (prediction?.opensIn) {
+        return tStatus("opensIn", { min: prediction.opensIn.min, max: prediction.opensIn.max });
+      }
+      return tStatus("shallNotPass");
+    }
+
+    if (bridge.status === "closingSoon") {
+      if (prediction?.closesIn) {
+        return tStatus("closingIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
+      }
+      return tStatus("prepareForClosure");
+    }
+
+    if (bridge.status === "opening") {
+      if (prediction?.opensIn) {
+        return tStatus("opensIn", { min: prediction.opensIn.min, max: prediction.opensIn.max });
+      }
+      return tStatus("openingSoon");
+    }
+
+    if (bridge.status === "construction") {
+      return tStatus("maintenanceInProgress");
+    }
+
+    return tStatus("statusUnavailable");
+  }
+
+  // Fallback static cards for loading state
+  const fallbackCards = {
+    left: [
+      { id: "f1", name: "Highway 20", status: "open", subtitle: tStatus("clearToCross") },
+      { id: "f2", name: "Carlton St", status: "closed", subtitle: tStatus("shallNotPass") },
+      { id: "f3", name: "Glendale Ave", status: "closingSoon", subtitle: tStatus("closesIn", { min: 3, max: 7 }) },
+      { id: "f4", name: "Queenston St", status: "open", subtitle: tStatus("clearToCross") },
+      { id: "f5", name: "Lakeshore Rd", status: "open", subtitle: tStatus("clearToCross") },
+    ],
+    right: [
+      { id: "f6", name: "Victoria Upstream", status: "open", subtitle: tStatus("clearToCross") },
+      { id: "f7", name: "Victoria Downstream", status: "closed", subtitle: tStatus("shallNotPass") },
+      { id: "f8", name: "Ste-Catherine", status: "open", subtitle: tStatus("clearToCross") },
+      { id: "f9", name: "Clarence St", status: "open", subtitle: tStatus("clearToCross") },
+    ],
+  };
 
   // Filter bridges by region
   const stCatharinesBridges = bridges.filter(b => b.regionId === "st-catharines");
@@ -236,7 +239,7 @@ export function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--status-open)] opacity-75"></span>
               <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--status-open)]"></span>
             </span>
-            <span className="text-sm font-medium text-gray-700">Now tracking 15 bridges in real-time</span>
+            <span className="text-sm font-medium text-gray-700">{t("eyebrow")}</span>
           </motion.div>
 
           {/* Main Headline */}
@@ -244,9 +247,9 @@ export function Hero() {
             variants={item}
             className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-[var(--foreground)]"
           >
-            Never wait at a closed
+            {t("headline")}
             <br />
-            <span className="text-[var(--primary)]">bridge again.</span>
+            <span className="text-[var(--primary)]">{t("headlineHighlight")}</span>
           </motion.h1>
 
           {/* Subheadline */}
@@ -254,22 +257,22 @@ export function Hero() {
             variants={item}
             className="mt-6 text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
           >
-            Real-time bridge status and reopening predictions with CarPlay support. Built for St. Catharines, Welland, Port Colborne, and Montreal.
+            {t("subheadline")}
           </motion.p>
 
           {/* Badges */}
           <motion.div variants={item} className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
               <span className="text-base">🎉</span>
-              <span className="text-sm font-medium text-gray-700">Always Free</span>
+              <span className="text-sm font-medium text-gray-700">{t("badgeFree")}</span>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
               <span className="text-base">📱</span>
-              <span className="text-sm font-medium text-gray-700">iOS & CarPlay</span>
+              <span className="text-sm font-medium text-gray-700">{t("badgePlatform")}</span>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 px-4 py-2 shadow-sm">
               <span className="text-base">🌎</span>
-              <span className="text-sm font-medium text-gray-700">English, Spanish, and French</span>
+              <span className="text-sm font-medium text-gray-700">{t("badgeLanguages")}</span>
             </div>
           </motion.div>
 
@@ -281,7 +284,7 @@ export function Hero() {
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
               </svg>
-              Coming Soon on iOS
+              {t("ctaButton")}
             </div>
           </motion.div>
         </motion.div>
@@ -396,7 +399,7 @@ export function Hero() {
                 <div className="h-full w-full rounded-[2.6rem] overflow-hidden relative">
                   <Image
                     src="/screenshots/home.png"
-                    alt="Bridge Up app showing real-time bridge status"
+                    alt={t("appScreenshotAlt")}
                     fill
                     sizes="(max-width: 640px) 252px, (max-width: 1024px) 288px, 324px"
                     className="object-cover object-top"

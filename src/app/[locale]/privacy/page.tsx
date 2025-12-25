@@ -1,12 +1,29 @@
 import { Header, Footer } from "@/components/layout";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
+import { Link } from "@/i18n/navigation";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Bridge Up privacy policy. Your location data stays on your device. We collect minimal analytics and never sell your information.",
+type Props = {
+  params: Promise<{ locale: string }>;
 };
 
-export default function PrivacyPage() {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "legal" });
+
+  return {
+    title: t("privacy.title"),
+    description: t("privacy.metaDescription"),
+  };
+}
+
+export default async function PrivacyPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "legal" });
+
+  const showLanguageNotice = locale !== "en";
+
   return (
     <>
       <Header />
@@ -22,6 +39,18 @@ export default function PrivacyPage() {
 
         <div className="bg-white py-16 md:py-24">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+            {/* Language Notice for non-English users */}
+            {showLanguageNotice && (
+              <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-blue-800 text-sm">
+                  {t("englishOnlyNotice")}{" "}
+                  <Link href="/privacy" locale="en" className="text-blue-600 hover:underline font-medium">
+                    {t("viewInEnglish")}
+                  </Link>
+                </p>
+              </div>
+            )}
+
             {/* Sections */}
             <div className="space-y-12">
               {/* Summary */}

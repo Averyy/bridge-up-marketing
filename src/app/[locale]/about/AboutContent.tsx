@@ -2,8 +2,11 @@
 
 import { Header, Footer } from "@/components/layout";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export default function AboutContent() {
+  const t = useTranslations("about");
+
   return (
     <>
       <Header />
@@ -20,7 +23,7 @@ export default function AboutContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              The bridge was up.
+              {t("heading")}
             </motion.h1>
           </div>
         </section>
@@ -36,47 +39,42 @@ export default function AboutContent() {
               transition={{ duration: 0.6 }}
             >
               <p className="text-lg text-[var(--dark-text-muted)] leading-relaxed">
-                If you live near the Welland Canal, you know the frustration. You&apos;re running late,
-                you hit the bridge, and the bridge is up. No idea how long you&apos;ll be waiting.
+                {t("story.paragraph1")}
               </p>
 
               <p className="text-lg text-[var(--dark-text-muted)] leading-relaxed">
-                The official Seaway website exists, but it&apos;s clunky and not something you can
-                safely check while driving. They&apos;ve been promising a redesign for years. They
-                eventually added Google and Waze integration, but in practice it&apos;s slow and
-                unreliable. I wanted something I could actually glance at on CarPlay.
+                {t("story.paragraph2")}
               </p>
 
               <p className="text-lg text-[var(--dark-text-muted)] leading-relaxed">
-                So I built Bridge Up. A simple app that does one thing well: tells you if the bridge
-                is open before you get there.
+                {t("story.paragraph3")}
               </p>
 
               <p className="text-lg text-[var(--dark-text-muted)] leading-relaxed">
-                Bridge Up is a work in progress. Got ideas or feedback? Reach out via{" "}
+                {t("story.paragraph4")}{" "}
                 <a
                   href="mailto:support@bridgeup.app"
                   className="text-[var(--primary)] hover:underline"
                 >
-                  email
+                  {t("story.email")}
                 </a>
-                {" "}or{" "}
+                {" "}{t("story.or")}{" "}
                 <a
                   href="https://www.linkedin.com/in/avery-levitt/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[var(--primary)] hover:underline"
                 >
-                  LinkedIn
+                  {t("story.linkedin")}
                 </a>
-                . And if you find it useful, you can{" "}
+                {t("story.paragraph4End")}{" "}
                 <a
                   href="https://buymeacoffee.com/averyy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[var(--primary)] hover:underline"
                 >
-                  buy me a coffee ☕
+                  {t("story.buyMeCoffee")}
                 </a>
               </p>
             </motion.div>
@@ -88,10 +86,10 @@ export default function AboutContent() {
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
               {[
-                { value: "15", label: "Bridges monitored" },
-                { value: "5", label: "Regions covered" },
-                { value: "300+", label: "Closures analyzed per bridge" },
-                { value: "95%", label: "Prediction confidence" },
+                { value: "15", label: t("stats.bridgesMonitored") },
+                { value: "5", label: t("stats.regionsCovered") },
+                { value: "300+", label: t("stats.closuresAnalyzed") },
+                { value: "95%", label: t("stats.predictionConfidence") },
               ].map((stat, i) => (
                 <motion.div
                   key={i}

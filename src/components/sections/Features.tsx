@@ -2,9 +2,13 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { RegionCards } from "@/components/RegionCards";
 
 export function Features() {
+  const t = useTranslations("features");
+
   return (
     <>
       {/* Two Feature Boxes Section */}
@@ -19,12 +23,12 @@ export function Features() {
             transition={{ duration: 0.6 }}
           >
             <span className="text-[var(--primary)] font-medium text-sm uppercase tracking-wider">
-              Smart Bridge Tracking
+              {t("smartTracking.tag")}
             </span>
             <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-              Real-time status meets{" "}
+              {t("smartTracking.heading")}{" "}
               <span className="bg-gradient-to-r from-[var(--primary)] to-cyan-400 bg-clip-text text-transparent">
-                predictive intelligence
+                {t("smartTracking.headingHighlight")}
               </span>
             </h2>
           </motion.div>
@@ -45,10 +49,9 @@ export function Features() {
               {/* Content */}
               <div className="relative p-8 lg:p-10 pb-0">
                 <p className="text-lg lg:text-xl text-white leading-relaxed max-w-md">
-                  <span className="font-semibold">First to know. First to go.</span>{" "}
+                  <span className="font-semibold">{t("smartTracking.leftBox.title")}</span>{" "}
                   <span className="text-white/70">
-                    Get instant push notifications the moment any bridge changes status.
-                    Know about closures before you leave home.
+                    {t("smartTracking.leftBox.description")}
                   </span>
                 </p>
               </div>
@@ -61,7 +64,7 @@ export function Features() {
                     <div className="h-full w-full rounded-t-[2.2rem] overflow-hidden relative">
                       <Image
                         src="/screenshots/list.png"
-                        alt="Bridge Up list view showing all bridge statuses"
+                        alt={t("smartTracking.listViewAlt")}
                         fill
                         sizes="(max-width: 1024px) 260px, 300px"
                         className="object-cover object-top"
@@ -86,11 +89,9 @@ export function Features() {
               {/* Content */}
               <div className="relative p-8 lg:p-10 pb-4">
                 <p className="text-lg lg:text-xl text-white leading-relaxed">
-                  <span className="font-semibold">Know before you wait.</span>{" "}
+                  <span className="font-semibold">{t("smartTracking.rightBox.title")}</span>{" "}
                   <span className="text-white/70">
-                    Powerful predictions based on 300+ analyzed closures per bridge.
-                    Get estimated reopening times with 95% confidence intervals—so you
-                    can decide whether to wait or take an alternate route.
+                    {t("smartTracking.rightBox.description")}
                   </span>
                 </p>
               </div>
@@ -109,7 +110,7 @@ export function Features() {
                   <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                     <Image
                       src="/screenshots/detail-open.png"
-                      alt="Bridge detail showing statistics for an open bridge"
+                      alt={t("smartTracking.detailOpenAlt")}
                       width={260}
                       height={560}
                       className="w-full h-auto"
@@ -129,7 +130,7 @@ export function Features() {
                   <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                     <Image
                       src="/screenshots/detail-closed.png"
-                      alt="Bridge detail showing reopening prediction"
+                      alt={t("smartTracking.detailClosedAlt")}
                       width={260}
                       height={560}
                       className="w-full h-auto"
@@ -155,14 +156,13 @@ export function Features() {
             transition={{ duration: 0.6 }}
           >
             <span className="text-[var(--primary)] font-medium text-sm uppercase tracking-wider">
-              Built for Drivers
+              {t("builtForDrivers.tag")}
             </span>
             <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--foreground)] leading-tight">
-              Glanceable info while you drive
+              {t("builtForDrivers.heading")}
             </h2>
             <p className="mt-6 text-lg text-gray-600">
-              CarPlay support means you can check bridge status without taking your eyes off the road.
-              The map view shows all bridges at a glance with color-coded markers.
+              {t("builtForDrivers.description")}
             </p>
           </motion.div>
 
@@ -180,8 +180,8 @@ export function Features() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
                   </svg>
                 ),
-                title: "Interactive Map",
-                desc: "See all 15 bridges with color-coded status markers. Tap any marker for full details.",
+                title: t("builtForDrivers.interactiveMap.title"),
+                desc: t("builtForDrivers.interactiveMap.description"),
                 gradient: "from-emerald-500 to-teal-600",
                 glowColor: "emerald",
               },
@@ -191,8 +191,8 @@ export function Features() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                   </svg>
                 ),
-                title: "CarPlay Ready",
-                desc: "Full CarPlay support for safe, glanceable bridge status while driving.",
+                title: t("builtForDrivers.carPlayReady.title"),
+                desc: t("builtForDrivers.carPlayReady.description"),
                 gradient: "from-blue-500 to-indigo-600",
                 glowColor: "blue",
               },
@@ -203,8 +203,8 @@ export function Features() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
                   </svg>
                 ),
-                title: "Location Aware",
-                desc: "Sort bridges by distance or show only nearby ones. Your location stays private.",
+                title: t("builtForDrivers.locationAware.title"),
+                desc: t("builtForDrivers.locationAware.description"),
                 gradient: "from-violet-500 to-purple-600",
                 glowColor: "violet",
               },
@@ -246,26 +246,26 @@ export function Features() {
             transition={{ duration: 0.6 }}
           >
             <span className="text-[var(--primary)] font-medium text-sm uppercase tracking-wider">
-              Coverage Area
+              {t("coverageArea.tag")}
             </span>
             <h2 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--foreground)] leading-tight">
-              15 bridges across 5 regions
+              {t("coverageArea.heading")}
             </h2>
             <p className="mt-6 text-lg text-gray-600">
-              Complete coverage of bridges in the St. Lawrence Seaway region.
+              {t("coverageArea.description")}
             </p>
-            <a
+            <Link
               href="/bridges"
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] px-6 py-3 text-white font-medium hover:bg-gray-800 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
               </svg>
-              View all bridges on map
+              {t("coverageArea.viewAllBridges")}
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
-            </a>
+            </Link>
           </motion.div>
 
           <RegionCards variant="light" layout="masonry" />

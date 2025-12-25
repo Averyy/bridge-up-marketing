@@ -12,13 +12,14 @@ Never wait at a closed bridge again. Bridge Up provides real-time bridge status 
 - **Predictive Reopening Times** - Predictions based on 300+ analyzed closures per bridge with 95% confidence intervals
 - **CarPlay Support** - Glanceable bridge status while driving
 - **Interactive Map** - See all 15 bridges across 5 regions at a glance
+- **Multilingual** - Full support for English, French, and Spanish
 - **Always Free** - No subscriptions, no paywalls
 
 ### Coverage Area
 
 - **St. Catharines** - Highway 20, Glendale Ave, Queenston St, Lakeshore Rd, Carlton St
 - **Port Colborne** - Clarence St, Main St, Mellanby Ave
-- **Montreal** - Ste-Catherine, Victoria Downstream, Victoria Upstream
+- **Montréal** - Ste-Catherine, Victoria Downstream, Victoria Upstream
 - **Beauharnois** - Larocque Bridge, St-Louis-de-Gonzague
 - **Kahnawake** - CP Railway Bridge 7A, CP Railway Bridge 7B
 
@@ -29,6 +30,7 @@ Never wait at a closed bridge again. Bridge Up provides real-time bridge status 
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 - [Framer Motion](https://www.framer.com/motion/) - Animations
 - [Mapbox GL](https://www.mapbox.com/) - Interactive maps
+- [next-intl](https://next-intl.dev/) - Internationalization (EN/FR/ES)
 - [Vercel Analytics](https://vercel.com/analytics) - Web analytics & speed insights
 
 ## Development
@@ -51,6 +53,19 @@ Create a `.env.local` file:
 NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token
 NEXT_PUBLIC_MAPBOX_STYLE=mapbox://styles/mapbox/dark-v11
 ```
+
+### Internationalization
+
+The site supports English, French, and Spanish. Translation files are in `messages/`:
+
+- `messages/en.json` - English (default)
+- `messages/fr.json` - French
+- `messages/es.json` - Spanish
+
+Routes use locale prefixes for non-English languages:
+- English: `/`, `/about`, `/bridges`
+- French: `/fr`, `/fr/about`, `/fr/bridges`
+- Spanish: `/es`, `/es/about`, `/es/bridges`
 
 ## Build
 

@@ -1,33 +1,38 @@
-import Link from "next/link";
-import Image from "next/image";
+"use client";
 
-const footerLinks = {
-  product: [
-    { href: "/", label: "Home" },
-    { href: "/bridges", label: "Bridges" },
-    { href: "/pricing", label: "Pricing" },
-    { href: "/#download", label: "Download" },
-  ],
-  more: [
-    { href: "/about", label: "About" },
-    { href: "mailto:support@bridgeup.app", label: "Contact" },
-    { href: "https://buymeacoffee.com/averyy", label: "Buy me a coffee", external: true },
-  ],
-  legal: [
-    { href: "/privacy", label: "Privacy Policy" },
-    { href: "/terms", label: "Terms of Service" },
-  ],
-};
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 const regions = [
   "St. Catharines",
   "Port Colborne",
-  "Montreal South Shore",
+  "Montréal South Shore",
   "Salaberry-de-Valleyfield",
   "Kahnawake",
 ];
 
 export function Footer() {
+  const t = useTranslations("footer");
+
+  const footerLinks = {
+    product: [
+      { href: "/" as const, label: t("home") },
+      { href: "/bridges" as const, label: t("bridges") },
+      { href: "/pricing" as const, label: t("pricing") },
+      { href: "/#download", label: t("download"), isAnchor: true },
+    ],
+    more: [
+      { href: "/about" as const, label: t("about") },
+      { href: "mailto:support@bridgeup.app", label: t("contact"), external: true },
+      { href: "https://buymeacoffee.com/averyy", label: t("buyMeCoffee"), external: true },
+    ],
+    legal: [
+      { href: "/privacy" as const, label: t("privacyPolicy") },
+      { href: "/terms" as const, label: t("termsOfService") },
+    ],
+  };
+
   return (
     <footer className="bg-[var(--dark-bg)] text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
@@ -55,22 +60,31 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm text-[var(--dark-text-muted)] max-w-xs">
-              Real-time bridge status for the St. Lawrence Seaway region.
+              {t("brandDescription")}
             </p>
           </div>
 
           {/* Product Links */}
           <div>
-            <h3 className="font-semibold text-sm mb-4">Product</h3>
+            <h3 className="font-semibold text-sm mb-4">{t("product")}</h3>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
-                  >
-                    {link.label}
-                  </Link>
+                  {link.isAnchor ? (
+                    <a
+                      href={link.href}
+                      className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href as "/" | "/bridges" | "/pricing"}
+                      className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -78,7 +92,7 @@ export function Footer() {
 
           {/* More Links */}
           <div>
-            <h3 className="font-semibold text-sm mb-4">More</h3>
+            <h3 className="font-semibold text-sm mb-4">{t("more")}</h3>
             <ul className="space-y-3">
               {footerLinks.more.map((link) => (
                 <li key={link.href}>
@@ -93,7 +107,7 @@ export function Footer() {
                     </a>
                   ) : (
                     <Link
-                      href={link.href}
+                      href={link.href as "/about"}
                       className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
                     >
                       {link.label}
@@ -106,7 +120,7 @@ export function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h3 className="font-semibold text-sm mb-4">Legal</h3>
+            <h3 className="font-semibold text-sm mb-4">{t("legal")}</h3>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
@@ -125,7 +139,7 @@ export function Footer() {
         {/* Regions */}
         <div className="mt-12 pt-8 border-t border-white/10">
           <p className="text-sm text-[var(--dark-text-muted)] mb-3">
-            Monitoring bridges in:
+            {t("monitoringBridges")}
           </p>
           <div className="flex flex-wrap gap-2">
             {regions.map((region) => (
@@ -142,7 +156,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-[var(--dark-text-muted)]">
-            &copy; {new Date().getFullYear()} Bridge Up. All rights reserved.
+            &copy; {new Date().getFullYear()} {t("copyright")}
           </p>
           <a
             href="https://www.linkedin.com/in/avery-levitt/"
@@ -150,7 +164,7 @@ export function Footer() {
             rel="noopener noreferrer"
             className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
           >
-            Made with 💙 in St. Catharines
+            {t("madeWith")}
           </a>
         </div>
       </div>

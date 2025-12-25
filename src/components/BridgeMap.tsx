@@ -189,7 +189,8 @@ export default function BridgeMap({ focusedRegion }: BridgeMapProps) {
     const regionBridges = bridges.filter((b: Bridge) => b.regionId === focusedRegion);
     if (regionBridges.length === 0) return;
 
-    // Close any open popup
+    // Close any open popup - intentional: popup should close when switching regions
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedBridge(null);
 
     // Calculate bounds for the region

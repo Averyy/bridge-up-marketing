@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/layout";
 import { RegionCards } from "@/components/RegionCards";
 import { useBridges } from "@/lib/useBridges";
+import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 
 // Dynamically import the map component to avoid SSR issues
@@ -105,6 +106,8 @@ function BridgesMapContent() {
 }
 
 export default function BridgesContent() {
+  const t = useTranslations("bridges");
+
   return (
     <>
       <Header forceScrolled />
@@ -112,7 +115,7 @@ export default function BridgesContent() {
         <Suspense
           fallback={
             <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center">
-              <div className="text-white/60">Loading map...</div>
+              <div className="text-white/60">{t("loadingMap")}</div>
             </div>
           }
         >

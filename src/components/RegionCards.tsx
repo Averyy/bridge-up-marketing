@@ -2,51 +2,40 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useBridges } from "@/lib/useBridges";
 import { Region } from "@/lib/bridges";
 
 interface StatusStyle {
   bg: string;
   text: string;
-  label: string;
 }
 
-function getStatusStyle(status: string): StatusStyle {
-  switch (status) {
-    case "open":
-      return { bg: "bg-green-500/15", text: "text-green-600", label: "Open" };
-    case "closed":
-      return { bg: "bg-red-500/15", text: "text-red-600", label: "Closed" };
-    case "closing":
-      return { bg: "bg-red-500/15", text: "text-red-600", label: "Closing" };
-    case "closingSoon":
-      return { bg: "bg-amber-500/15", text: "text-amber-600", label: "Closing Soon" };
-    case "opening":
-      return { bg: "bg-yellow-500/15", text: "text-yellow-600", label: "Opening" };
-    case "construction":
-      return { bg: "bg-red-500/15", text: "text-red-600", label: "Work" };
-    default:
-      return { bg: "bg-gray-500/15", text: "text-gray-600", label: "Unknown" };
-  }
-}
-
-function getStatusStyleGlass(status: string): StatusStyle {
-  switch (status) {
-    case "open":
-      return { bg: "bg-green-500/20", text: "text-green-400", label: "Open" };
-    case "closed":
-      return { bg: "bg-red-500/20", text: "text-red-400", label: "Closed" };
-    case "closing":
-      return { bg: "bg-red-500/20", text: "text-red-400", label: "Closing" };
-    case "closingSoon":
-      return { bg: "bg-amber-500/20", text: "text-amber-400", label: "Closing Soon" };
-    case "opening":
-      return { bg: "bg-yellow-500/20", text: "text-yellow-400", label: "Opening" };
-    case "construction":
-      return { bg: "bg-red-500/20", text: "text-red-400", label: "Work" };
-    default:
-      return { bg: "bg-gray-500/20", text: "text-gray-400", label: "Unknown" };
-  }
+function getStatusColors(status: string, isGlass: boolean): StatusStyle {
+  const colors = {
+    open: isGlass
+      ? { bg: "bg-green-500/20", text: "text-green-400" }
+      : { bg: "bg-green-500/15", text: "text-green-600" },
+    closed: isGlass
+      ? { bg: "bg-red-500/20", text: "text-red-400" }
+      : { bg: "bg-red-500/15", text: "text-red-600" },
+    closing: isGlass
+      ? { bg: "bg-red-500/20", text: "text-red-400" }
+      : { bg: "bg-red-500/15", text: "text-red-600" },
+    closingSoon: isGlass
+      ? { bg: "bg-amber-500/20", text: "text-amber-400" }
+      : { bg: "bg-amber-500/15", text: "text-amber-600" },
+    opening: isGlass
+      ? { bg: "bg-yellow-500/20", text: "text-yellow-400" }
+      : { bg: "bg-yellow-500/15", text: "text-yellow-600" },
+    construction: isGlass
+      ? { bg: "bg-red-500/20", text: "text-red-400" }
+      : { bg: "bg-red-500/15", text: "text-red-600" },
+    unknown: isGlass
+      ? { bg: "bg-gray-500/20", text: "text-gray-400" }
+      : { bg: "bg-gray-500/15", text: "text-gray-600" },
+  };
+  return colors[status as keyof typeof colors] || colors.unknown;
 }
 
 interface RegionCardsProps {
@@ -66,8 +55,22 @@ export function RegionCards({
   const isGlass = variant === "glass";
   const isMasonry = layout === "masonry";
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const t = useTranslations("bridgeStatus");
 
   const { regions, loading } = useBridges();
+
+  // Get translated status label
+  const getStatusLabel = (status: string): string => {
+    switch (status) {
+      case "open": return t("open");
+      case "closed": return t("closed");
+      case "closing": return t("closing");
+      case "closingSoon": return t("closingSoon");
+      case "opening": return t("opening");
+      case "construction": return t("construction");
+      default: return t("unknown");
+    }
+  };
 
   const handleClick = (regionId: string): void => {
     if (onRegionClick) {
@@ -132,9 +135,7 @@ export function RegionCards({
           </div>
           <ul className="relative space-y-2">
             {area.bridges.map((bridge, j) => {
-              const statusStyle = isGlass
-                ? getStatusStyleGlass(bridge.status)
-                : getStatusStyle(bridge.status);
+              const statusColors = getStatusColors(bridge.status, isGlass);
               return (
                 <li
                   key={j}
@@ -142,9 +143,9 @@ export function RegionCards({
                 >
                   <span className="truncate min-w-0">{bridge.name}</span>
                   <span
-                    className={`flex-shrink-0 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide ${statusStyle.bg} ${statusStyle.text}`}
+                    className={`flex-shrink-0 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide ${statusColors.bg} ${statusColors.text}`}
                   >
-                    {statusStyle.label}
+                    {getStatusLabel(bridge.status)}
                   </span>
                 </li>
               );

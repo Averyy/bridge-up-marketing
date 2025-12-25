@@ -1,12 +1,29 @@
 import { Header, Footer } from "@/components/layout";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Metadata } from "next";
+import { Link } from "@/i18n/navigation";
 
-export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "Bridge Up terms of service. By using the app, you agree to these terms for the free bridge status service.",
+type Props = {
+  params: Promise<{ locale: string }>;
 };
 
-export default function TermsPage() {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "legal" });
+
+  return {
+    title: t("terms.title"),
+    description: t("terms.metaDescription"),
+  };
+}
+
+export default async function TermsPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "legal" });
+
+  const showLanguageNotice = locale !== "en";
+
   return (
     <>
       <Header />
@@ -22,6 +39,18 @@ export default function TermsPage() {
 
         <div className="bg-white py-16 md:py-24">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+            {/* Language Notice for non-English users */}
+            {showLanguageNotice && (
+              <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-blue-800 text-sm">
+                  {t("englishOnlyNotice")}{" "}
+                  <Link href="/terms" locale="en" className="text-blue-600 hover:underline font-medium">
+                    {t("viewInEnglish")}
+                  </Link>
+                </p>
+              </div>
+            )}
+
             {/* Intro section */}
             <div className="space-y-6 text-gray-600 leading-relaxed">
               <p>
@@ -248,7 +277,7 @@ export default function TermsPage() {
                 <p className="text-gray-600 leading-relaxed">
                   We are committed to respecting your privacy and the confidentiality of your personal
                   information. We will process your personal information in accordance with our{" "}
-                  <a href="/privacy" className="text-[var(--primary)] hover:underline">Privacy Policy</a>.
+                  <Link href="/privacy" className="text-[var(--primary)] hover:underline">Privacy Policy</Link>.
                   Please read it carefully before using the Services.
                 </p>
               </section>
