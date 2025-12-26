@@ -61,64 +61,23 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
     onRegionClearRef.current = onRegionClear;
   }, [onRegionClear]);
 
-  // Calculate distance between two lat/lng points in km (Haversine formula)
-  const getDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
-    const R = 6371; // Earth's radius in km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  };
-
-  // Find vessels closest to closing-soon or closed bridges
-  const getClosestVesselIds = useCallback((): { closingSoon: Set<number>; closed: Set<number> } => {
+  // Get responsible vessel MMSIs from bridge data (backend-provided)
+  const getResponsibleVesselIds = useCallback((): { closingSoon: Set<number>; closed: Set<number> } => {
     const closingSoonIds = new Set<number>();
     const closedIds = new Set<number>();
 
-    // Only consider moving vessels (ignore stationary boats with speed < 0.5 knots)
-    const movingVessels = vessels.filter(v => v.speedKnots >= 0.5);
+    bridges.forEach(bridge => {
+      if (bridge.responsibleVesselMmsi === null) return;
 
-    const MAX_DISTANCE_KM = 5; // Only consider boats within 5km
-
-    // Closing soon bridges
-    const closingSoonBridges = bridges.filter(b => b.status === "closingSoon");
-    closingSoonBridges.forEach(bridge => {
-      let closestMmsi: number | null = null;
-      let minDistance = Infinity;
-      movingVessels.forEach(vessel => {
-        const distance = getDistance(bridge.lat, bridge.lng, vessel.lat, vessel.lng);
-        if (distance < minDistance && distance <= MAX_DISTANCE_KM) {
-          minDistance = distance;
-          closestMmsi = vessel.mmsi;
-        }
-      });
-      if (closestMmsi !== null) {
-        closingSoonIds.add(closestMmsi);
-      }
-    });
-
-    // Closed bridges (excluding construction)
-    const closedBridges = bridges.filter(b => b.status === "closed" || b.status === "closing");
-    closedBridges.forEach(bridge => {
-      let closestMmsi: number | null = null;
-      let minDistance = Infinity;
-      movingVessels.forEach(vessel => {
-        const distance = getDistance(bridge.lat, bridge.lng, vessel.lat, vessel.lng);
-        if (distance < minDistance && distance <= MAX_DISTANCE_KM) {
-          minDistance = distance;
-          closestMmsi = vessel.mmsi;
-        }
-      });
-      if (closestMmsi !== null) {
-        closedIds.add(closestMmsi);
+      if (bridge.status === "closingSoon") {
+        closingSoonIds.add(bridge.responsibleVesselMmsi);
+      } else if (bridge.status === "closed" || bridge.status === "closing") {
+        closedIds.add(bridge.responsibleVesselMmsi);
       }
     });
 
     return { closingSoon: closingSoonIds, closed: closedIds };
-  }, [bridges, vessels]);
+  }, [bridges]);
 
   const updateCardPosition = useCallback(() => {
     if (!map.current || !selectedItem) return;
@@ -360,8 +319,8 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
     // If no vessels, nothing to render (not an error)
     if (vessels.length === 0) return;
 
-    // Get vessels closest to closing-soon or closed bridges
-    const { closingSoon: closingSoonIds, closed: closedIds } = getClosestVesselIds();
+    // Get responsible vessels from backend-provided data
+    const { closingSoon: closingSoonIds, closed: closedIds } = getResponsibleVesselIds();
 
     // Create markers for each vessel
     vessels.forEach((vessel: Vessel) => {
@@ -573,7 +532,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
 
       vesselMarkersRef.current.push(marker);
     });
-  }, [vessels, mapLoaded, getClosestVesselIds]);
+  }, [vessels, mapLoaded, getResponsibleVesselIds]);
 
   useEffect(() => {
     if (!map.current || !selectedItem) return;

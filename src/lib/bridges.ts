@@ -35,6 +35,7 @@ export interface BridgeLive {
   last_updated: string;
   predicted: RawPrediction | null;
   upcoming_closures: unknown[];
+  responsible_vessel_mmsi: number | null;
 }
 
 export interface BridgeData {
@@ -66,6 +67,7 @@ export interface Bridge {
   status: "open" | "closed" | "closing" | "closingSoon" | "opening" | "construction" | "unknown";
   lastUpdated: string;
   prediction: BridgePrediction | null;
+  responsibleVesselMmsi: number | null;
 }
 
 // Region with bridges for RegionCards
@@ -158,6 +160,7 @@ export function parseBridgesFromApi(data: BridgesApiResponse): Bridge[] {
     status: normalizeStatus(bridge.live.status),
     lastUpdated: bridge.live.last_updated,
     prediction: parsePrediction(bridge.live.predicted, bridge.live.status),
+    responsibleVesselMmsi: bridge.live.responsible_vessel_mmsi ?? null,
   }));
 }
 
