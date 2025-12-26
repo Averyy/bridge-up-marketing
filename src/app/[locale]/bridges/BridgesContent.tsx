@@ -37,11 +37,15 @@ function BridgesMapContent() {
     setFocusedRegion((prev) => (prev === regionId ? null : regionId));
   };
 
+  const handleRegionClear = (): void => {
+    setFocusedRegion(null);
+  };
+
   return (
     <>
       {/* Full-screen Map - no padding, nav floats on top */}
       <div className="absolute inset-0">
-        <BridgeMap focusedRegion={focusedRegion} />
+        <BridgeMap focusedRegion={focusedRegion} onRegionClear={handleRegionClear} />
       </div>
 
       {/* Mobile/Tablet: Region tags - horizontal scroll */}

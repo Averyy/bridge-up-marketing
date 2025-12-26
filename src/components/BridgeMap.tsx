@@ -38,19 +38,28 @@ type SelectedItem = SelectedBridge | SelectedVessel | null;
 
 interface BridgeMapProps {
   focusedRegion?: string | null;
+  onRegionClear?: () => void;
 }
 
-export default function BridgeMap({ focusedRegion }: BridgeMapProps) {
+export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const bridgeMarkersRef = useRef<mapboxgl.Marker[]>([]);
   const vesselMarkersRef = useRef<mapboxgl.Marker[]>([]);
+  const lastAppliedRegionRef = useRef<string | null>(null);
+  const isProgrammaticMoveRef = useRef(false);
+  const onRegionClearRef = useRef(onRegionClear);
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null);
   const [cardPosition, setCardPosition] = useState({ x: 0, y: 0 });
   const [mapLoaded, setMapLoaded] = useState(false);
   const { bridges, loading, error } = useBridges();
   const { vessels } = useBoats(true); // Always fetch vessels
   const t = useTranslations("bridges");
+
+  // Keep callback ref up to date
+  useEffect(() => {
+    onRegionClearRef.current = onRegionClear;
+  }, [onRegionClear]);
 
   // Calculate distance between two lat/lng points in km (Haversine formula)
   const getDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
@@ -146,6 +155,17 @@ export default function BridgeMap({ focusedRegion }: BridgeMapProps) {
       map.current.on("click", () => {
         setSelectedItem(null);
       });
+
+      // Clear region selection when user manually interacts with map
+      const handleUserInteraction = () => {
+        if (!isProgrammaticMoveRef.current && onRegionClearRef.current) {
+          onRegionClearRef.current();
+          lastAppliedRegionRef.current = null;
+        }
+      };
+
+      map.current.on("dragstart", handleUserInteraction);
+      map.current.on("wheel", handleUserInteraction);
 
       // Navigation controls
       map.current.addControl(
@@ -572,9 +592,15 @@ export default function BridgeMap({ focusedRegion }: BridgeMapProps) {
   useEffect(() => {
     if (!map.current || !focusedRegion || bridges.length === 0) return;
 
+    // Only zoom if this is a NEW region selection, not just a bridges data update
+    if (lastAppliedRegionRef.current === focusedRegion) return;
+
     // Get bridges for this region
     const regionBridges = bridges.filter((b: Bridge) => b.regionId === focusedRegion);
     if (regionBridges.length === 0) return;
+
+    // Mark this region as applied so we don't re-zoom on bridges updates
+    lastAppliedRegionRef.current = focusedRegion;
 
     // Close any open popup - intentional: popup should close when switching regions
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -589,13 +615,28 @@ export default function BridgeMap({ focusedRegion }: BridgeMapProps) {
     // Region-specific zoom settings
     const maxZoom = focusedRegion === "port-colborne" ? 13 : 11;
 
+    // Mark as programmatic so we don't clear region during animation
+    isProgrammaticMoveRef.current = true;
+
     // Fit to bounds with padding for nav (top) and cards (bottom)
     map.current.fitBounds(bounds, {
       padding: { top: 160, bottom: 320, left: 80, right: 80 },
       maxZoom,
       duration: 1000,
     });
+
+    // Clear programmatic flag after animation completes
+    setTimeout(() => {
+      isProgrammaticMoveRef.current = false;
+    }, 1100);
   }, [focusedRegion, bridges]);
+
+  // Reset the applied region ref when focusedRegion is cleared (user deselects)
+  useEffect(() => {
+    if (!focusedRegion) {
+      lastAppliedRegionRef.current = null;
+    }
+  }, [focusedRegion]);
 
   const getStatusColor = (status: string): string => {
     switch (status) {
