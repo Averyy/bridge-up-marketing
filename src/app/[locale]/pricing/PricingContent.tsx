@@ -13,7 +13,7 @@ export default function PricingContent() {
     t("features.interactiveMap"),
     t("features.predictions"),
     t("features.carPlaySupport"),
-    t("features.sortByDistance"),
+    t("features.liveBoatTracking"),
     t("features.historicalStats"),
     t("features.multilingual"),
   ];
@@ -89,7 +89,10 @@ export default function PricingContent() {
                     </div>
 
                     <p className="mt-4 text-white/70 max-w-sm">
-                      {t("card.description")}
+                      {t("card.description1")}
+                      <br className="hidden lg:block" />
+                      <span className="lg:hidden"> </span>
+                      {t("card.description2")}
                     </p>
                   </div>
 

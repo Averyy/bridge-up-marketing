@@ -46,7 +46,7 @@ function BridgesMapContent() {
 
       {/* Mobile/Tablet: Region tags - horizontal scroll */}
       <div className="absolute bottom-6 left-0 right-0 pointer-events-none z-10 lg:hidden">
-        <div className="pointer-events-auto">
+        <div>
           <div className="flex gap-2 overflow-x-auto pb-2 px-4 scrollbar-hide">
             {loading ? (
               // Loading skeleton for region pills
@@ -64,7 +64,7 @@ function BridgesMapContent() {
                   <button
                     key={area.id}
                     onClick={() => handleRegionClick(area.id)}
-                    className={`flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-medium transition-all backdrop-blur-xl border ${
+                    className={`flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-medium transition-all backdrop-blur-xl border pointer-events-auto ${
                       isSelected
                         ? "bg-white/30 border-white/50 text-white"
                         : "bg-white/10 border-white/20 text-white/90 hover:bg-white/20"
@@ -93,7 +93,7 @@ function BridgesMapContent() {
 
       {/* Desktop: Full region cards overlay - bottom */}
       <div className="absolute bottom-6 left-0 right-0 pointer-events-none z-10 px-4 lg:px-8 hidden lg:block">
-        <div className="max-w-6xl mx-auto pointer-events-auto">
+        <div className="max-w-6xl mx-auto">
           <RegionCards
             variant="glass"
             onRegionClick={handleRegionClick}

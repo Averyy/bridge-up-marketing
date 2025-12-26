@@ -125,7 +125,7 @@
     "story": {
       "paragraph1": "Si vous habitez près du canal Welland, vous connaissez la frustration. Vous êtes en retard, vous arrivez au pont, et le pont est levé. Aucune idée de combien de temps vous allez attendre.",
       "paragraph2": "Le site officiel de la Voie maritime existe, mais il est maladroit et pas pratique à consulter en conduisant. Ils promettent une refonte depuis des années. Ils ont finalement ajouté l'intégration Google et Waze, mais en pratique c'est lent et peu fiable. Je voulais quelque chose que je pourrais vraiment consulter d'un coup d'œil sur CarPlay.",
-      "paragraph3": "Alors j'ai créé Bridge Up. Une application simple qui fait une seule chose bien : vous dit si le pont est ouvert avant d'y arriver.",
+      "paragraph3": "Alors j'ai créé Bridge Up. Une application simple qui vous dit si le pont est ouvert avant d'y arriver, et vous montre même le bateau qui passe.",
       "paragraph4": "Bridge Up est un travail en cours. Vous avez des idées ou des commentaires? Contactez-moi par",
       "email": "courriel",
       "or": "ou",
@@ -151,22 +151,23 @@
       "badge": "Tout est inclus",
       "price": "0 $",
       "priceDescription": "pour toujours",
-      "description": "Bridge Up est gratuit pour tous. Toutes les fonctionnalités, tous les ponts, sans limites.",
+      "description1": "Bridge Up est gratuit pour tous.",
+      "description2": "Toutes les fonctionnalités, tous les ponts, sans limites.",
       "whatsIncluded": "Ce qui est inclus"
     },
     "features": {
       "realTimeStatus": "État en temps réel",
-      "bridgesTracked": "15 ponts suivis",
+      "bridgesTracked": "15 ponts",
       "interactiveMap": "Carte interactive",
       "predictions": "Prédictions",
       "carPlaySupport": "Support CarPlay",
-      "sortByDistance": "Tri par distance",
+      "liveBoatTracking": "Suivi des bateaux en direct",
       "historicalStats": "Statistiques historiques",
       "multilingual": "Multilingue"
     },
     "support": {
       "heading": "Envie de soutenir Bridge Up?",
-      "description": "C'est un projet personnel, pas une startup. Si vous trouvez Bridge Up utile et voulez aider à couvrir les coûts de fonctionnement (frais développeur Apple, hébergement serveur, etc.), vous pouvez m'offrir un café",
+      "description": "Si vous trouvez Bridge Up utile et voulez aider à couvrir les coûts de fonctionnement (frais développeur Apple, hébergement serveur, etc.), vous pouvez m'offrir un café",
       "button": "M'offrir un café"
     },
     "faq": {
@@ -184,7 +185,8 @@
   "bridges": {
     "title": "Carte des ponts",
     "metaDescription": "Carte interactive des 15 ponts surveillés à St. Catharines, Port Colborne, Montréal, Salaberry-de-Valleyfield et Kahnawake.",
-    "loadingMap": "Chargement de la carte..."
+    "loadingMap": "Chargement de la carte...",
+    "showVessels": "Afficher les navires"
   },
   "legal": {
     "englishOnlyNotice": "Ce document est disponible en anglais uniquement pour des raisons de précision juridique.",

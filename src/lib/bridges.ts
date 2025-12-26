@@ -17,6 +17,12 @@ export interface BridgePrediction {
   closesIn?: { min: number; max: number };
 }
 
+// Raw prediction from API (timestamps)
+interface RawPrediction {
+  lower: string;
+  upper: string;
+}
+
 export interface BridgeStatic {
   name: string;
   region: string;
@@ -27,7 +33,7 @@ export interface BridgeStatic {
 export interface BridgeLive {
   status: "Open" | "Closed" | "Closing soon" | "Opening" | "Construction";
   last_updated: string;
-  predicted: BridgePrediction | null;
+  predicted: RawPrediction | null;
   upcoming_closures: unknown[];
 }
 
@@ -113,6 +119,33 @@ function normalizeStatus(
   return statusMap[apiStatus] || "unknown";
 }
 
+// Convert raw prediction timestamps to minutes from now
+function parsePrediction(
+  raw: RawPrediction | null,
+  status: string
+): BridgePrediction | null {
+  if (!raw) return null;
+
+  const now = new Date();
+  const lower = new Date(raw.lower);
+  const upper = new Date(raw.upper);
+
+  // Calculate minutes from now (minimum 0)
+  const minMinutes = Math.max(0, Math.round((lower.getTime() - now.getTime()) / 60000));
+  const maxMinutes = Math.max(0, Math.round((upper.getTime() - now.getTime()) / 60000));
+
+  // Based on status, determine if this is opensIn or closesIn
+  const normalizedStatus = normalizeStatus(status);
+
+  if (normalizedStatus === "closed" || normalizedStatus === "closing" || normalizedStatus === "construction") {
+    return { opensIn: { min: minMinutes, max: maxMinutes } };
+  } else if (normalizedStatus === "closingSoon" || normalizedStatus === "open") {
+    return { closesIn: { min: minMinutes, max: maxMinutes } };
+  }
+
+  return null;
+}
+
 // Parse bridges from API response (used by both REST and WebSocket)
 export function parseBridgesFromApi(data: BridgesApiResponse): Bridge[] {
   return Object.entries(data.bridges).map(([id, bridge]) => ({
@@ -124,7 +157,7 @@ export function parseBridgesFromApi(data: BridgesApiResponse): Bridge[] {
     lng: bridge.static.coordinates.lng,
     status: normalizeStatus(bridge.live.status),
     lastUpdated: bridge.live.last_updated,
-    prediction: bridge.live.predicted,
+    prediction: parsePrediction(bridge.live.predicted, bridge.live.status),
   }));
 }
 

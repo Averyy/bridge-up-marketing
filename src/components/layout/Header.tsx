@@ -84,9 +84,9 @@ export function Header({ forceScrolled = false }: HeaderProps) {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8">
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pointer-events-none">
         <nav
-          className={`mx-auto transition-all duration-500 border rounded-full ${
+          className={`mx-auto transition-all duration-500 border rounded-full pointer-events-auto ${
             showPillNav
               ? "max-w-3xl mt-3 py-2 border-white/10"
               : "max-w-7xl py-4 border-transparent"
@@ -170,8 +170,8 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                   showPillNav ? "w-9 h-9" : "w-10 h-10"
                 } ${
                   showPillNav || useLightText
-                    ? "bg-amber-500/20 hover:bg-amber-500/30"
-                    : "bg-amber-100 hover:bg-amber-200"
+                    ? "hover:bg-amber-500/20"
+                    : "hover:bg-amber-100"
                 }`}
                 aria-label={t("buyMeCoffee")}
               >
@@ -216,8 +216,8 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                 rel="noopener noreferrer"
                 className={`inline-flex items-center justify-center rounded-full w-8 h-8 transition-colors ${
                   showPillNav || useLightText
-                    ? "bg-amber-500/20"
-                    : "bg-amber-100"
+                    ? "hover:bg-amber-500/20"
+                    : "hover:bg-amber-100"
                 }`}
                 aria-label={t("buyMeCoffee")}
               >

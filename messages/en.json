@@ -125,7 +125,7 @@
     "story": {
       "paragraph1": "If you live near the Welland Canal, you know the frustration. You're running late, you hit the bridge, and the bridge is up. No idea how long you'll be waiting.",
       "paragraph2": "The official Seaway website exists, but it's clunky and not something you can safely check while driving. They've been promising a redesign for years. They eventually added Google and Waze integration, but in practice it's slow and unreliable. I wanted something I could actually glance at on CarPlay.",
-      "paragraph3": "So I built Bridge Up. A simple app that does one thing well: tells you if the bridge is open before you get there.",
+      "paragraph3": "So I built Bridge Up. A simple app that tells you if the bridge is open before you get there, and even shows you the boat that's passing through.",
       "paragraph4": "Bridge Up is a work in progress. Got ideas or feedback? Reach out via",
       "email": "email",
       "or": "or",
@@ -151,22 +151,23 @@
       "badge": "Everything included",
       "price": "$0",
       "priceDescription": "forever",
-      "description": "Bridge Up is free for everyone. All features, all bridges, no limits.",
+      "description1": "Bridge Up is free for everyone.",
+      "description2": "All features, all bridges, no limits.",
       "whatsIncluded": "What's included"
     },
     "features": {
       "realTimeStatus": "Real-time status",
-      "bridgesTracked": "15 bridges tracked",
+      "bridgesTracked": "15 bridges",
       "interactiveMap": "Interactive map",
       "predictions": "Predictions",
       "carPlaySupport": "CarPlay support",
-      "sortByDistance": "Sort by distance",
+      "liveBoatTracking": "Live boat tracking",
       "historicalStats": "Historical stats",
       "multilingual": "Multilingual"
     },
     "support": {
       "heading": "Want to support Bridge Up?",
-      "description": "This is a side project, not a startup. If you find Bridge Up useful and want to help cover the costs of keeping it running (Apple developer fees, server hosting, etc.), you can buy me a coffee",
+      "description": "If you find Bridge Up useful and want to help cover the costs of keeping it running (Apple developer fees, server hosting, etc.), you can buy me a coffee",
       "button": "Buy me a coffee"
     },
     "faq": {
@@ -184,7 +185,8 @@
   "bridges": {
     "title": "Bridge Map",
     "metaDescription": "Interactive map of all 15 monitored bridges in St. Catharines, Port Colborne, Montréal, Salaberry-de-Valleyfield, and Kahnawake.",
-    "loadingMap": "Loading map..."
+    "loadingMap": "Loading map...",
+    "showVessels": "Show Vessels"
   },
   "legal": {
     "englishOnlyNotice": "This document is available in English only for legal accuracy.",

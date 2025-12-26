@@ -102,7 +102,7 @@ export function RegionCards({
     return (
       <div
         key={area.id}
-        className="animate-fade-in-up"
+        className="animate-fade-in-up pointer-events-auto"
         style={{ animationDelay: `${i * 100}ms` }}
       >
         <button
