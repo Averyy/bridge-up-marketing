@@ -173,13 +173,13 @@
     "faq": {
       "heading": "Preguntas frecuentes",
       "q1": "¿Bridge Up es realmente gratis?",
-      "a1": "¡Sí! Bridge Up es completamente gratis con todas las funciones desbloqueadas. Sin suscripciones, sin compras en la app, sin muros de pago.",
-      "q2": "¿Por qué es gratis?",
-      "a2": "Bridge Up es un proyecto de pasión. Lo creé porque estaba cansado de quedarme atrapado en los puentes yo mismo. Mis costos son mínimos, así que prefiero hacerlo gratis y útil para todos.",
-      "q3": "¿Qué tan precisas son las predicciones?",
-      "a3": "Nuestras predicciones usan intervalos de confianza del 95% basados en los 300 cierres más recientes para cada puente. La mayoría de las predicciones son precisas dentro de unos pocos minutos. Tenga en cuenta que es solo una estimación usando datos de cierres pasados como guía, lo que significa que a veces puede estar muy equivocada.",
+      "a1": "¡Sí! Bridge Up es completamente gratis con todas las funciones desbloqueadas. Sin suscripciones, sin compras en la app, sin muros de pago. Es un proyecto de pasión nacido de mi propia frustración de quedarme atrapado en los puentes. Mis costos son mínimos, así que prefiero mantenerlo gratis y útil para todos.",
+      "q2": "¿Qué tan precisas son las predicciones?",
+      "a2": "Nuestras predicciones usan intervalos de confianza del 95% basados en los 300 cierres más recientes para cada puente. La mayoría de las predicciones son precisas dentro de unos pocos minutos. Tenga en cuenta que es solo una estimación usando datos de cierres pasados como guía, lo que significa que a veces puede estar muy equivocada.",
+      "q3": "¿De dónde provienen los datos de rastreo de barcos?",
+      "a3": "Los datos de rastreo de barcos provienen de múltiples fuentes. La fuente principal es una antena AIS personal que opero en la región de St. Catharines. Cobertura adicional es proporcionada por AISHub, una base de datos AIS comunitaria. Esta función es nueva y las fuentes de datos cambian frecuentemente. Si tiene una instalación AIS en la región de Montreal y le gustaría contribuir datos, ¡no dude en contactarme!",
       "q4": "¿Soportan Android?",
-      "a4": "Actualmente Bridge Up es solo para iOS, con soporte completo de CarPlay. El soporte para Android está en la hoja de ruta para desarrollo futuro."
+      "a4": "Android es algo que consideraré, pero por ahora Bridge Up está disponible en web e iOS con soporte completo de CarPlay."
     }
   },
   "bridges": {

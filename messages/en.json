@@ -173,13 +173,13 @@
     "faq": {
       "heading": "Frequently Asked Questions",
       "q1": "Is Bridge Up really free?",
-      "a1": "Yes! Bridge Up is completely free with all features unlocked. No subscriptions, no in-app purchases, no paywalls.",
-      "q2": "Why is it free?",
-      "a2": "Bridge Up is a passion project. I built it because I was tired of getting stuck at bridges myself. My costs are minimal, so I'd rather make it free and useful for everyone.",
-      "q3": "How accurate are the predictions?",
-      "a3": "Our predictions use 95% confidence intervals based on the 300 most recent closures for each bridge. Most predictions are accurate within a few minutes. Keep in mind it's only an estimate using past closure data as a guide, meaning it can be wildly wrong at times.",
+      "a1": "Yes! Bridge Up is completely free with all features unlocked. No subscriptions, no in-app purchases, no paywalls. It's a passion project born from my own frustration of getting stuck at bridges. My costs are minimal, so I'd rather keep it free and useful for everyone.",
+      "q2": "How accurate are the predictions?",
+      "a2": "Our predictions use 95% confidence intervals based on the 300 most recent closures for each bridge. Most predictions are accurate within a few minutes. Keep in mind it's only an estimate using past closure data as a guide, meaning it can be wildly wrong at times.",
+      "q3": "Where does the boat tracking data come from?",
+      "a3": "Boat tracking data comes from multiple sources. The primary source is a personal AIS antenna I operate in the St. Catharines region. Additional coverage is provided by AISHub, a community-run AIS database. This feature is new and the data sources are frequently changing. If you have an AIS setup in the Montreal region and would like to contribute data, please reach out!",
       "q4": "Do you support Android?",
-      "a4": "Currently Bridge Up is iOS only, with full CarPlay support. Android support is on the roadmap for future development."
+      "a4": "Android is something I'll consider, but for now Bridge Up is available on web and iOS with full CarPlay support."
     }
   },
   "bridges": {

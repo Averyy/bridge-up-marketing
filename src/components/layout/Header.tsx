@@ -209,12 +209,12 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                 showPillNav={showPillNav}
               />
 
-              {/* Coffee */}
+              {/* Coffee - hidden on small phones, visible on tablets */}
               <a
                 href="https://buymeacoffee.com/averyy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center justify-center rounded-full w-8 h-8 transition-colors ${
+                className={`hidden sm:inline-flex items-center justify-center rounded-full w-8 h-8 transition-colors ${
                   showPillNav || useLightText
                     ? "hover:bg-amber-500/20"
                     : "hover:bg-amber-100"

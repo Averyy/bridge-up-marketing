@@ -49,6 +49,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   const lastAppliedRegionRef = useRef<string | null>(null);
   const isProgrammaticMoveRef = useRef(false);
   const onRegionClearRef = useRef(onRegionClear);
+  const hasSetInitialMobileViewRef = useRef(false);
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null);
   const [cardPosition, setCardPosition] = useState({ x: 0, y: 0 });
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -575,12 +576,9 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
     const isMobile = window.innerWidth < 1024;
 
     // Region-specific zoom settings
-    // Mobile St. Catharines: zoom closer since no bottom cards
     let maxZoom = 11;
     if (focusedRegion === "port-colborne") {
       maxZoom = 13;
-    } else if (focusedRegion === "st-catharines" && isMobile) {
-      maxZoom = 12;
     }
 
     // Mark as programmatic so we don't clear region during animation
@@ -611,6 +609,49 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       lastAppliedRegionRef.current = null;
     }
   }, [focusedRegion]);
+
+  // Set initial mobile view to show St. Catharines + Port Colborne
+  useEffect(() => {
+    if (!map.current || !mapLoaded || bridges.length === 0) return;
+    if (hasSetInitialMobileViewRef.current) return;
+
+    // Mark as handled once we have data, even if we don't set a view
+    // This prevents jumping to St. Catharines if user later deselects a URL-based region
+    hasSetInitialMobileViewRef.current = true;
+
+    // Don't override if a region is already focused (e.g., from URL param)
+    if (focusedRegion) return;
+
+    const isMobile = window.innerWidth < 1024;
+    if (!isMobile) return;
+
+    // Get bridges for St. Catharines and Port Colborne
+    const wellandBridges = bridges.filter(
+      (b: Bridge) => b.regionId === "st-catharines" || b.regionId === "port-colborne"
+    );
+    if (wellandBridges.length === 0) return;
+
+    // Calculate bounds for both regions
+    const bounds = new mapboxgl.LngLatBounds();
+    wellandBridges.forEach((bridge: Bridge) => {
+      bounds.extend([bridge.lng, bridge.lat]);
+    });
+
+    // Mark as programmatic so we don't trigger region clear
+    isProgrammaticMoveRef.current = true;
+
+    // Fit bounds with padding for mobile
+    map.current.fitBounds(bounds, {
+      padding: { top: 100, bottom: 80, left: 40, right: 40 },
+      maxZoom: 10,
+      duration: 0, // Instant on load
+    });
+
+    // Clear programmatic flag
+    setTimeout(() => {
+      isProgrammaticMoveRef.current = false;
+    }, 100);
+  }, [mapLoaded, bridges, focusedRegion]);
 
   const getStatusColor = (status: string): string => {
     switch (status) {
@@ -843,6 +884,12 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         .mapboxgl-ctrl-attrib,
         .mapboxgl-ctrl-logo {
           display: none !important;
+        }
+        /* Hide zoom controls on mobile */
+        @media (max-width: 1023px) {
+          .mapboxgl-ctrl-group {
+            display: none !important;
+          }
         }
         @keyframes vesselWake {
           0% {
