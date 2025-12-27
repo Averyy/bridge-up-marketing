@@ -30,6 +30,7 @@ interface SelectedVessel {
   dimensions: { length: number; width: number } | null;
   heading: number | null;
   source: string;
+  lastSeen: string;
   lng: number;
   lat: number;
 }
@@ -53,6 +54,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null);
   const [cardPosition, setCardPosition] = useState({ x: 0, y: 0 });
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [vesselSecondsAgo, setVesselSecondsAgo] = useState(0);
   const { bridges, loading, error } = useBridges();
   const { vessels } = useBoats(true); // Always fetch vessels
   const t = useTranslations("bridges");
@@ -521,6 +523,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             dimensions: vessel.dimensions,
             heading: vessel.heading,
             source: vessel.source,
+            lastSeen: vessel.lastSeen,
             lng: vessel.lng,
             lat: vessel.lat,
           });
@@ -609,6 +612,30 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       lastAppliedRegionRef.current = null;
     }
   }, [focusedRegion]);
+
+  // Live counter for vessel "last seen" timestamp
+  useEffect(() => {
+    if (!selectedItem || selectedItem.type !== "vessel") {
+      setVesselSecondsAgo(0);
+      return;
+    }
+
+    const lastSeenDate = new Date(selectedItem.lastSeen);
+
+    const updateCounter = () => {
+      const now = new Date();
+      const diffMs = now.getTime() - lastSeenDate.getTime();
+      setVesselSecondsAgo(Math.max(0, Math.floor(diffMs / 1000)));
+    };
+
+    // Initial calculation
+    updateCounter();
+
+    // Update every second
+    const interval = setInterval(updateCounter, 1000);
+
+    return () => clearInterval(interval);
+  }, [selectedItem]);
 
   // Set initial mobile view to show St. Catharines + Port Colborne
   useEffect(() => {
@@ -855,9 +882,12 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
                   <dd className="text-gray-300">{formatDimensions(selectedItem.dimensions)}</dd>
                 </>
               )}
-              <dt className="text-gray-500">Source</dt>
-              <dd className="text-gray-300">{selectedItem.source}</dd>
             </dl>
+            {/* Footer with source and live "last seen" counter */}
+            <div className="flex items-center justify-between gap-2 mt-3 pt-2 border-t border-white/10">
+              <span className="text-[10px] text-gray-500">{selectedItem.source}</span>
+              <span className="text-[10px] text-gray-500 tabular-nums">{vesselSecondsAgo}s ago</span>
+            </div>
             <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px]" style={{ borderTopColor: 'rgba(10, 10, 10, 0.75)' }} />
           </div>
         </div>
