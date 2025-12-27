@@ -49,9 +49,10 @@ function BridgesMapContent() {
       </div>
 
       {/* Mobile/Tablet: Region tags - horizontal scroll */}
+      {/* Right padding (pr-16) avoids covering the +/- zoom controls */}
       <div className="absolute bottom-6 left-0 right-0 pointer-events-none z-10 lg:hidden">
         <div>
-          <div className="flex gap-2 overflow-x-auto pb-2 px-4 scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto pb-2 pl-4 pr-16 scrollbar-hide">
             {loading ? (
               // Loading skeleton for region pills
               Array.from({ length: 5 }).map((_, i) => (
@@ -80,17 +81,10 @@ function BridgesMapContent() {
                     }}
                   >
                     {area.region}
-                    <span
-                      className={`ml-2 text-xs ${isSelected ? "text-white/80" : "text-white/60"}`}
-                    >
-                      {area.bridges.length}
-                    </span>
                   </button>
                 );
               })
             )}
-            {/* Spacer for scroll padding on right */}
-            <div className="flex-shrink-0 w-2" aria-hidden="true" />
           </div>
         </div>
       </div>

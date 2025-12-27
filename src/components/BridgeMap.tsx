@@ -571,15 +571,30 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       bounds.extend([bridge.lng, bridge.lat]);
     });
 
+    // Detect mobile (no large region cards at bottom)
+    const isMobile = window.innerWidth < 1024;
+
     // Region-specific zoom settings
-    const maxZoom = focusedRegion === "port-colborne" ? 13 : 11;
+    // Mobile St. Catharines: zoom closer since no bottom cards
+    let maxZoom = 11;
+    if (focusedRegion === "port-colborne") {
+      maxZoom = 13;
+    } else if (focusedRegion === "st-catharines" && isMobile) {
+      maxZoom = 12;
+    }
 
     // Mark as programmatic so we don't clear region during animation
     isProgrammaticMoveRef.current = true;
 
-    // Fit to bounds with padding for nav (top) and cards (bottom)
+    // Padding: desktop has large region cards at bottom, mobile has small pills
+    // Mobile also shifts view north for St. Catharines (less bottom padding)
+    const padding = isMobile
+      ? { top: 120, bottom: focusedRegion === "st-catharines" ? 80 : 100, left: 40, right: 40 }
+      : { top: 160, bottom: 320, left: 80, right: 80 };
+
+    // Fit to bounds with responsive padding
     map.current.fitBounds(bounds, {
-      padding: { top: 160, bottom: 320, left: 80, right: 80 },
+      padding,
       maxZoom,
       duration: 1000,
     });
@@ -825,7 +840,8 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         .mapboxgl-ctrl-group button .mapboxgl-ctrl-icon {
           filter: invert(1);
         }
-        .mapboxgl-ctrl-attrib {
+        .mapboxgl-ctrl-attrib,
+        .mapboxgl-ctrl-logo {
           display: none !important;
         }
         @keyframes vesselWake {
