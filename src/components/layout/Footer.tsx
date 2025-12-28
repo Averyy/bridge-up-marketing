@@ -25,6 +25,7 @@ export function Footer() {
     more: [
       { href: "/about" as const, label: t("about") },
       { href: "mailto:support@bridgeup.app", label: t("contact"), external: true },
+      { href: "/support" as const, label: t("support") },
       { href: "https://buymeacoffee.com/averyy", label: t("buyMeCoffee"), external: true },
     ],
     legal: [
@@ -41,7 +42,7 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <Image
-                src="/BridgeUp-Icon.png"
+                src="/BridgeUp-Logo.png"
                 alt="Bridge Up"
                 width={32}
                 height={32}
@@ -107,7 +108,7 @@ export function Footer() {
                     </a>
                   ) : (
                     <Link
-                      href={link.href as "/about"}
+                      href={link.href as "/about" | "/support"}
                       className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
                     >
                       {link.label}

@@ -744,6 +744,10 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         return "Clear to cross";
       case "closingSoon":
         if (prediction?.closesIn) {
+          // Overdue: prediction has passed
+          if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
+            return "Taking longer than expected to close";
+          }
           return `Closes in ${prediction.closesIn.min}-${prediction.closesIn.max}m`;
         }
         return "Prepare for closure";
@@ -751,6 +755,10 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         return "Bridge is raising";
       case "closed":
         if (prediction?.opensIn) {
+          // Overdue: prediction has passed
+          if (prediction.opensIn.min === 0 && prediction.opensIn.max === 0) {
+            return "Taking longer than expected to open";
+          }
           if (prediction.opensIn.min === prediction.opensIn.max) {
             return `Opens in ~${prediction.opensIn.min}m`;
           }
@@ -758,6 +766,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         }
         return "Closed, unknown opening time";
       case "opening":
+        // Bridge is actively lowering - no prediction needed
         return "Will be open in a few moments";
       case "construction":
         return "Closed for maintenance";

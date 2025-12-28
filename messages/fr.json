@@ -27,6 +27,7 @@
     "brandDescription": "État des ponts en temps réel pour la région de la Voie maritime du Saint-Laurent.",
     "product": "Produit",
     "more": "Plus",
+    "support": "Assistance",
     "legal": "Légal",
     "home": "Accueil",
     "bridges": "Ponts",
@@ -82,7 +83,7 @@
       },
       "rightBox": {
         "title": "Sachez avant d'attendre.",
-        "description": "Des prédictions puissantes basées sur plus de 300 fermetures analysées par pont. Obtenez des estimations de réouverture avec des intervalles de confiance de 95 % — pour décider si vous attendez ou prenez un itinéraire alternatif."
+        "description": "Des prédictions puissantes basées sur plus de 300 fermetures analysées par pont. Obtenez des estimations de réouverture avec des intervalles de confiance de 95%, pour décider si vous attendez ou prenez un itinéraire alternatif."
       },
       "listViewAlt": "Vue liste de Bridge Up montrant l'état de tous les ponts",
       "detailOpenAlt": "Détail du pont montrant les statistiques d'un pont ouvert",
@@ -116,7 +117,7 @@
     "heading": "Traversez en toute tranquillité",
     "description": "État des ponts en temps réel, prédictions de réouverture et support CarPlay. Toutes les fonctionnalités incluses, entièrement gratuit.",
     "ctaButton": "Bientôt sur l'App Store",
-    "requirements": "Nécessite iOS 16.0 ou ultérieur • Compatible CarPlay"
+    "requirements": "Nécessite iOS 17 ou ultérieur • Compatible CarPlay"
   },
   "about": {
     "title": "À propos",
@@ -198,6 +199,22 @@
     "terms": {
       "title": "Conditions d'utilisation",
       "metaDescription": "Conditions d'utilisation de Bridge Up - l'accord légal entre vous et Bridge Up."
+    }
+  },
+  "support": {
+    "title": "Assistance",
+    "metaDescription": "Obtenez de l'aide avec Bridge Up - contactez le support et informations sur l'application.",
+    "heading": "Assistance",
+    "contact": {
+      "heading": "Nous contacter",
+      "description": "Vous avez une question, trouvé un bogue ou souhaitez partager vos commentaires? Nous aimerions avoir de vos nouvelles."
+    },
+    "appInfo": {
+      "heading": "Informations sur l'application",
+      "appName": "Nom de l'application",
+      "platform": "Plateforme",
+      "developer": "Développeur",
+      "contact": "Contact"
     }
   }
 }

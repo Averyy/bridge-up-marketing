@@ -27,6 +27,7 @@
     "brandDescription": "Real-time bridge status for the St. Lawrence Seaway region.",
     "product": "Product",
     "more": "More",
+    "support": "Support",
     "legal": "Legal",
     "home": "Home",
     "bridges": "Bridges",
@@ -82,7 +83,7 @@
       },
       "rightBox": {
         "title": "Know before you wait.",
-        "description": "Powerful predictions based on 300+ analyzed closures per bridge. Get estimated reopening times with 95% confidence intervals—so you can decide whether to wait or take an alternate route."
+        "description": "Powerful predictions based on 300+ analyzed closures per bridge. Get estimated reopening times with 95% confidence intervals, so you can decide whether to wait or take an alternate route."
       },
       "listViewAlt": "Bridge Up list view showing all bridge statuses",
       "detailOpenAlt": "Bridge detail showing statistics for an open bridge",
@@ -116,7 +117,7 @@
     "heading": "Have a smooth crossing",
     "description": "Real time bridge status, reopening predictions, and CarPlay support. All features included, completely free.",
     "ctaButton": "Coming Soon on the App Store",
-    "requirements": "Requires iOS 16.0 or later • Works with CarPlay"
+    "requirements": "Requires iOS 17 or later • Works with CarPlay"
   },
   "about": {
     "title": "About",
@@ -198,6 +199,22 @@
     "terms": {
       "title": "Terms of Service",
       "metaDescription": "Bridge Up terms of service - the legal agreement between you and Bridge Up."
+    }
+  },
+  "support": {
+    "title": "Support",
+    "metaDescription": "Get help with Bridge Up - contact support and app information.",
+    "heading": "Support",
+    "contact": {
+      "heading": "Get in Touch",
+      "description": "Have a question, found a bug, or want to share feedback? We'd love to hear from you."
+    },
+    "appInfo": {
+      "heading": "App Information",
+      "appName": "App Name",
+      "platform": "Platform",
+      "developer": "Developer",
+      "contact": "Contact"
     }
   }
 }

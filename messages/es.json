@@ -27,6 +27,7 @@
     "brandDescription": "Estado de puentes en tiempo real para la región de la Vía Marítima del San Lorenzo.",
     "product": "Producto",
     "more": "Más",
+    "support": "Soporte",
     "legal": "Legal",
     "home": "Inicio",
     "bridges": "Puentes",
@@ -82,7 +83,7 @@
       },
       "rightBox": {
         "title": "Sepa antes de esperar.",
-        "description": "Predicciones potentes basadas en más de 300 cierres analizados por puente. Obtenga tiempos estimados de reapertura con intervalos de confianza del 95% — para decidir si esperar o tomar una ruta alternativa."
+        "description": "Predicciones potentes basadas en más de 300 cierres analizados por puente. Obtenga tiempos estimados de reapertura con intervalos de confianza del 95%, para decidir si esperar o tomar una ruta alternativa."
       },
       "listViewAlt": "Vista de lista de Bridge Up mostrando el estado de todos los puentes",
       "detailOpenAlt": "Detalle del puente mostrando estadísticas de un puente abierto",
@@ -116,7 +117,7 @@
     "heading": "Cruce sin preocupaciones",
     "description": "Estado de puentes en tiempo real, predicciones de reapertura y soporte CarPlay. Todas las funciones incluidas, completamente gratis.",
     "ctaButton": "Próximamente en la App Store",
-    "requirements": "Requiere iOS 16.0 o posterior • Compatible con CarPlay"
+    "requirements": "Requiere iOS 17 o posterior • Compatible con CarPlay"
   },
   "about": {
     "title": "Acerca de",
@@ -198,6 +199,22 @@
     "terms": {
       "title": "Términos de servicio",
       "metaDescription": "Términos de servicio de Bridge Up - el acuerdo legal entre usted y Bridge Up."
+    }
+  },
+  "support": {
+    "title": "Soporte",
+    "metaDescription": "Obtenga ayuda con Bridge Up - contacte soporte e información de la aplicación.",
+    "heading": "Soporte",
+    "contact": {
+      "heading": "Contáctenos",
+      "description": "¿Tiene una pregunta, encontró un error o quiere compartir comentarios? Nos encantaría saber de usted."
+    },
+    "appInfo": {
+      "heading": "Información de la Aplicación",
+      "appName": "Nombre de la App",
+      "platform": "Plataforma",
+      "developer": "Desarrollador",
+      "contact": "Contacto"
     }
   }
 }

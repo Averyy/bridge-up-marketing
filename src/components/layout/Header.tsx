@@ -5,7 +5,6 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import { useBridges } from "@/lib/useBridges";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
 
 interface HeaderProps {
@@ -17,8 +16,6 @@ export function Header({ forceScrolled = false }: HeaderProps) {
   const [scrolled, setScrolled] = useState(forceScrolled);
   const pathname = usePathname();
   const isHomePage = pathname === "/";
-  const { connectionStatus } = useBridges();
-  const isLive = connectionStatus === "connected";
   const t = useTranslations("nav");
 
   const navLinks = [
@@ -102,7 +99,7 @@ export function Header({ forceScrolled = false }: HeaderProps) {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/BridgeUp-Icon.png"
+                src="/BridgeUp-Logo.png"
                 alt="Bridge Up"
                 width={40}
                 height={40}
@@ -145,7 +142,7 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                   }`}
                 >
                   {link.label}
-                  {link.href === "/bridges" && isLive && (
+                  {link.href === "/bridges" && (
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -293,7 +290,7 @@ export function Header({ forceScrolled = false }: HeaderProps) {
               <div className="flex items-center justify-between p-4 border-b border-gray-100">
                 <div className="flex items-center gap-3">
                   <Image
-                    src="/BridgeUp-Icon.png"
+                    src="/BridgeUp-Logo.png"
                     alt="Bridge Up"
                     width={36}
                     height={36}
@@ -340,7 +337,7 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                         {link.icon}
                       </span>
                       <span className="font-medium">{link.label}</span>
-                      {link.href === "/bridges" && isLive && (
+                      {link.href === "/bridges" && (
                         <span className="relative flex h-2 w-2 ml-auto">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>

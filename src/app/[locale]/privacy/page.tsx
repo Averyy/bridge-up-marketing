@@ -86,7 +86,7 @@ export default async function PrivacyPage({ params }: Props) {
                   <li className="pl-4 border-l-2 border-[var(--primary)]">
                     <strong className="text-gray-900">Location Access:</strong> If you enable location access, we use it to show
                     bridges near you and calculate distances. Your location is processed on-device and
-                    is never uploaded to our servers. We only request &quot;When In Use&quot; permission—there
+                    is never uploaded to our servers. We only request &quot;When In Use&quot; permission - there
                     is no background location tracking. When you close the app, location access stops
                     immediately.
                   </li>
@@ -102,7 +102,7 @@ export default async function PrivacyPage({ params }: Props) {
                   </li>
                   <li className="pl-4 border-l-2 border-[var(--primary)]">
                     <strong className="text-gray-900">CarPlay:</strong> If you use Bridge Up with CarPlay, the same privacy
-                    principles apply—no additional data is collected.
+                    principles apply - no additional data is collected.
                   </li>
                 </ul>
               </section>
