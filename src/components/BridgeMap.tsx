@@ -5,9 +5,10 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useBridges } from "@/lib/useBridges";
 import { useBoats } from "@/lib/useBoats";
-import { Bridge, BridgePrediction } from "@/lib/bridges";
+import { Bridge, BridgePrediction, formatLastUpdated } from "@/lib/bridges";
 import { Vessel, formatSpeed, formatDimensions } from "@/lib/boats";
 import { useTranslations } from "next-intl";
+import { BridgeStatusIcon, getStatusIconSvg, getWarningBadgeSvg } from "@/components/ui/BridgeStatusIcon";
 
 interface SelectedBridge {
   type: "bridge";
@@ -58,6 +59,77 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   const { bridges, loading, error } = useBridges();
   const { vessels } = useBoats(true); // Always fetch vessels
   const t = useTranslations("bridges");
+  const tStatus = useTranslations("bridgeStatus");
+
+  // Translated status info text - uses translation keys
+  const getTranslatedStatusInfoText = useCallback((
+    status: string,
+    prediction: BridgePrediction | null,
+    lastUpdated?: string
+  ): string => {
+    switch (status) {
+      case "open":
+        if (lastUpdated) {
+          return tStatus("openedAt", { time: formatLastUpdated(lastUpdated) });
+        }
+        return tStatus("open");
+
+      case "closingSoon":
+        if (prediction?.closesIn) {
+          if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
+            return tStatus("closingSoonLonger");
+          }
+          return tStatus("closingSoonIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
+        }
+        return tStatus("closingSoon");
+
+      case "closing":
+        return tStatus("justMissedIt");
+
+      case "closed":
+        if (prediction?.opensIn) {
+          if (prediction.opensIn.min === 0 && prediction.opensIn.max === 0) {
+            if (lastUpdated) {
+              return tStatus("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
+            }
+            return tStatus("closedLonger");
+          }
+          if (prediction.opensIn.min === prediction.opensIn.max) {
+            return tStatus("closedOpensApprox", { min: prediction.opensIn.min });
+          }
+          return tStatus("closedOpensRange", { min: prediction.opensIn.min, max: prediction.opensIn.max });
+        }
+        if (lastUpdated) {
+          return tStatus("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
+        }
+        return tStatus("closedLonger");
+
+      case "opening":
+        return tStatus("openingSoon");
+
+      case "construction":
+        if (prediction?.opensIn) {
+          const min = prediction.opensIn.min;
+          if (min > 24 * 60) {
+            const days = Math.floor(min / (24 * 60));
+            return tStatus("constructionDays", { days });
+          } else if (min >= 60) {
+            const hours = Math.floor(min / 60);
+            const mins = min % 60;
+            if (mins > 0) {
+              return tStatus("constructionHoursMinutes", { hours, mins });
+            }
+            return tStatus("constructionHours", { hours });
+          } else if (min > 0) {
+            return tStatus("constructionMinutes", { min });
+          }
+        }
+        return tStatus("constructionUnknown");
+
+      default:
+        return tStatus("statusUnknown");
+    }
+  }, [tStatus]);
 
   // Keep callback ref up to date
   useEffect(() => {
@@ -223,53 +295,69 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
     bridgeMarkersRef.current.forEach((m) => m.remove());
     bridgeMarkersRef.current = [];
 
+    // Icon size for map markers (28px inside 30px container)
+    const MAP_CONTAINER_SIZE = 30;
+    const MAP_ICON_SIZE = 28;
+    const BADGE_SIZE = 12;
+
     // Create markers for each bridge
     bridges.forEach((bridge: Bridge) => {
       const el = document.createElement("div");
       el.className = "bridge-marker-wrapper";
       el.style.cssText = `
-        width: 24px;
-        height: 24px;
+        width: ${MAP_CONTAINER_SIZE}px;
+        height: ${MAP_CONTAINER_SIZE}px;
         cursor: pointer;
       `;
 
       const pin = document.createElement("div");
       pin.className = "bridge-marker-pin";
 
-      // Set status color
-      const color =
-        bridge.status === "open"
-          ? "#22c55e"
-          : bridge.status === "closed"
-            ? "#ef4444"
-            : bridge.status === "closing"
-              ? "#ef4444"
-              : bridge.status === "closingSoon"
-                ? "#eab308"
-                : bridge.status === "opening"
-                  ? "#f97316"
-                  : bridge.status === "construction"
-                    ? "#ef4444"
-                    : "#6b7280";
-
+      // Dark circle container with thin dark gray border
       pin.style.cssText = `
-        width: 24px;
-        height: 24px;
+        width: ${MAP_CONTAINER_SIZE}px;
+        height: ${MAP_CONTAINER_SIZE}px;
         border-radius: 50%;
-        background-color: ${color};
-        border: 3px solid white;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        transition: transform 0.15s ease;
+        background-color: #0A0A0A;
+        border: 1px solid #1a1a1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        position: relative;
       `;
+
+      // Add the status icon using shared icon utility
+      pin.innerHTML = getStatusIconSvg(bridge.status, MAP_ICON_SIZE);
+
+      // Add warning badge for closingSoon (positioned at icon's bottom-right)
+      if (bridge.status === "closingSoon") {
+        const badge = document.createElement("div");
+        badge.style.cssText = `
+          position: absolute;
+          bottom: 1px;
+          right: 1px;
+          width: ${BADGE_SIZE}px;
+          height: ${BADGE_SIZE}px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `;
+        badge.innerHTML = getWarningBadgeSvg(BADGE_SIZE);
+        pin.appendChild(badge);
+      }
 
       el.appendChild(pin);
 
-      // Hover animation
+      // Hover animation matching vessel markers (scale 1.3 with increased drop shadow)
       el.addEventListener("mouseenter", () => {
         pin.style.transform = "scale(1.3)";
+        pin.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.6)";
       });
       el.addEventListener("mouseleave", () => {
         pin.style.transform = "scale(1)";
+        pin.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.4)";
       });
 
       // Create marker - bridges have higher z-index than vessels
@@ -616,6 +704,8 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   // Live counter for vessel "last seen" timestamp
   useEffect(() => {
     if (!selectedItem || selectedItem.type !== "vessel") {
+      // Reset counter when no vessel selected - safe to call here
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVesselSecondsAgo(0);
       return;
     }
@@ -680,122 +770,41 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
     }, 100);
   }, [mapLoaded, bridges, focusedRegion]);
 
-  const getStatusColor = (status: string): string => {
-    switch (status) {
-      case "open":
-        return "bg-green-500";
-      case "closed":
-        return "bg-red-500";
-      case "closing":
-        return "bg-red-500";
-      case "closingSoon":
-        return "bg-yellow-500";
-      case "opening":
-        return "bg-orange-500";
-      case "construction":
-        return "bg-red-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
-
   const getStatusText = (status: string): string => {
+    // Short display labels using translations
     switch (status) {
       case "open":
-        return "Open";
+        return tStatus("open");
       case "closed":
-        return "Closed";
+        return tStatus("closed");
       case "closing":
-        return "Closing";
+        return tStatus("closing");
       case "closingSoon":
-        return "Closing Soon";
+        return tStatus("closingSoon");
       case "opening":
-        return "Opening";
+        return tStatus("opening");
       case "construction":
-        return "Construction";
+        return tStatus("construction");
       default:
-        return "Unknown";
+        return tStatus("unknown");
     }
   };
 
   const getStatusTextColor = (status: string): string => {
+    // Using spec hex colors
     switch (status) {
       case "open":
-        return "text-green-400";
-      case "closed":
-        return "text-red-400";
-      case "closing":
-        return "text-red-400";
       case "closingSoon":
-        return "text-yellow-400";
-      case "opening":
-        return "text-orange-400";
-      case "construction":
-        return "text-red-400";
-      default:
-        return "text-gray-400";
-    }
-  };
-
-  // Generate dynamic info text based on status and prediction (matching iOS app)
-  const getInfoText = (status: string, prediction: BridgePrediction | null): string => {
-    switch (status) {
-      case "open":
-        return "Clear to cross";
-      case "closingSoon":
-        if (prediction?.closesIn) {
-          // Overdue: prediction has passed
-          if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
-            return "Taking longer than expected to close";
-          }
-          return `Closes in ${prediction.closesIn.min}-${prediction.closesIn.max}m`;
-        }
-        return "Prepare for closure";
-      case "closing":
-        return "Bridge is raising";
+        return "text-[#30D158]";
       case "closed":
-        if (prediction?.opensIn) {
-          // Overdue: prediction has passed
-          if (prediction.opensIn.min === 0 && prediction.opensIn.max === 0) {
-            return "Taking longer than expected to open";
-          }
-          if (prediction.opensIn.min === prediction.opensIn.max) {
-            return `Opens in ~${prediction.opensIn.min}m`;
-          }
-          return `Opens in ${prediction.opensIn.min}-${prediction.opensIn.max}m`;
-        }
-        return "Closed, unknown opening time";
-      case "opening":
-        // Bridge is actively lowering - no prediction needed
-        return "Will be open in a few moments";
+      case "closing":
       case "construction":
-        return "Closed for maintenance";
+        return "text-[#FF453A]";
+      case "opening":
+        return "text-[#FFD60A]";
       default:
-        return "Status unavailable";
+        return "text-[#98989D]";
     }
-  };
-
-  // Format last updated time
-  const formatLastUpdated = (isoString: string): string => {
-    const date = new Date(isoString);
-    const now = new Date();
-    const isToday = date.toDateString() === now.toDateString();
-
-    const timeStr = date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    }).toLowerCase();
-
-    if (isToday) {
-      return timeStr;
-    }
-
-    const dateStr = date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    });
-    return `${dateStr}, ${timeStr}`;
   };
 
   return (
@@ -816,7 +825,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-[var(--dark-bg)]/50 backdrop-blur-sm">
           <div className="bg-red-500/20 border border-red-500/50 rounded-xl px-4 py-3 text-red-300 text-sm">
-            Failed to load bridge data
+            {t("failedToLoad")}
           </div>
         </div>
       )}
@@ -832,9 +841,9 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
           }}
         >
           <div className="rounded-xl shadow-xl px-4 py-3 pointer-events-auto min-w-[200px] border border-white/10" style={{ background: 'rgba(10, 10, 10, 0.75)', backdropFilter: 'blur(12px)' }}>
-            {/* Status badge */}
+            {/* Status with Phosphor icon */}
             <div className="flex items-center gap-2 mb-2">
-              <div className={`w-2.5 h-2.5 rounded-full ${getStatusColor(selectedItem.status)}`} />
+              <BridgeStatusIcon status={selectedItem.status} size={18} />
               <span className={`text-xs font-semibold uppercase tracking-wide ${getStatusTextColor(selectedItem.status)}`}>
                 {getStatusText(selectedItem.status)}
               </span>
@@ -843,13 +852,13 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             <p className="font-semibold text-white text-sm">{selectedItem.name}</p>
             {/* Dynamic info text */}
             <p className="text-xs text-gray-300 mt-0.5">
-              {getInfoText(selectedItem.status, selectedItem.prediction)}
+              {getTranslatedStatusInfoText(selectedItem.status, selectedItem.prediction, selectedItem.lastUpdated)}
             </p>
             {/* Footer with region and last updated */}
             <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-white/10">
               <span className="text-[10px] text-gray-500">{selectedItem.region}</span>
               <span className="text-[10px] text-gray-500">
-                Changed at {formatLastUpdated(selectedItem.lastUpdated)}
+                {tStatus("changedAt", { time: formatLastUpdated(selectedItem.lastUpdated) })}
               </span>
             </div>
             <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px]" style={{ borderTopColor: 'rgba(10, 10, 10, 0.75)' }} />
@@ -873,21 +882,21 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
               <p className="font-semibold text-white text-sm truncate capitalize">{selectedItem.name.toLowerCase()}</p>
             </div>
             <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-xs">
-              <dt className="text-gray-500">Type</dt>
+              <dt className="text-gray-500">{t("vesselType")}</dt>
               <dd className="text-gray-300">{selectedItem.typeName}</dd>
-              <dt className="text-gray-500">Heading</dt>
+              <dt className="text-gray-500">{t("vesselHeading")}</dt>
               <dd className="text-gray-300">{selectedItem.heading != null ? `${Math.round(selectedItem.heading)}°` : "N/A"}</dd>
-              <dt className="text-gray-500">Speed</dt>
+              <dt className="text-gray-500">{t("vesselSpeed")}</dt>
               <dd className="text-gray-300">{formatSpeed(selectedItem.speedKnots)}</dd>
               {selectedItem.destination && (
                 <>
-                  <dt className="text-gray-500">Dest</dt>
+                  <dt className="text-gray-500">{t("vesselDest")}</dt>
                   <dd className="text-gray-300 truncate capitalize">{selectedItem.destination.toLowerCase()}</dd>
                 </>
               )}
               {selectedItem.dimensions && (
                 <>
-                  <dt className="text-gray-500">Size</dt>
+                  <dt className="text-gray-500">{t("vesselSize")}</dt>
                   <dd className="text-gray-300">{formatDimensions(selectedItem.dimensions)}</dd>
                 </>
               )}
@@ -895,7 +904,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             {/* Footer with source and live "last seen" counter */}
             <div className="flex items-center justify-between gap-2 mt-3 pt-2 border-t border-white/10">
               <span className="text-[10px] text-gray-500">{selectedItem.source}</span>
-              <span className="text-[10px] text-gray-500 tabular-nums">{vesselSecondsAgo}s ago</span>
+              <span className="text-[10px] text-gray-500 tabular-nums">{t("secondsAgo", { seconds: vesselSecondsAgo })}</span>
             </div>
             <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px]" style={{ borderTopColor: 'rgba(10, 10, 10, 0.75)' }} />
           </div>

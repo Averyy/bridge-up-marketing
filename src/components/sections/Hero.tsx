@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useBridges } from "@/lib/useBridges";
-import { Bridge } from "@/lib/bridges";
+import { BridgePrediction, formatLastUpdated } from "@/lib/bridges";
+import { BridgeStatusIcon } from "@/components/ui/BridgeStatusIcon";
 
 const container = {
   hidden: { opacity: 0 },
@@ -49,56 +50,9 @@ const rightPositions = [
   { position: "-right-20 sm:-right-10 lg:right-[8%] top-[80%] lg:top-[80%]", delay: 0.95, floatDuration: 5.5 },
 ];
 
-// Icons for different statuses
-const StatusIcons = {
-  open: (
-    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-  ),
-  closed: (
-    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  ),
-  closing: (
-    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  ),
-  closingSoon: (
-    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  ),
-  opening: (
-    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  ),
-  construction: (
-    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-    </svg>
-  ),
-  unknown: (
-    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  ),
-};
-
-// Background colors for different statuses
-function getStatusBg(status: string): string {
-  switch (status) {
-    case "open": return "bg-green-500";
-    case "closed": return "bg-red-500";
-    case "closing": return "bg-red-500";
-    case "closingSoon": return "bg-amber-500";
-    case "opening": return "bg-yellow-500";
-    case "construction": return "bg-red-500";
-    default: return "bg-gray-500";
-  }
+// Dark background for icon container
+function getStatusBg(): string {
+  return "bg-[#0A0A0A] border border-[#1a1a1a]";
 }
 
 export function Hero() {
@@ -106,72 +60,90 @@ export function Hero() {
   const t = useTranslations("hero");
   const tStatus = useTranslations("bridgeStatus");
 
-  // Status label for title
-  function getStatusLabel(status: string): string {
+  // Translated status info text - uses translation keys
+  function getTranslatedStatusInfoText(
+    status: string,
+    prediction: BridgePrediction | null,
+    lastUpdated?: string
+  ): string {
     switch (status) {
-      case "open": return tStatus("open");
-      case "closed": return tStatus("closed");
-      case "closing": return tStatus("closing");
-      case "closingSoon": return tStatus("closingSoon");
-      case "opening": return tStatus("opening");
-      case "construction": return tStatus("construction");
-      default: return tStatus("unknown");
+      case "open":
+        if (lastUpdated) {
+          return tStatus("openedAt", { time: formatLastUpdated(lastUpdated) });
+        }
+        return tStatus("open");
+
+      case "closingSoon":
+        if (prediction?.closesIn) {
+          if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
+            return tStatus("closingSoonLonger");
+          }
+          return tStatus("closingSoonIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
+        }
+        return tStatus("closingSoon");
+
+      case "closing":
+        return tStatus("justMissedIt");
+
+      case "closed":
+        if (prediction?.opensIn) {
+          if (prediction.opensIn.min === 0 && prediction.opensIn.max === 0) {
+            if (lastUpdated) {
+              return tStatus("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
+            }
+            return tStatus("closedLonger");
+          }
+          if (prediction.opensIn.min === prediction.opensIn.max) {
+            return tStatus("closedOpensApprox", { min: prediction.opensIn.min });
+          }
+          return tStatus("closedOpensRange", { min: prediction.opensIn.min, max: prediction.opensIn.max });
+        }
+        if (lastUpdated) {
+          return tStatus("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
+        }
+        return tStatus("closedLonger");
+
+      case "opening":
+        return tStatus("openingSoon");
+
+      case "construction":
+        if (prediction?.opensIn) {
+          const min = prediction.opensIn.min;
+          if (min > 24 * 60) {
+            const days = Math.floor(min / (24 * 60));
+            return tStatus("constructionDays", { days });
+          } else if (min >= 60) {
+            const hours = Math.floor(min / 60);
+            const mins = min % 60;
+            if (mins > 0) {
+              return tStatus("constructionHoursMinutes", { hours, mins });
+            }
+            return tStatus("constructionHours", { hours });
+          } else if (min > 0) {
+            return tStatus("constructionMinutes", { min });
+          }
+        }
+        return tStatus("constructionUnknown");
+
+      default:
+        return tStatus("statusUnknown");
     }
   }
 
-  // Generate subtitle based on status and prediction
-  function getSubtitle(bridge: Bridge): string {
-    const prediction = bridge.prediction;
-
-    if (bridge.status === "open") {
-      if (prediction?.closesIn) {
-        return tStatus("closesIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
-      }
-      return tStatus("clearToCross");
-    }
-
-    if (bridge.status === "closed" || bridge.status === "closing") {
-      if (prediction?.opensIn) {
-        return tStatus("opensIn", { min: prediction.opensIn.min, max: prediction.opensIn.max });
-      }
-      return tStatus("shallNotPass");
-    }
-
-    if (bridge.status === "closingSoon") {
-      if (prediction?.closesIn) {
-        return tStatus("closingIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
-      }
-      return tStatus("prepareForClosure");
-    }
-
-    if (bridge.status === "opening") {
-      if (prediction?.opensIn) {
-        return tStatus("opensIn", { min: prediction.opensIn.min, max: prediction.opensIn.max });
-      }
-      return tStatus("openingSoon");
-    }
-
-    if (bridge.status === "construction") {
-      return tStatus("maintenanceInProgress");
-    }
-
-    return tStatus("statusUnavailable");
-  }
-
-  // Fallback static cards for loading state
+  // Fallback static cards for loading state (using translated messages)
   const fallbackCards = {
     left: [
-      { id: "f1", name: "Highway 20", status: "open", subtitle: tStatus("clearToCross") },
-      { id: "f2", name: "Carlton St", status: "closed", subtitle: tStatus("shallNotPass") },
-      { id: "f3", name: "Glendale Ave", status: "closingSoon", subtitle: tStatus("closesIn", { min: 3, max: 7 }) },
-      { id: "f4", name: "Queenston St", status: "open", subtitle: tStatus("clearToCross") },
-      { id: "f5", name: "Lakeshore Rd", status: "open", subtitle: tStatus("clearToCross") },
+      { id: "f1", name: "Highway 20", status: "open", subtitle: tStatus("open") },
+      { id: "f2", name: "Carlton St", status: "closed", subtitle: tStatus("closedOpensRange", { min: 8, max: 12 }) },
+      { id: "f3", name: "Glendale Ave", status: "closingSoon", subtitle: tStatus("closingSoonIn", { min: 3, max: 7 }) },
+      { id: "f4", name: "Queenston St", status: "open", subtitle: tStatus("open") },
+      { id: "f5", name: "Lakeshore Rd", status: "open", subtitle: tStatus("open") },
     ],
     right: [
-      { id: "f6", name: "Victoria Upstream", status: "open", subtitle: tStatus("clearToCross") },
-      { id: "f7", name: "Victoria Downstream", status: "closed", subtitle: tStatus("shallNotPass") },
-      { id: "f8", name: "Ste-Catherine", status: "open", subtitle: tStatus("clearToCross") },
-      { id: "f9", name: "Clarence St", status: "open", subtitle: tStatus("clearToCross") },
+      { id: "f6", name: "Victoria Upstream", status: "open", subtitle: tStatus("open") },
+      { id: "f7", name: "Victoria Downstream", status: "closed", subtitle: tStatus("closedOpensRange", { min: 5, max: 9 }) },
+      { id: "f8", name: "Ste-Catherine", status: "open", subtitle: tStatus("open") },
+      { id: "f9", name: "Clarence St", status: "open", subtitle: tStatus("open") },
     ],
   };
 
@@ -189,7 +161,7 @@ export function Hero() {
         id: bridge.id,
         name: bridge.name,
         status: bridge.status,
-        subtitle: getSubtitle(bridge),
+        subtitle: getTranslatedStatusInfoText(bridge.status, bridge.prediction, bridge.lastUpdated),
         ...leftPositions[i % leftPositions.length],
       }))
     : fallbackCards.left.map((card, i) => ({
@@ -202,7 +174,7 @@ export function Hero() {
         id: bridge.id,
         name: bridge.name,
         status: bridge.status,
-        subtitle: getSubtitle(bridge),
+        subtitle: getTranslatedStatusInfoText(bridge.status, bridge.prediction, bridge.lastUpdated),
         ...rightPositions[i % rightPositions.length],
       }))
     : fallbackCards.right.map((card, i) => ({
@@ -326,12 +298,12 @@ export function Hero() {
                       className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
                     >
                       <div className="flex items-center gap-2 lg:gap-3">
-                        <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center shrink-0 ${getStatusBg(card.status)}`}>
-                          {StatusIcons[card.status as keyof typeof StatusIcons] || StatusIcons.unknown}
+                        <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center shrink-0 ${getStatusBg()}`}>
+                          <BridgeStatusIcon status={card.status} size={32} />
                         </div>
                         <div className="min-w-0">
                           <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">
-                            {card.name}: {getStatusLabel(card.status)}
+                            {card.name}
                           </p>
                           <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
                         </div>
@@ -372,12 +344,12 @@ export function Hero() {
                       className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
                     >
                       <div className="flex items-center gap-2 lg:gap-3">
-                        <div className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center shrink-0 ${getStatusBg(card.status)}`}>
-                          {StatusIcons[card.status as keyof typeof StatusIcons] || StatusIcons.unknown}
+                        <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center shrink-0 ${getStatusBg()}`}>
+                          <BridgeStatusIcon status={card.status} size={32} />
                         </div>
                         <div className="min-w-0">
                           <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">
-                            {card.name}: {getStatusLabel(card.status)}
+                            {card.name}
                           </p>
                           <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
                         </div>

@@ -178,6 +178,94 @@ export async function fetchBridges(): Promise<Bridge[]> {
   return parseBridgesFromApi(data);
 }
 
+// Format last updated time for display
+export function formatLastUpdated(isoString: string): string {
+  const date = new Date(isoString);
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+
+  const timeStr = date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).replace(" ", "").toLowerCase();
+
+  if (isToday) {
+    return timeStr;
+  }
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " " + timeStr;
+}
+
+// Generate status info text based on status and prediction (source of truth for all components)
+export function getStatusInfoText(
+  status: string,
+  prediction: BridgePrediction | null,
+  lastUpdated?: string
+): string {
+  switch (status) {
+    case "open":
+      if (lastUpdated) {
+        return `Opened ${formatLastUpdated(lastUpdated)}`;
+      }
+      return "Open";
+
+    case "closingSoon":
+      if (prediction?.closesIn) {
+        if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
+          return "Closing soon (longer than usual)";
+        }
+        return `Closing soon in ${prediction.closesIn.min}-${prediction.closesIn.max}m`;
+      }
+      return "Closing soon";
+
+    case "closing":
+      return "Just missed it, the bridge is closing";
+
+    case "closed":
+      if (prediction?.opensIn) {
+        if (prediction.opensIn.min === 0 && prediction.opensIn.max === 0) {
+          if (lastUpdated) {
+            return `Closed ${formatLastUpdated(lastUpdated)} (longer than usual)`;
+          }
+          return "Closed (longer than usual)";
+        }
+        if (prediction.opensIn.min === prediction.opensIn.max) {
+          return `Closed, opens in ~${prediction.opensIn.min}m`;
+        }
+        return `Closed, opens in ${prediction.opensIn.min}-${prediction.opensIn.max}m`;
+      }
+      if (lastUpdated) {
+        return `Closed ${formatLastUpdated(lastUpdated)} (longer than usual)`;
+      }
+      return "Closed (longer than usual)";
+
+    case "opening":
+      return "Will be open in a few moments";
+
+    case "construction":
+      if (prediction?.opensIn) {
+        const min = prediction.opensIn.min;
+        if (min > 24 * 60) {
+          const days = Math.floor(min / (24 * 60));
+          return `Closed for construction, opens in ${days}d`;
+        } else if (min >= 60) {
+          const hours = Math.floor(min / 60);
+          const mins = min % 60;
+          if (mins > 0) {
+            return `Closed for construction, opens in ${hours}h ${mins}m`;
+          }
+          return `Closed for construction, opens in ${hours}h`;
+        } else if (min > 0) {
+          return `Closed for construction, opens in ${min}m`;
+        }
+      }
+      return "Closed for unscheduled construction, unknown opening";
+
+    default:
+      return "Bridge status is unknown or unavailable";
+  }
+}
+
 // Group bridges by region for RegionCards
 export function groupBridgesByRegion(bridges: Bridge[]): Region[] {
   const regionOrder = ["st-catharines", "port-colborne", "montreal", "beauharnois", "kahnawake"];
