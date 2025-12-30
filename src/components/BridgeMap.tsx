@@ -5,10 +5,11 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useBridges } from "@/lib/useBridges";
 import { useBoats } from "@/lib/useBoats";
-import { Bridge, BridgePrediction, formatLastUpdated } from "@/lib/bridges";
+import { Bridge, BridgePrediction, UpcomingClosure, formatLastUpdated } from "@/lib/bridges";
 import { Vessel, formatSpeed, formatDimensions } from "@/lib/boats";
 import { useTranslations } from "next-intl";
 import { BridgeStatusIcon, getStatusIconSvg, getWarningBadgeSvg } from "@/components/ui/BridgeStatusIcon";
+import { useFloating, offset, flip, shift, autoUpdate, arrow, FloatingArrow } from "@floating-ui/react";
 
 interface SelectedBridge {
   type: "bridge";
@@ -17,6 +18,7 @@ interface SelectedBridge {
   status: string;
   lastUpdated: string;
   prediction: BridgePrediction | null;
+  upcomingClosure: UpcomingClosure | null;
   lng: number;
   lat: number;
 }
@@ -53,19 +55,51 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   const onRegionClearRef = useRef(onRegionClear);
   const hasSetInitialMobileViewRef = useRef(false);
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null);
-  const [cardPosition, setCardPosition] = useState({ x: 0, y: 0 });
   const [mapLoaded, setMapLoaded] = useState(false);
   const [vesselSecondsAgo, setVesselSecondsAgo] = useState(0);
+  const [arrowElement, setArrowElement] = useState<SVGSVGElement | null>(null);
+  const isClickPinnedRef = useRef(false); // Track if popup was opened via click (for mobile)
+  const selectedMarkerRef = useRef<HTMLElement | null>(null); // Track currently selected marker element
+
+  // Floating UI for popup positioning
+  const { refs, floatingStyles, context, isPositioned } = useFloating({
+    open: selectedItem !== null,
+    placement: "top",
+    middleware: [
+      offset(16), // 16px gap from marker
+      flip({
+        fallbackPlacements: ["bottom", "left", "right"],
+        padding: {
+          top: 80,      // Navbar height + buffer
+          bottom: typeof window !== "undefined" && window.innerWidth < 1024 ? 100 : 240,
+          left: 12,
+          right: 12,
+        },
+      }),
+      shift({
+        padding: {
+          top: 80,
+          bottom: typeof window !== "undefined" && window.innerWidth < 1024 ? 100 : 240,
+          left: 12,
+          right: 12,
+        },
+      }),
+      arrow({ element: arrowElement }),
+    ],
+    whileElementsMounted: autoUpdate,
+  });
   const { bridges, loading, error } = useBridges();
   const { vessels } = useBoats(true); // Always fetch vessels
   const t = useTranslations("bridges");
   const tStatus = useTranslations("bridgeStatus");
 
   // Translated status info text - uses translation keys
+  // Priority: upcomingClosure > prediction > fallback (matches iOS BridgeInfoGenerator)
   const getTranslatedStatusInfoText = useCallback((
     status: string,
     prediction: BridgePrediction | null,
-    lastUpdated?: string
+    lastUpdated?: string,
+    upcomingClosure?: UpcomingClosure | null
   ): string => {
     switch (status) {
       case "open":
@@ -75,12 +109,25 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         return tStatus("open");
 
       case "closingSoon":
+        // 1. Check upcoming_closures FIRST (highest priority - matches iOS)
+        if (upcomingClosure) {
+          if (upcomingClosure.isOverdue) {
+            const overdueTime = new Date(upcomingClosure.time);
+            const timeStr = overdueTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
+            return tStatus("closingSoonForTypeOverdue", { type: upcomingClosure.type, time: timeStr });
+          }
+          return tStatus("closingSoonForTypeIn", { type: upcomingClosure.type, minutes: upcomingClosure.minutesUntil });
+        }
+
+        // 2. Fall back to predicted (statistics-based)
         if (prediction?.closesIn) {
           if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
             return tStatus("closingSoonLonger");
           }
           return tStatus("closingSoonIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
         }
+
+        // 3. Default fallback
         return tStatus("closingSoon");
 
       case "closing":
@@ -154,18 +201,6 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
     return { closingSoon: closingSoonIds, closed: closedIds };
   }, [bridges]);
 
-  const updateCardPosition = useCallback(() => {
-    if (!map.current || !selectedItem) return;
-    const point = map.current.project([selectedItem.lng, selectedItem.lat]);
-    const containerRect = mapContainer.current?.getBoundingClientRect();
-    if (containerRect) {
-      setCardPosition({
-        x: containerRect.left + point.x,
-        y: containerRect.top + point.y,
-      });
-    }
-  }, [selectedItem]);
-
   // Initialize map
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -185,9 +220,19 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       if (!map.current) return;
       setMapLoaded(true);
 
-      // Close card when clicking on map
+      // Close card when clicking on map (handles both hover and click-pinned popups)
       map.current.on("click", () => {
+        // Reset z-index of previously selected marker
+        if (selectedMarkerRef.current) {
+          const prevMarker = selectedMarkerRef.current.closest('.mapboxgl-marker') as HTMLElement;
+          if (prevMarker) {
+            prevMarker.style.zIndex = prevMarker.dataset.originalZIndex || "2";
+          }
+        }
         setSelectedItem(null);
+        refs.setReference(null);
+        isClickPinnedRef.current = false;
+        selectedMarkerRef.current = null;
       });
 
       // Clear region selection when user manually interacts with map
@@ -285,7 +330,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       map.current?.remove();
       map.current = null;
     };
-  }, []);
+  }, [refs]);
 
   // Create/update bridge markers when bridges data changes
   useEffect(() => {
@@ -372,12 +417,29 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       const markerEl = marker.getElement();
       markerEl.style.zIndex = "2";
 
-      // Click handler
+      // Store original z-index for restoration
+      markerEl.dataset.originalZIndex = "2";
+
+      // Click handler - toggle behavior for mobile support
       el.addEventListener("click", (e) => {
         e.stopPropagation();
-        const rect = mapContainer.current?.getBoundingClientRect();
-        const point = map.current!.project([bridge.lng, bridge.lat]);
-        if (rect) {
+        // If clicking the same marker, close it
+        if (selectedMarkerRef.current === el) {
+          setSelectedItem(null);
+          refs.setReference(null);
+          isClickPinnedRef.current = false;
+          selectedMarkerRef.current = null;
+          markerEl.style.zIndex = "2"; // Reset z-index
+        } else {
+          // Reset previous marker's z-index
+          if (selectedMarkerRef.current) {
+            const prevMarker = selectedMarkerRef.current.closest('.mapboxgl-marker') as HTMLElement;
+            if (prevMarker) prevMarker.style.zIndex = prevMarker.dataset.originalZIndex || "2";
+          }
+          refs.setReference(el);
+          isClickPinnedRef.current = true; // Mark as click-opened
+          selectedMarkerRef.current = el;
+          markerEl.style.zIndex = "10"; // Bring to front
           setSelectedItem({
             type: "bridge",
             name: bridge.name,
@@ -385,19 +447,54 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             status: bridge.status,
             lastUpdated: bridge.lastUpdated,
             prediction: bridge.prediction,
+            upcomingClosure: bridge.upcomingClosure,
             lng: bridge.lng,
             lat: bridge.lat,
           });
-          setCardPosition({
-            x: rect.left + point.x,
-            y: rect.top + point.y,
+        }
+      });
+
+      // Hover handlers - for desktop
+      el.addEventListener("mouseenter", () => {
+        // Bring marker to front on hover
+        markerEl.style.zIndex = "10";
+        // Only show popup on hover if nothing is click-pinned, or if this is the pinned item
+        if (!isClickPinnedRef.current || selectedMarkerRef.current === el) {
+          refs.setReference(el);
+          selectedMarkerRef.current = el;
+          setSelectedItem({
+            type: "bridge",
+            name: bridge.name,
+            region: bridge.region,
+            status: bridge.status,
+            lastUpdated: bridge.lastUpdated,
+            prediction: bridge.prediction,
+            upcomingClosure: bridge.upcomingClosure,
+            lng: bridge.lng,
+            lat: bridge.lat,
           });
+        }
+      });
+
+      el.addEventListener("mouseleave", (e) => {
+        // Reset z-index if not the pinned item
+        if (selectedMarkerRef.current !== el || !isClickPinnedRef.current) {
+          markerEl.style.zIndex = "2";
+        }
+        // Only close on mouseleave if not click-pinned
+        if (!isClickPinnedRef.current) {
+          const relatedTarget = e.relatedTarget as HTMLElement;
+          if (!relatedTarget?.closest('[data-floating-popup]')) {
+            setSelectedItem(null);
+            refs.setReference(null);
+            selectedMarkerRef.current = null;
+          }
         }
       });
 
       bridgeMarkersRef.current.push(marker);
     });
-  }, [bridges, mapLoaded]);
+  }, [bridges, mapLoaded, refs]);
 
   // Create/update vessel markers when vessels data changes
   useEffect(() => {
@@ -595,12 +692,29 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       const markerEl = marker.getElement();
       markerEl.style.zIndex = "1";
 
-      // Click handler
+      // Store original z-index for restoration
+      markerEl.dataset.originalZIndex = "1";
+
+      // Click handler - toggle behavior for mobile support
       el.addEventListener("click", (e) => {
         e.stopPropagation();
-        const rect = mapContainer.current?.getBoundingClientRect();
-        const point = map.current!.project([vessel.lng, vessel.lat]);
-        if (rect) {
+        // If clicking the same marker, close it
+        if (selectedMarkerRef.current === el) {
+          setSelectedItem(null);
+          refs.setReference(null);
+          isClickPinnedRef.current = false;
+          selectedMarkerRef.current = null;
+          markerEl.style.zIndex = "1"; // Reset z-index
+        } else {
+          // Reset previous marker's z-index
+          if (selectedMarkerRef.current) {
+            const prevMarker = selectedMarkerRef.current.closest('.mapboxgl-marker') as HTMLElement;
+            if (prevMarker) prevMarker.style.zIndex = prevMarker.dataset.originalZIndex || "1";
+          }
+          refs.setReference(el);
+          isClickPinnedRef.current = true; // Mark as click-opened
+          selectedMarkerRef.current = el;
+          markerEl.style.zIndex = "10"; // Bring to front
           setSelectedItem({
             type: "vessel",
             name: vessel.name,
@@ -615,29 +729,54 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             lng: vessel.lng,
             lat: vessel.lat,
           });
-          setCardPosition({
-            x: rect.left + point.x,
-            y: rect.top + point.y,
+        }
+      });
+
+      // Hover handlers - for desktop
+      el.addEventListener("mouseenter", () => {
+        // Bring marker to front on hover
+        markerEl.style.zIndex = "10";
+        // Only show popup on hover if nothing is click-pinned, or if this is the pinned item
+        if (!isClickPinnedRef.current || selectedMarkerRef.current === el) {
+          refs.setReference(el);
+          selectedMarkerRef.current = el;
+          setSelectedItem({
+            type: "vessel",
+            name: vessel.name,
+            emoji: vessel.emoji,
+            typeName: vessel.typeName,
+            speedKnots: vessel.speedKnots,
+            destination: vessel.destination,
+            dimensions: vessel.dimensions,
+            heading: vessel.heading,
+            source: vessel.source,
+            lastSeen: vessel.lastSeen,
+            lng: vessel.lng,
+            lat: vessel.lat,
           });
+        }
+      });
+
+      el.addEventListener("mouseleave", (e) => {
+        // Reset z-index if not the pinned item
+        if (selectedMarkerRef.current !== el || !isClickPinnedRef.current) {
+          markerEl.style.zIndex = "1";
+        }
+        // Only close on mouseleave if not click-pinned
+        if (!isClickPinnedRef.current) {
+          const relatedTarget = e.relatedTarget as HTMLElement;
+          if (!relatedTarget?.closest('[data-floating-popup]')) {
+            setSelectedItem(null);
+            refs.setReference(null);
+            selectedMarkerRef.current = null;
+          }
         }
       });
 
       vesselMarkersRef.current.push(marker);
     });
-  }, [vessels, mapLoaded, getResponsibleVesselIds]);
+  }, [vessels, mapLoaded, getResponsibleVesselIds, refs]);
 
-  useEffect(() => {
-    if (!map.current || !selectedItem) return;
-
-    updateCardPosition();
-
-    const handleMove = () => updateCardPosition();
-    map.current.on("move", handleMove);
-
-    return () => {
-      map.current?.off("move", handleMove);
-    };
-  }, [selectedItem, updateCardPosition]);
 
   // Zoom to region when focusedRegion changes
   useEffect(() => {
@@ -654,7 +793,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
     lastAppliedRegionRef.current = focusedRegion;
 
     // Close any open popup - intentional: popup should close when switching regions
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setSelectedItem(null);
 
     // Calculate bounds for the region
@@ -705,7 +844,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   useEffect(() => {
     if (!selectedItem || selectedItem.type !== "vessel") {
       // Reset counter when no vessel selected - safe to call here
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setVesselSecondsAgo(0);
       return;
     }
@@ -833,17 +972,33 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       {/* Bridge popup card */}
       {selectedItem && selectedItem.type === "bridge" && (
         <div
-          className="fixed z-50 pointer-events-none"
+           
+          ref={refs.setFloating}
+          data-floating-popup
+          className="z-50"
           style={{
-            left: cardPosition.x,
-            top: cardPosition.y - 16,
-            transform: "translate(-50%, -100%)",
+            ...floatingStyles,
+            // Hide until positioned to prevent flash in top-left
+            visibility: isPositioned ? 'visible' : 'hidden',
+          }}
+          onMouseEnter={() => {
+            // Keep popup open when hovering over it
+          }}
+          onMouseLeave={() => {
+            // Only close on mouseleave if not click-pinned (for mobile support)
+            if (!isClickPinnedRef.current) {
+              setSelectedItem(null);
+              refs.setReference(null);
+              selectedMarkerRef.current = null;
+            }
           }}
         >
-          <div className="rounded-xl shadow-xl px-4 py-3 pointer-events-auto min-w-[200px] border border-white/10" style={{ background: 'rgba(10, 10, 10, 0.75)', backdropFilter: 'blur(12px)' }}>
+          <div className="rounded-xl shadow-xl px-4 py-3 min-w-[200px] border border-white/10" style={{ background: 'rgba(10, 10, 10, 0.75)', backdropFilter: 'blur(12px)' }}>
             {/* Status with Phosphor icon */}
             <div className="flex items-center gap-2 mb-2">
-              <BridgeStatusIcon status={selectedItem.status} size={18} />
+              <div style={selectedItem.status === "closingSoon" ? { transform: "translateY(3px)" } : undefined}>
+                <BridgeStatusIcon status={selectedItem.status} size={18} />
+              </div>
               <span className={`text-xs font-semibold uppercase tracking-wide ${getStatusTextColor(selectedItem.status)}`}>
                 {getStatusText(selectedItem.status)}
               </span>
@@ -852,7 +1007,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             <p className="font-semibold text-white text-sm">{selectedItem.name}</p>
             {/* Dynamic info text */}
             <p className="text-xs text-gray-300 mt-0.5">
-              {getTranslatedStatusInfoText(selectedItem.status, selectedItem.prediction, selectedItem.lastUpdated)}
+              {getTranslatedStatusInfoText(selectedItem.status, selectedItem.prediction, selectedItem.lastUpdated, selectedItem.upcomingClosure)}
             </p>
             {/* Footer with region and last updated */}
             <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-white/10">
@@ -861,7 +1016,13 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
                 {tStatus("changedAt", { time: formatLastUpdated(selectedItem.lastUpdated) })}
               </span>
             </div>
-            <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px]" style={{ borderTopColor: 'rgba(10, 10, 10, 0.75)' }} />
+            <FloatingArrow
+              ref={setArrowElement}
+              context={context}
+              fill="rgba(10, 10, 10, 0.75)"
+              width={16}
+              height={8}
+            />
           </div>
         </div>
       )}
@@ -869,14 +1030,28 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       {/* Vessel popup card */}
       {selectedItem && selectedItem.type === "vessel" && (
         <div
-          className="fixed z-50 pointer-events-none"
+          // eslint-disable-next-line react-hooks/refs
+          ref={refs.setFloating}
+          data-floating-popup
+          className="z-50"
           style={{
-            left: cardPosition.x,
-            top: cardPosition.y - 16,
-            transform: "translate(-50%, -100%)",
+            ...floatingStyles,
+            // Hide until positioned to prevent flash in top-left
+            visibility: isPositioned ? 'visible' : 'hidden',
+          }}
+          onMouseEnter={() => {
+            // Keep popup open when hovering over it
+          }}
+          onMouseLeave={() => {
+            // Only close on mouseleave if not click-pinned (for mobile support)
+            if (!isClickPinnedRef.current) {
+              setSelectedItem(null);
+              refs.setReference(null);
+              selectedMarkerRef.current = null;
+            }
           }}
         >
-          <div className="rounded-xl shadow-xl px-4 py-3 pointer-events-auto min-w-[200px] max-w-[280px] border border-white/10" style={{ background: 'rgba(10, 10, 10, 0.75)', backdropFilter: 'blur(12px)' }}>
+          <div className="rounded-xl shadow-xl px-4 py-3 min-w-[200px] max-w-[280px] border border-white/10" style={{ background: 'rgba(10, 10, 10, 0.75)', backdropFilter: 'blur(12px)' }}>
             <div className="flex items-center gap-2">
               <span className="text-sm flex-shrink-0">{selectedItem.emoji}</span>
               <p className="font-semibold text-white text-sm truncate capitalize">{selectedItem.name.toLowerCase()}</p>
@@ -906,7 +1081,13 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
               <span className="text-[10px] text-gray-500">{selectedItem.source}</span>
               <span className="text-[10px] text-gray-500 tabular-nums">{t("secondsAgo", { seconds: vesselSecondsAgo })}</span>
             </div>
-            <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px]" style={{ borderTopColor: 'rgba(10, 10, 10, 0.75)' }} />
+            <FloatingArrow
+              ref={setArrowElement}
+              context={context}
+              fill="rgba(10, 10, 10, 0.75)"
+              width={16}
+              height={8}
+            />
           </div>
         </div>
       )}

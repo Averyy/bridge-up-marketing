@@ -17,10 +17,27 @@ export interface BridgePrediction {
   closesIn?: { min: number; max: number };
 }
 
+// Upcoming closure info (from API)
+export interface UpcomingClosure {
+  type: string;
+  time: string;
+  minutesUntil: number; // Calculated from time
+  isOverdue: boolean;   // true if time has passed
+}
+
 // Raw prediction from API (timestamps)
 interface RawPrediction {
   lower: string;
   upper: string;
+}
+
+// Raw upcoming closure from API
+interface RawUpcomingClosure {
+  type: string;
+  time: string;
+  longer: boolean;
+  end_time: string | null;
+  expected_duration_minutes: number;
 }
 
 export interface BridgeStatic {
@@ -34,7 +51,7 @@ export interface BridgeLive {
   status: "Open" | "Closed" | "Closing soon" | "Opening" | "Construction";
   last_updated: string;
   predicted: RawPrediction | null;
-  upcoming_closures: unknown[];
+  upcoming_closures: RawUpcomingClosure[];
   responsible_vessel_mmsi: number | null;
 }
 
@@ -67,6 +84,7 @@ export interface Bridge {
   status: "open" | "closed" | "closing" | "closingSoon" | "opening" | "construction" | "unknown";
   lastUpdated: string;
   prediction: BridgePrediction | null;
+  upcomingClosure: UpcomingClosure | null;
   responsibleVesselMmsi: number | null;
 }
 
@@ -148,6 +166,37 @@ function parsePrediction(
   return null;
 }
 
+// Parse upcoming closure from API (only first one, only if < 60 min away or overdue)
+function parseUpcomingClosure(
+  raw: RawUpcomingClosure[] | null
+): UpcomingClosure | null {
+  if (!raw || raw.length === 0) return null;
+
+  const closure = raw[0];
+  const now = new Date();
+  const closureTime = new Date(closure.time);
+  const minutesUntil = Math.round((closureTime.getTime() - now.getTime()) / 60000);
+  const isOverdue = minutesUntil < 0;
+
+  // Only include if overdue or < 60 min away (matches iOS logic)
+  if (!isOverdue && minutesUntil >= 60) return null;
+
+  // Map closure type to display name (matches iOS BridgeInfoGenerator)
+  let displayType = closure.type;
+  if (closure.type === "Commercial Vessel" || closure.type === "Pleasure Craft" || closure.type === "Next Arrival") {
+    displayType = "a boat";
+  } else if (closure.type === "Construction") {
+    displayType = "construction";
+  }
+
+  return {
+    type: displayType,
+    time: closure.time,
+    minutesUntil: Math.abs(minutesUntil),
+    isOverdue,
+  };
+}
+
 // Parse bridges from API response (used by both REST and WebSocket)
 export function parseBridgesFromApi(data: BridgesApiResponse): Bridge[] {
   return Object.entries(data.bridges).map(([id, bridge]) => ({
@@ -160,6 +209,7 @@ export function parseBridgesFromApi(data: BridgesApiResponse): Bridge[] {
     status: normalizeStatus(bridge.live.status),
     lastUpdated: bridge.live.last_updated,
     prediction: parsePrediction(bridge.live.predicted, bridge.live.status),
+    upcomingClosure: parseUpcomingClosure(bridge.live.upcoming_closures),
     responsibleVesselMmsi: bridge.live.responsible_vessel_mmsi ?? null,
   }));
 }
@@ -197,10 +247,12 @@ export function formatLastUpdated(isoString: string): string {
 }
 
 // Generate status info text based on status and prediction (source of truth for all components)
+// Priority: upcomingClosure > prediction > fallback (matches iOS BridgeInfoGenerator)
 export function getStatusInfoText(
   status: string,
   prediction: BridgePrediction | null,
-  lastUpdated?: string
+  lastUpdated?: string,
+  upcomingClosure?: UpcomingClosure | null
 ): string {
   switch (status) {
     case "open":
@@ -210,12 +262,27 @@ export function getStatusInfoText(
       return "Open";
 
     case "closingSoon":
+      // 1. Check upcoming_closures FIRST (highest priority - matches iOS)
+      if (upcomingClosure) {
+        if (upcomingClosure.isOverdue) {
+          // Closure time has passed
+          const overdueTime = new Date(upcomingClosure.time);
+          const timeStr = overdueTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
+          return `Closing soon for ${upcomingClosure.type} (was expected at ${timeStr})`;
+        }
+        // Closure time is in future and < 60 min away
+        return `Closing soon for ${upcomingClosure.type} in about ${upcomingClosure.minutesUntil}m`;
+      }
+
+      // 2. Fall back to predicted (statistics-based)
       if (prediction?.closesIn) {
         if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
           return "Closing soon (longer than usual)";
         }
         return `Closing soon in ${prediction.closesIn.min}-${prediction.closesIn.max}m`;
       }
+
+      // 3. Default fallback
       return "Closing soon";
 
     case "closing":

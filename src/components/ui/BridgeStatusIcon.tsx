@@ -130,6 +130,27 @@ export function getWarningBadgeSvg(size: number = 14): string {
   </svg>`;
 }
 
+/**
+ * Generate complete closingSoon icon HTML (icon + badge)
+ */
+export function getClosingSoonIconHtml(iconSize: number, badgeSize: number): string {
+  const color = STATUS_COLORS.open; // closingSoon uses green like open
+  const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${iconSize}" height="${iconSize}" viewBox="0 0 256 256">
+    <path fill="${color}" opacity="${RING_OPACITY}" d="${SVG_PATHS.circleRing}"/>
+    <g transform="translate(19.2, 19.2) scale(0.85)">
+      <path fill="${color}" d="${SVG_PATHS.checkmark}"/>
+    </g>
+  </svg>`;
+  const badgeSvg = getWarningBadgeSvg(badgeSize);
+
+  return `<div style="position: relative; display: inline-flex; width: ${iconSize}px; height: ${iconSize}px;">
+    ${iconSvg}
+    <div style="position: absolute; bottom: 0; right: 0; width: ${badgeSize}px; height: ${badgeSize}px; display: flex; align-items: center; justify-content: center;">
+      ${badgeSvg}
+    </div>
+  </div>`;
+}
+
 interface BridgeStatusIconProps {
   status: string;
   size?: number;
@@ -138,7 +159,7 @@ interface BridgeStatusIconProps {
 
 /**
  * Bridge status icon React component
- * Uses the same SVG paths as the map markers for consistency
+ * Uses the same SVG/HTML generation as map markers for consistency
  * Circle parts at 60% opacity, inner icons at full opacity
  */
 export function BridgeStatusIcon({
@@ -146,36 +167,18 @@ export function BridgeStatusIcon({
   size = 24,
   className = "",
 }: BridgeStatusIconProps): React.ReactElement {
-  const color = getStatusIconColor(status);
-
-  // For closingSoon, we need a composite icon with warning badge
+  // For closingSoon, use the shared HTML generator (same as map pins)
   if (status === "closingSoon") {
-    const badgeSize = Math.round(size * 0.55);
-    const badgeOffset = Math.round(size * 0.02);
-
+    const badgeSize = Math.round(size * 0.43);
     return (
-      <div className={`relative inline-flex ${className}`} style={{ width: size, height: size }}>
-        <svg width={size} height={size} viewBox="0 0 256 256">
-          <path fill={color} opacity={RING_OPACITY} d={SVG_PATHS.circleRing} />
-          <g transform="translate(19.2, 19.2) scale(0.85)">
-            <path fill={color} d={SVG_PATHS.checkmark} />
-          </g>
-        </svg>
-        <div
-          className="absolute flex items-center justify-center"
-          style={{
-            width: badgeSize,
-            height: badgeSize,
-            bottom: -badgeOffset,
-            right: -badgeOffset,
-          }}
-          dangerouslySetInnerHTML={{ __html: getWarningBadgeSvg(badgeSize) }}
-        />
-      </div>
+      <div
+        className={className}
+        dangerouslySetInnerHTML={{ __html: getClosingSoonIconHtml(size, badgeSize) }}
+      />
     );
   }
 
-  // For all other statuses, render inline SVG
+  // For all other statuses, use shared SVG generator
   return (
     <div
       className={className}

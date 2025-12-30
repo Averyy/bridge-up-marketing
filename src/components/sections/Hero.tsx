@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useBridges } from "@/lib/useBridges";
-import { BridgePrediction, formatLastUpdated } from "@/lib/bridges";
+import { BridgePrediction, UpcomingClosure, formatLastUpdated } from "@/lib/bridges";
 import { BridgeStatusIcon } from "@/components/ui/BridgeStatusIcon";
 
 const container = {
@@ -61,10 +61,12 @@ export function Hero() {
   const tStatus = useTranslations("bridgeStatus");
 
   // Translated status info text - uses translation keys
+  // Priority: upcomingClosure > prediction > fallback (matches iOS BridgeInfoGenerator)
   function getTranslatedStatusInfoText(
     status: string,
     prediction: BridgePrediction | null,
-    lastUpdated?: string
+    lastUpdated?: string,
+    upcomingClosure?: UpcomingClosure | null
   ): string {
     switch (status) {
       case "open":
@@ -74,12 +76,25 @@ export function Hero() {
         return tStatus("open");
 
       case "closingSoon":
+        // 1. Check upcoming_closures FIRST (highest priority - matches iOS)
+        if (upcomingClosure) {
+          if (upcomingClosure.isOverdue) {
+            const overdueTime = new Date(upcomingClosure.time);
+            const timeStr = overdueTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
+            return tStatus("closingSoonForTypeOverdue", { type: upcomingClosure.type, time: timeStr });
+          }
+          return tStatus("closingSoonForTypeIn", { type: upcomingClosure.type, minutes: upcomingClosure.minutesUntil });
+        }
+
+        // 2. Fall back to predicted (statistics-based)
         if (prediction?.closesIn) {
           if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
             return tStatus("closingSoonLonger");
           }
           return tStatus("closingSoonIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
         }
+
+        // 3. Default fallback
         return tStatus("closingSoon");
 
       case "closing":
@@ -161,7 +176,7 @@ export function Hero() {
         id: bridge.id,
         name: bridge.name,
         status: bridge.status,
-        subtitle: getTranslatedStatusInfoText(bridge.status, bridge.prediction, bridge.lastUpdated),
+        subtitle: getTranslatedStatusInfoText(bridge.status, bridge.prediction, bridge.lastUpdated, bridge.upcomingClosure),
         ...leftPositions[i % leftPositions.length],
       }))
     : fallbackCards.left.map((card, i) => ({
@@ -174,7 +189,7 @@ export function Hero() {
         id: bridge.id,
         name: bridge.name,
         status: bridge.status,
-        subtitle: getTranslatedStatusInfoText(bridge.status, bridge.prediction, bridge.lastUpdated),
+        subtitle: getTranslatedStatusInfoText(bridge.status, bridge.prediction, bridge.lastUpdated, bridge.upcomingClosure),
         ...rightPositions[i % rightPositions.length],
       }))
     : fallbackCards.right.map((card, i) => ({
@@ -299,7 +314,9 @@ export function Hero() {
                     >
                       <div className="flex items-center gap-2 lg:gap-3">
                         <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center shrink-0 ${getStatusBg()}`}>
-                          <BridgeStatusIcon status={card.status} size={32} />
+                          <div style={card.status === "closingSoon" ? { transform: "translateY(3px)" } : undefined}>
+                            <BridgeStatusIcon status={card.status} size={32} />
+                          </div>
                         </div>
                         <div className="min-w-0">
                           <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">
@@ -345,7 +362,9 @@ export function Hero() {
                     >
                       <div className="flex items-center gap-2 lg:gap-3">
                         <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center shrink-0 ${getStatusBg()}`}>
-                          <BridgeStatusIcon status={card.status} size={32} />
+                          <div style={card.status === "closingSoon" ? { transform: "translateY(3px)" } : undefined}>
+                            <BridgeStatusIcon status={card.status} size={32} />
+                          </div>
                         </div>
                         <div className="min-w-0">
                           <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">

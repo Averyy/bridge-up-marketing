@@ -11,29 +11,37 @@ interface StatusStyle {
   text: string;
 }
 
+// Status colors from iOS app spec
 function getStatusColors(status: string, isGlass: boolean): StatusStyle {
   const colors = {
+    // Open: #30D158
     open: isGlass
-      ? { bg: "bg-green-500/20", text: "text-green-400" }
-      : { bg: "bg-green-500/15", text: "text-green-600" },
+      ? { bg: "bg-[#30D158]/20", text: "text-[#30D158]" }
+      : { bg: "bg-[#30D158]/15", text: "text-[#30D158]" },
+    // Closed: #FF453A
     closed: isGlass
-      ? { bg: "bg-red-500/20", text: "text-red-400" }
-      : { bg: "bg-red-500/15", text: "text-red-600" },
+      ? { bg: "bg-[#FF453A]/20", text: "text-[#FF453A]" }
+      : { bg: "bg-[#FF453A]/15", text: "text-[#FF453A]" },
+    // Closing: #FF453A
     closing: isGlass
-      ? { bg: "bg-red-500/20", text: "text-red-400" }
-      : { bg: "bg-red-500/15", text: "text-red-600" },
+      ? { bg: "bg-[#FF453A]/20", text: "text-[#FF453A]" }
+      : { bg: "bg-[#FF453A]/15", text: "text-[#FF453A]" },
+    // Closing Soon: #30D158 (green base, like open)
     closingSoon: isGlass
-      ? { bg: "bg-amber-500/20", text: "text-amber-400" }
-      : { bg: "bg-amber-500/15", text: "text-amber-600" },
+      ? { bg: "bg-[#30D158]/20", text: "text-[#30D158]" }
+      : { bg: "bg-[#30D158]/15", text: "text-[#30D158]" },
+    // Opening: #FFD60A
     opening: isGlass
-      ? { bg: "bg-yellow-500/20", text: "text-yellow-400" }
-      : { bg: "bg-yellow-500/15", text: "text-yellow-600" },
+      ? { bg: "bg-[#FFD60A]/20", text: "text-[#FFD60A]" }
+      : { bg: "bg-[#FFD60A]/15", text: "text-[#FFD60A]" },
+    // Construction: #FF453A
     construction: isGlass
-      ? { bg: "bg-red-500/20", text: "text-red-400" }
-      : { bg: "bg-red-500/15", text: "text-red-600" },
+      ? { bg: "bg-[#FF453A]/20", text: "text-[#FF453A]" }
+      : { bg: "bg-[#FF453A]/15", text: "text-[#FF453A]" },
+    // Unknown: #98989D
     unknown: isGlass
-      ? { bg: "bg-gray-500/20", text: "text-gray-400" }
-      : { bg: "bg-gray-500/15", text: "text-gray-600" },
+      ? { bg: "bg-[#98989D]/20", text: "text-[#98989D]" }
+      : { bg: "bg-[#98989D]/15", text: "text-[#98989D]" },
   };
   return colors[status as keyof typeof colors] || colors.unknown;
 }
