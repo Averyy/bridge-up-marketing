@@ -336,6 +336,15 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   useEffect(() => {
     if (!map.current || !mapLoaded || bridges.length === 0) return;
 
+    // Close popup when markers are recreated to prevent stale reference issues
+    // (which causes popup to jump to top-left corner)
+    if (bridgeMarkersRef.current.length > 0 && selectedItem?.type === "bridge") {
+      setSelectedItem(null);
+      refs.setReference(null);
+      isClickPinnedRef.current = false;
+      selectedMarkerRef.current = null;
+    }
+
     // Clear existing bridge markers
     bridgeMarkersRef.current.forEach((m) => m.remove());
     bridgeMarkersRef.current = [];
@@ -454,8 +463,11 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         }
       });
 
-      // Hover handlers - for desktop
-      el.addEventListener("mouseenter", () => {
+      // Hover handlers using Pointer Events (pointerType distinguishes mouse vs touch)
+      el.addEventListener("pointerenter", (e: PointerEvent) => {
+        // Only handle mouse hover, not touch (touch uses click to toggle)
+        if (e.pointerType !== "mouse") return;
+
         // Bring marker to front on hover
         markerEl.style.zIndex = "10";
         // Only show popup on hover if nothing is click-pinned, or if this is the pinned item
@@ -476,7 +488,10 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         }
       });
 
-      el.addEventListener("mouseleave", (e) => {
+      el.addEventListener("pointerleave", (e: PointerEvent) => {
+        // Only handle mouse hover, not touch
+        if (e.pointerType !== "mouse") return;
+
         // Reset z-index if not the pinned item
         if (selectedMarkerRef.current !== el || !isClickPinnedRef.current) {
           markerEl.style.zIndex = "2";
@@ -494,11 +509,21 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
 
       bridgeMarkersRef.current.push(marker);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- selectedItem checked via ref pattern to avoid infinite loop
   }, [bridges, mapLoaded, refs]);
 
   // Create/update vessel markers when vessels data changes
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
+
+    // Close popup when markers are recreated to prevent stale reference issues
+    // (which causes popup to jump to top-left corner)
+    if (vesselMarkersRef.current.length > 0 && selectedItem?.type === "vessel") {
+      setSelectedItem(null);
+      refs.setReference(null);
+      isClickPinnedRef.current = false;
+      selectedMarkerRef.current = null;
+    }
 
     // Clear existing vessel markers
     vesselMarkersRef.current.forEach((m) => m.remove());
@@ -732,8 +757,11 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         }
       });
 
-      // Hover handlers - for desktop
-      el.addEventListener("mouseenter", () => {
+      // Hover handlers using Pointer Events (pointerType distinguishes mouse vs touch)
+      el.addEventListener("pointerenter", (e: PointerEvent) => {
+        // Only handle mouse hover, not touch (touch uses click to toggle)
+        if (e.pointerType !== "mouse") return;
+
         // Bring marker to front on hover
         markerEl.style.zIndex = "10";
         // Only show popup on hover if nothing is click-pinned, or if this is the pinned item
@@ -757,7 +785,10 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         }
       });
 
-      el.addEventListener("mouseleave", (e) => {
+      el.addEventListener("pointerleave", (e: PointerEvent) => {
+        // Only handle mouse hover, not touch
+        if (e.pointerType !== "mouse") return;
+
         // Reset z-index if not the pinned item
         if (selectedMarkerRef.current !== el || !isClickPinnedRef.current) {
           markerEl.style.zIndex = "1";
@@ -775,6 +806,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
 
       vesselMarkersRef.current.push(marker);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- selectedItem checked via ref pattern to avoid infinite loop
   }, [vessels, mapLoaded, getResponsibleVesselIds, refs]);
 
 
@@ -981,12 +1013,9 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             // Hide until positioned to prevent flash in top-left
             visibility: isPositioned ? 'visible' : 'hidden',
           }}
-          onMouseEnter={() => {
-            // Keep popup open when hovering over it
-          }}
-          onMouseLeave={() => {
-            // Only close on mouseleave if not click-pinned (for mobile support)
-            if (!isClickPinnedRef.current) {
+          onPointerLeave={(e) => {
+            // Only close for mouse hover (not touch) and if not click-pinned
+            if (e.pointerType === "mouse" && !isClickPinnedRef.current) {
               setSelectedItem(null);
               refs.setReference(null);
               selectedMarkerRef.current = null;
@@ -1039,12 +1068,9 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             // Hide until positioned to prevent flash in top-left
             visibility: isPositioned ? 'visible' : 'hidden',
           }}
-          onMouseEnter={() => {
-            // Keep popup open when hovering over it
-          }}
-          onMouseLeave={() => {
-            // Only close on mouseleave if not click-pinned (for mobile support)
-            if (!isClickPinnedRef.current) {
+          onPointerLeave={(e) => {
+            // Only close for mouse hover (not touch) and if not click-pinned
+            if (e.pointerType === "mouse" && !isClickPinnedRef.current) {
               setSelectedItem(null);
               refs.setReference(null);
               selectedMarkerRef.current = null;

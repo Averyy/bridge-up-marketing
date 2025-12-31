@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/layout";
 import { RegionCards } from "@/components/RegionCards";
@@ -22,6 +22,9 @@ function BridgesMapContent() {
   const searchParams = useSearchParams();
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
   const { regions, loading } = useBridges();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   // Read region from URL on mount
   useEffect(() => {
@@ -31,6 +34,36 @@ function BridgesMapContent() {
       setTimeout(() => setFocusedRegion(region), 500);
     }
   }, [searchParams]);
+
+  // Update scroll shadow indicators
+  const updateScrollIndicators = useCallback((): void => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    setCanScrollLeft(scrollLeft > 2);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 2);
+  }, []);
+
+  // Set up scroll listener for mobile region buttons
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    // Initial check
+    updateScrollIndicators();
+
+    // Listen for scroll
+    container.addEventListener("scroll", updateScrollIndicators, { passive: true });
+
+    // Also check on resize
+    window.addEventListener("resize", updateScrollIndicators);
+
+    return () => {
+      container.removeEventListener("scroll", updateScrollIndicators);
+      window.removeEventListener("resize", updateScrollIndicators);
+    };
+  }, [updateScrollIndicators, regions]);
 
   const handleRegionClick = (regionId: string): void => {
     // Toggle selection - clicking same region deselects
@@ -49,9 +82,23 @@ function BridgesMapContent() {
       </div>
 
       {/* Mobile/Tablet: Region tags - horizontal scroll */}
-      <div className="absolute bottom-4 left-0 right-0 pointer-events-none z-10 lg:hidden">
-        <div>
-          <div className="flex gap-2 overflow-x-auto pb-2 pl-4 scrollbar-hide">
+      <div className="absolute bottom-4 left-0 right-0 z-10 lg:hidden">
+        <div className="relative">
+          {/* Left shadow indicator - height matches buttons (py-2.5 + text-sm + border = ~42px) */}
+          <div
+            className="absolute left-0 top-0 w-8 bg-gradient-to-r from-black/60 to-transparent z-10 pointer-events-none transition-opacity duration-200"
+            style={{ opacity: canScrollLeft ? 1 : 0, height: "42px" }}
+          />
+          {/* Right shadow indicator - height matches buttons */}
+          <div
+            className="absolute right-0 top-0 w-8 bg-gradient-to-l from-black/60 to-transparent z-10 pointer-events-none transition-opacity duration-200"
+            style={{ opacity: canScrollRight ? 1 : 0, height: "42px" }}
+          />
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-2 overflow-x-auto pb-2 px-4 scrollbar-hide"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
             {loading ? (
               // Loading skeleton for region pills
               Array.from({ length: 5 }).map((_, i) => (
@@ -68,7 +115,7 @@ function BridgesMapContent() {
                   <button
                     key={area.id}
                     onClick={() => handleRegionClick(area.id)}
-                    className={`flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-medium transition-all backdrop-blur-xl border pointer-events-auto ${
+                    className={`flex-shrink-0 px-4 py-2.5 rounded-full text-sm font-medium transition-all backdrop-blur-xl border ${
                       isSelected
                         ? "bg-white/30 border-white/50 text-white"
                         : "bg-white/10 border-white/20 text-white/90 hover:bg-white/20"
@@ -84,8 +131,6 @@ function BridgesMapContent() {
                 );
               })
             )}
-            {/* Spacer for right scroll padding */}
-            <div className="flex-shrink-0 w-4" aria-hidden="true" />
           </div>
         </div>
       </div>
