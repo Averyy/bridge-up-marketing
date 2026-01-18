@@ -56,22 +56,48 @@ export function Features() {
                 </p>
               </div>
 
-              {/* Phone Mockup */}
-              <div className="relative mt-8 flex justify-center">
-                <div className="w-[260px] lg:w-[300px]">
-                  {/* Phone Frame */}
-                  <div className="aspect-[9/16] rounded-t-[2.5rem] bg-gray-900 p-[5px] shadow-2xl">
-                    <div className="h-full w-full rounded-t-[2.2rem] overflow-hidden relative">
+              {/* CarPlay Mockups - Stacked */}
+              <div className="relative mt-8 flex flex-col gap-6 pb-8 px-6">
+                <motion.div
+                  className="w-full max-w-[440px] mx-auto"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  <div className="rounded-2xl bg-black p-[5px] shadow-2xl border border-white/10">
+                    <div className="rounded-xl overflow-hidden relative">
                       <Image
-                        src="/screenshots/list.png"
-                        alt={t("smartTracking.listViewAlt")}
-                        fill
-                        sizes="(max-width: 1024px) 260px, 300px"
-                        className="object-cover object-top"
+                        src="/screenshots/CarPlay-List.png"
+                        alt={t("smartTracking.carPlayListAlt")}
+                        width={800}
+                        height={360}
+                        loading="lazy"
+                        className="w-full h-auto"
                       />
                     </div>
                   </div>
-                </div>
+                </motion.div>
+                <motion.div
+                  className="w-full max-w-[440px] mx-auto"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.35 }}
+                >
+                  <div className="rounded-2xl bg-black p-[5px] shadow-2xl border border-white/10">
+                    <div className="rounded-xl overflow-hidden relative">
+                      <Image
+                        src="/screenshots/CarPlay-Map.png"
+                        alt={t("smartTracking.carPlayMapAlt")}
+                        width={800}
+                        height={360}
+                        loading="lazy"
+                        className="w-full h-auto"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
 
@@ -97,22 +123,21 @@ export function Features() {
               </div>
 
               {/* UI Screenshots - Centered and overlapping */}
-              <div className="relative mt-4 flex justify-center items-end h-[450px] lg:h-[520px]">
+              <div className="relative mt-4 flex justify-center items-end h-[400px] lg:h-[460px]">
                 {/* Background Screenshot - Right, tilted */}
                 <motion.div
-                  className="absolute w-[200px] sm:w-[220px] lg:w-[260px] rotate-6 translate-x-[60px] sm:translate-x-[80px] lg:translate-x-[100px]"
-                  initial={{ opacity: 0, x: 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  className="absolute w-[160px] sm:w-[180px] lg:w-[210px] rotate-6"
+                  initial={{ opacity: 0, x: 115 }}
+                  whileInView={{ opacity: 1, x: 65 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  style={{ transform: 'translateX(80px) rotate(6deg)' }}
                 >
                   <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                     <Image
                       src="/screenshots/detail-open.png"
                       alt={t("smartTracking.detailOpenAlt")}
-                      width={260}
-                      height={560}
+                      width={210}
+                      height={450}
                       className="w-full h-auto"
                     />
                   </div>
@@ -120,19 +145,18 @@ export function Features() {
 
                 {/* Foreground Screenshot - Left, tilted opposite */}
                 <motion.div
-                  className="absolute w-[200px] sm:w-[220px] lg:w-[260px] -rotate-3 -translate-x-[60px] sm:-translate-x-[80px] lg:-translate-x-[100px] z-10"
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  className="absolute w-[160px] sm:w-[180px] lg:w-[210px] -rotate-3 z-10"
+                  initial={{ opacity: 0, x: -115 }}
+                  whileInView={{ opacity: 1, x: -65 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.4 }}
-                  style={{ transform: 'translateX(-80px) rotate(-3deg)' }}
                 >
                   <div className="rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                     <Image
                       src="/screenshots/detail-closed.png"
                       alt={t("smartTracking.detailClosedAlt")}
-                      width={260}
-                      height={560}
+                      width={210}
+                      height={450}
                       className="w-full h-auto"
                     />
                   </div>
@@ -199,8 +223,7 @@ export function Features() {
               {
                 icon: (
                   <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
                   </svg>
                 ),
                 title: t("builtForDrivers.locationAware.title"),

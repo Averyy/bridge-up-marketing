@@ -75,7 +75,7 @@ export default function SupportContent() {
                 </div>
                 <div>
                   <dt className="text-[var(--dark-text-muted)] mb-1">{t("appInfo.platform")}</dt>
-                  <dd className="font-medium text-white">iOS 17+</dd>
+                  <dd className="font-medium text-white">iOS 26+</dd>
                 </div>
                 <div>
                   <dt className="text-[var(--dark-text-muted)] mb-1">{t("appInfo.developer")}</dt>

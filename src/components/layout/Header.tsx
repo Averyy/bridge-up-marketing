@@ -103,7 +103,7 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                 alt="Bridge Up"
                 width={40}
                 height={40}
-                className={`transition-all duration-300 ${
+                className={`rounded-[25%] transition-all duration-300 ${
                   showPillNav ? "w-9 h-9" : "w-10 h-10"
                 }`}
                 priority
@@ -294,7 +294,7 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                     alt="Bridge Up"
                     width={36}
                     height={36}
-                    className="w-9 h-9"
+                    className="w-9 h-9 rounded-[25%]"
                   />
                   <div className="w-px h-6 bg-gray-200" />
                 </div>

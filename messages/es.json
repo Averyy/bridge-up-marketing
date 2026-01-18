@@ -51,7 +51,7 @@
     "badgePlatform": "CarPlay",
     "badgeBoatTracking": "Rastreo de barcos",
     "badgeLanguages": "Inglés, español, francés",
-    "ctaButton": "Próximamente en iOS",
+    "ctaButton": "Próximamente",
     "appScreenshotAlt": "La app Bridge Up mostrando el estado de puentes en tiempo real"
   },
   "bridgeStatus": {
@@ -88,21 +88,22 @@
       "heading": "Estado en tiempo real con",
       "headingHighlight": "inteligencia predictiva",
       "leftBox": {
-        "title": "El primero en saber. El primero en pasar.",
-        "description": "Reciba notificaciones instantáneas en el momento en que cualquier puente cambie de estado. Entérese de los cierres antes de salir de casa."
+        "title": "Ojos en la carretera.",
+        "description": "La integración con CarPlay te permite verificar el estado de los puentes sin tocar tu teléfono. Toca cualquier puente para navegar allí al instante."
       },
       "rightBox": {
         "title": "Sepa antes de esperar.",
-        "description": "Predicciones potentes basadas en más de 300 cierres analizados por puente. Obtenga tiempos estimados de reapertura con intervalos de confianza del 95%, para decidir si esperar o tomar una ruta alternativa."
+        "description": "Predicciones de reapertura basadas en más de 300 cierres por puente. Decida si esperar o tomar una ruta alternativa."
       },
-      "listViewAlt": "Vista de lista de Bridge Up mostrando el estado de todos los puentes",
+      "carPlayListAlt": "Vista de lista de Bridge Up en CarPlay",
+      "carPlayMapAlt": "Vista de mapa de Bridge Up en CarPlay",
       "detailOpenAlt": "Detalle del puente mostrando estadísticas de un puente abierto",
       "detailClosedAlt": "Detalle del puente mostrando predicción de reapertura"
     },
     "builtForDrivers": {
-      "tag": "Diseñado para conductores",
-      "heading": "Información visible mientras conduce",
-      "description": "El soporte CarPlay le permite verificar el estado de los puentes sin quitar los ojos de la carretera. La vista de mapa muestra todos los puentes de un vistazo con marcadores codificados por color.",
+      "tag": "Ecosistema Apple",
+      "heading": "Consulta desde cualquier lugar",
+      "description": "Ya sea en casa, en el trabajo o en la carretera, Bridge Up está ahí. Apps nativas para iPhone, iPad, Mac y CarPlay.",
       "interactiveMap": {
         "title": "Mapa interactivo",
         "description": "Vea los 15 puentes con marcadores de estado codificados por color. Toque cualquier marcador para ver todos los detalles."
@@ -112,8 +113,8 @@
         "description": "Soporte completo de CarPlay para un estado de puentes seguro y visible mientras conduce."
       },
       "locationAware": {
-        "title": "Ubicación inteligente",
-        "description": "Ordene los puentes por distancia o muestre solo los cercanos. Su ubicación permanece privada."
+        "title": "Mac e iPad",
+        "description": "Apps nativas para macOS e iPadOS. Consulta el estado de los puentes desde tu escritorio o en movimiento."
       }
     },
     "coverageArea": {
@@ -126,8 +127,8 @@
   "download": {
     "heading": "Cruce sin preocupaciones",
     "description": "Estado de puentes en tiempo real, predicciones de reapertura y soporte CarPlay. Todas las funciones incluidas, completamente gratis.",
-    "ctaButton": "Próximamente en la App Store",
-    "requirements": "Requiere iOS 17 o posterior • Compatible con CarPlay"
+    "ctaButton": "Próximamente",
+    "requirements": "Requiere iOS 26 o posterior • Compatible con CarPlay"
   },
   "about": {
     "title": "Acerca de",
@@ -190,7 +191,7 @@
       "q3": "¿De dónde provienen los datos de rastreo de barcos?",
       "a3": "Los datos de rastreo de barcos provienen de múltiples fuentes. La fuente principal es una antena AIS personal que opero en la región de St. Catharines. Cobertura adicional es proporcionada por AISHub, una base de datos AIS comunitaria. Esta función es nueva y las fuentes de datos cambian frecuentemente. Si tiene una instalación AIS en la región de Montreal y le gustaría contribuir datos, ¡no dude en contactarme!",
       "q4": "¿Soportan Android?",
-      "a4": "Android es algo que consideraré, pero por ahora Bridge Up está disponible en web e iOS con soporte completo de CarPlay."
+      "a4": "No está planeado actualmente. Bridge Up está enfocado en el ecosistema Apple con apps nativas para iPhone, iPad, Mac y CarPlay."
     }
   },
   "bridges": {
