@@ -112,7 +112,7 @@ export function parseVesselsFromApi(data: BoatsApiResponse): Vessel[] {
     dimensions: vessel.dimensions,
     lastSeen: vessel.last_seen,
     region: vessel.region,
-    source: vessel.source,
+    source: vessel.source.replace(/^udp:/, ""),
     emoji: getVesselEmoji(vessel.type_category),
   }));
 }
