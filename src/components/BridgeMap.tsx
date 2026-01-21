@@ -1089,10 +1089,10 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
               <dd className="text-gray-300">{selectedItem.heading != null ? `${Math.round(selectedItem.heading)}°` : "N/A"}</dd>
               <dt className="text-gray-500">{t("vesselSpeed")}</dt>
               <dd className="text-gray-300">{formatSpeed(selectedItem.speedKnots)}</dd>
-              {selectedItem.destination && (
+              {selectedItem.destination?.trim() && (
                 <>
                   <dt className="text-gray-500">{t("vesselDest")}</dt>
-                  <dd className="text-gray-300 truncate capitalize">{selectedItem.destination.toLowerCase()}</dd>
+                  <dd className="text-gray-300 truncate capitalize">{selectedItem.destination.trim().toLowerCase()}</dd>
                 </>
               )}
               {selectedItem.dimensions && (
