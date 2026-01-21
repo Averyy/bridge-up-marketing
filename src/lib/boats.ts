@@ -120,7 +120,7 @@ export function parseVesselsFromApi(data: BoatsApiResponse): Vessel[] {
 // Fetch all vessels from the API
 export async function fetchVessels(): Promise<Vessel[]> {
   const response = await fetch("https://api.bridgeup.app/boats", {
-    next: { revalidate: 30 }, // Cache for 30 seconds
+    cache: "no-store", // Always fetch fresh data - client-side polling handles refresh
   });
 
   if (!response.ok) {
