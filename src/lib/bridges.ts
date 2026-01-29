@@ -25,6 +25,14 @@ export interface UpcomingClosure {
   isOverdue: boolean;   // true if time has passed
 }
 
+// Future closure for display in popup (all scheduled closures)
+export interface FutureClosure {
+  type: string;
+  time: string;
+  endTime: string | null;
+  formattedTimeRange: string; // Human-readable time range (e.g., "Thu, Mar 5 8am – 4pm")
+}
+
 // Raw prediction from API (timestamps)
 interface RawPrediction {
   lower: string;
@@ -85,6 +93,7 @@ export interface Bridge {
   lastUpdated: string;
   prediction: BridgePrediction | null;
   upcomingClosure: UpcomingClosure | null;
+  futureClosures: FutureClosure[];
   responsibleVesselMmsi: number | null;
 }
 
@@ -197,6 +206,115 @@ function parseUpcomingClosure(
   };
 }
 
+// Format closure type for display
+function formatClosureType(type: string): string {
+  if (type === "Commercial Vessel" || type === "Pleasure Craft" || type === "Next Arrival") {
+    return "Boat";
+  } else if (type === "Construction") {
+    return "Construction";
+  }
+  return type;
+}
+
+// Format time for display (e.g., "7:00am")
+function formatTimeShort(date: Date): string {
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).replace(" ", "").toLowerCase();
+}
+
+// Check if a date is at midnight (00:00)
+function isMidnight(date: Date): boolean {
+  return date.getHours() === 0 && date.getMinutes() === 0;
+}
+
+// Check if a date is at end of day (23:59)
+function isEndOfDay(date: Date): boolean {
+  return date.getHours() === 23 && date.getMinutes() === 59;
+}
+
+// Format a future closure time range for display
+function formatFutureClosureTimeRange(startIso: string, endIso: string | null): string {
+  const start = new Date(startIso);
+  const now = new Date();
+  const isToday = start.toDateString() === now.toDateString();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const isTomorrow = start.toDateString() === tomorrow.toDateString();
+
+  // Build the date prefix for start
+  let startDateStr: string;
+  if (isToday) {
+    startDateStr = "Today";
+  } else if (isTomorrow) {
+    startDateStr = "Tomorrow";
+  } else {
+    startDateStr = start.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  }
+
+  // If no end time, just show start with time
+  if (!endIso) {
+    return `${startDateStr} ${formatTimeShort(start)}`;
+  }
+
+  const end = new Date(endIso);
+  const sameDay = start.toDateString() === end.toDateString();
+  const isAllDay = isMidnight(start) && isEndOfDay(end);
+
+  if (isAllDay) {
+    // All-day event(s) - don't show times
+    if (sameDay) {
+      // Single all-day: "Thu, Mar 5 (all day)"
+      return `${startDateStr} (all day)`;
+    } else {
+      // Multi-day all-day: "Sat, Jan 10 – Fri, Feb 6 (all day)"
+      const endDateStr = end.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+      return `${startDateStr} – ${endDateStr} (all day)`;
+    }
+  }
+
+  // Not all-day, show times
+  if (sameDay) {
+    // Same day: "Thu, Mar 5 8:00am – 4:00pm"
+    return `${startDateStr} ${formatTimeShort(start)} – ${formatTimeShort(end)}`;
+  } else {
+    // Different days: "Thu, Mar 5 8:00am – Fri, Mar 6 4:00pm"
+    const endDateStr = end.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    return `${startDateStr} ${formatTimeShort(start)} – ${endDateStr} ${formatTimeShort(end)}`;
+  }
+}
+
+// Parse all future closures from API (for display in popup)
+function parseFutureClosures(raw: RawUpcomingClosure[] | null): FutureClosure[] {
+  if (!raw || raw.length === 0) return [];
+
+  const now = new Date();
+
+  return raw
+    .filter(closure => {
+      const startTime = new Date(closure.time);
+      const endTime = closure.end_time ? new Date(closure.end_time) : null;
+
+      // Include if:
+      // 1. Closure is in the future (hasn't started yet)
+      // 2. Closure is currently active (started but not ended)
+      const isInFuture = startTime.getTime() > now.getTime();
+      const isCurrentlyActive = endTime
+        ? (startTime.getTime() <= now.getTime() && now.getTime() <= endTime.getTime())
+        : false;
+
+      return isInFuture || isCurrentlyActive;
+    })
+    .map(closure => ({
+      type: formatClosureType(closure.type),
+      time: closure.time,
+      endTime: closure.end_time,
+      formattedTimeRange: formatFutureClosureTimeRange(closure.time, closure.end_time),
+    }));
+}
+
 // Parse bridges from API response (used by both REST and WebSocket)
 export function parseBridgesFromApi(data: BridgesApiResponse): Bridge[] {
   return Object.entries(data.bridges).map(([id, bridge]) => ({
@@ -210,6 +328,7 @@ export function parseBridgesFromApi(data: BridgesApiResponse): Bridge[] {
     lastUpdated: bridge.live.last_updated,
     prediction: parsePrediction(bridge.live.predicted, bridge.live.status),
     upcomingClosure: parseUpcomingClosure(bridge.live.upcoming_closures),
+    futureClosures: parseFutureClosures(bridge.live.upcoming_closures),
     responsibleVesselMmsi: bridge.live.responsible_vessel_mmsi ?? null,
   }));
 }

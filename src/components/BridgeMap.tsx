@@ -5,7 +5,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useBridges } from "@/lib/useBridges";
 import { useBoats } from "@/lib/useBoats";
-import { Bridge, BridgePrediction, UpcomingClosure, formatLastUpdated } from "@/lib/bridges";
+import { Bridge, BridgePrediction, UpcomingClosure, FutureClosure, formatLastUpdated } from "@/lib/bridges";
 import { Vessel, formatSpeed, formatDimensions } from "@/lib/boats";
 import { useTranslations } from "next-intl";
 import { BridgeStatusIcon, getStatusIconSvg, getWarningBadgeSvg } from "@/components/ui/BridgeStatusIcon";
@@ -19,6 +19,7 @@ interface SelectedBridge {
   lastUpdated: string;
   prediction: BridgePrediction | null;
   upcomingClosure: UpcomingClosure | null;
+  futureClosures: FutureClosure[];
   lng: number;
   lat: number;
 }
@@ -457,6 +458,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             lastUpdated: bridge.lastUpdated,
             prediction: bridge.prediction,
             upcomingClosure: bridge.upcomingClosure,
+            futureClosures: bridge.futureClosures,
             lng: bridge.lng,
             lat: bridge.lat,
           });
@@ -482,6 +484,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             lastUpdated: bridge.lastUpdated,
             prediction: bridge.prediction,
             upcomingClosure: bridge.upcomingClosure,
+            futureClosures: bridge.futureClosures,
             lng: bridge.lng,
             lat: bridge.lat,
           });
@@ -1038,6 +1041,19 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             <p className="text-xs text-gray-300 mt-0.5">
               {getTranslatedStatusInfoText(selectedItem.status, selectedItem.prediction, selectedItem.lastUpdated, selectedItem.upcomingClosure)}
             </p>
+            {/* Closures list */}
+            {selectedItem.futureClosures.length > 0 && (
+              <div className="mt-2 pt-2 border-t border-white/10">
+                <p className="text-[10px] text-gray-500 tracking-wide">Closures</p>
+                <ul>
+                  {selectedItem.futureClosures.map((fc, idx) => (
+                    <li key={idx} className="text-[10px] text-gray-500 leading-tight">
+                      {fc.formattedTimeRange}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             {/* Footer with region and last updated */}
             <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-white/10">
               <span className="text-[10px] text-gray-500">{selectedItem.region}</span>
