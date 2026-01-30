@@ -1,14 +1,14 @@
 "use client";
 
 import { ReactNode } from "react";
-import { BridgesContext, useBridgesInternal } from "@/lib/useBridges";
+import { DataContext, useDataInternal } from "@/lib/useData";
 
 export function Providers({ children }: { children: ReactNode }): React.ReactElement {
-  const bridgesValue = useBridgesInternal();
+  const dataValue = useDataInternal();
 
   return (
-    <BridgesContext.Provider value={bridgesValue}>
+    <DataContext.Provider value={dataValue}>
       {children}
-    </BridgesContext.Provider>
+    </DataContext.Provider>
   );
 }

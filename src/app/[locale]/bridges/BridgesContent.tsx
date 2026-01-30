@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Header } from "@/components/layout";
 import { RegionCards } from "@/components/RegionCards";
-import { useBridges } from "@/lib/useBridges";
+import { useData } from "@/lib/useData";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 
@@ -21,7 +21,7 @@ const BridgeMap = dynamic(() => import("@/components/BridgeMap"), {
 function BridgesMapContent() {
   const searchParams = useSearchParams();
   const [focusedRegion, setFocusedRegion] = useState<string | null>(null);
-  const { regions, loading } = useBridges();
+  const { regions, loading } = useData();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);

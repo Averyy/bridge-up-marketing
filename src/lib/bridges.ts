@@ -1,5 +1,5 @@
 // Bridge API types and utilities
-// API Base: https://api.bridgeup.app
+import { API_BASE_URL } from "./config";
 
 export interface BridgeCoordinates {
   lat: number;
@@ -335,7 +335,7 @@ export function parseBridgesFromApi(data: BridgesApiResponse): Bridge[] {
 
 // Fetch all bridges from the API
 export async function fetchBridges(): Promise<Bridge[]> {
-  const response = await fetch("https://api.bridgeup.app/bridges", {
+  const response = await fetch(`${API_BASE_URL}/bridges`, {
     next: { revalidate: 30 }, // Cache for 30 seconds
   });
 
@@ -365,7 +365,110 @@ export function formatLastUpdated(isoString: string): string {
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " " + timeStr;
 }
 
-// Generate status info text based on status and prediction (source of truth for all components)
+// Type for translation function (compatible with next-intl's useTranslations)
+type TranslationFn = (key: string, params?: Record<string, string | number>) => string;
+
+// Generate translated status info text (source of truth for all components)
+// Priority: upcomingClosure > prediction > fallback (matches iOS BridgeInfoGenerator)
+export function getTranslatedStatusInfoText(
+  t: TranslationFn,
+  status: string,
+  prediction: BridgePrediction | null,
+  lastUpdated?: string,
+  upcomingClosure?: UpcomingClosure | null
+): string {
+  switch (status) {
+    case "open":
+      if (lastUpdated) {
+        return t("openedAt", { time: formatLastUpdated(lastUpdated) });
+      }
+      return t("open");
+
+    case "closingSoon":
+      // 1. Check upcoming_closures FIRST (highest priority - matches iOS)
+      if (upcomingClosure) {
+        if (upcomingClosure.isOverdue) {
+          const overdueTime = new Date(upcomingClosure.time);
+          const timeStr = overdueTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
+          return t("closingSoonForTypeOverdue", { type: upcomingClosure.type, time: timeStr });
+        }
+        return t("closingSoonForTypeIn", { type: upcomingClosure.type, minutes: upcomingClosure.minutesUntil });
+      }
+
+      // 2. Fall back to predicted (statistics-based)
+      if (prediction?.closesIn) {
+        if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
+          return t("closingSoonLonger");
+        }
+        return t("closingSoonIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
+      }
+
+      // 3. Default fallback
+      return t("closingSoon");
+
+    case "closing":
+      return t("justMissedIt");
+
+    case "closed":
+      if (prediction?.opensIn) {
+        if (prediction.opensIn.min === 0 && prediction.opensIn.max === 0) {
+          if (lastUpdated) {
+            return t("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
+          }
+          return t("closedLonger");
+        }
+        // Convert large minute values to days/hours for readability
+        const min = prediction.opensIn.min;
+        if (min > 24 * 60) {
+          const days = Math.floor(min / (24 * 60));
+          return t("closedOpensDays", { days });
+        } else if (min >= 60) {
+          const hours = Math.floor(min / 60);
+          const mins = min % 60;
+          if (mins > 0) {
+            return t("closedOpensHoursMinutes", { hours, mins });
+          }
+          return t("closedOpensHours", { hours });
+        }
+        // For shorter durations, use the existing range/approx format
+        if (prediction.opensIn.min === prediction.opensIn.max) {
+          return t("closedOpensApprox", { min: prediction.opensIn.min });
+        }
+        return t("closedOpensRange", { min: prediction.opensIn.min, max: prediction.opensIn.max });
+      }
+      if (lastUpdated) {
+        return t("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
+      }
+      return t("closedLonger");
+
+    case "opening":
+      return t("openingSoon");
+
+    case "construction":
+      if (prediction?.opensIn) {
+        const min = prediction.opensIn.min;
+        if (min > 24 * 60) {
+          const days = Math.floor(min / (24 * 60));
+          return t("constructionDays", { days });
+        } else if (min >= 60) {
+          const hours = Math.floor(min / 60);
+          const mins = min % 60;
+          if (mins > 0) {
+            return t("constructionHoursMinutes", { hours, mins });
+          }
+          return t("constructionHours", { hours });
+        } else if (min > 0) {
+          return t("constructionMinutes", { min });
+        }
+      }
+      return t("constructionUnknown");
+
+    default:
+      return t("statusUnknown");
+  }
+}
+
+// Generate status info text (non-translated, for server-side or fallback usage)
 // Priority: upcomingClosure > prediction > fallback (matches iOS BridgeInfoGenerator)
 export function getStatusInfoText(
   status: string,

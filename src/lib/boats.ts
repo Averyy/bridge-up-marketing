@@ -1,5 +1,5 @@
 // Boat/Vessel API types and utilities
-// API Base: https://api.bridgeup.app
+import { API_BASE_URL } from "./config";
 
 export interface VesselPosition {
   lat: number;
@@ -119,7 +119,7 @@ export function parseVesselsFromApi(data: BoatsApiResponse): Vessel[] {
 
 // Fetch all vessels from the API
 export async function fetchVessels(): Promise<Vessel[]> {
-  const response = await fetch("https://api.bridgeup.app/boats", {
+  const response = await fetch(`${API_BASE_URL}/boats`, {
     cache: "no-store", // Always fetch fresh data - client-side polling handles refresh
   });
 

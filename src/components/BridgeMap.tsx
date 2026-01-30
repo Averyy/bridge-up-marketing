@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useBridges } from "@/lib/useBridges";
-import { useBoats } from "@/lib/useBoats";
-import { Bridge, BridgePrediction, UpcomingClosure, FutureClosure, formatLastUpdated } from "@/lib/bridges";
+import { useData } from "@/lib/useData";
+import { Bridge, BridgePrediction, UpcomingClosure, FutureClosure, formatLastUpdated, getTranslatedStatusInfoText } from "@/lib/bridges";
 import { Vessel, formatSpeed, formatDimensions } from "@/lib/boats";
 import { useTranslations } from "next-intl";
 import { BridgeStatusIcon, getStatusIconSvg, getWarningBadgeSvg } from "@/components/ui/BridgeStatusIcon";
@@ -26,6 +25,7 @@ interface SelectedBridge {
 
 interface SelectedVessel {
   type: "vessel";
+  mmsi: number; // Unique identifier for vessels
   name: string;
   emoji: string;
   typeName: string;
@@ -59,6 +59,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   const [mapLoaded, setMapLoaded] = useState(false);
   const [vesselSecondsAgo, setVesselSecondsAgo] = useState(0);
   const [arrowElement, setArrowElement] = useState<SVGSVGElement | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const isClickPinnedRef = useRef(false); // Track if popup was opened via click (for mobile)
   const selectedMarkerRef = useRef<HTMLElement | null>(null); // Track currently selected marker element
 
@@ -72,7 +73,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
         fallbackPlacements: ["bottom", "left", "right"],
         padding: {
           top: 80,      // Navbar height + buffer
-          bottom: typeof window !== "undefined" && window.innerWidth < 1024 ? 100 : 240,
+          bottom: isMobile ? 100 : 240,
           left: 12,
           right: 12,
         },
@@ -80,7 +81,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       shift({
         padding: {
           top: 80,
-          bottom: typeof window !== "undefined" && window.innerWidth < 1024 ? 100 : 240,
+          bottom: isMobile ? 100 : 240,
           left: 12,
           right: 12,
         },
@@ -89,100 +90,22 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
     ],
     whileElementsMounted: autoUpdate,
   });
-  const { bridges, loading, error } = useBridges();
-  const { vessels } = useBoats(true); // Always fetch vessels
+  const { bridges, vessels, loading, error } = useData();
   const t = useTranslations("bridges");
   const tStatus = useTranslations("bridgeStatus");
-
-  // Translated status info text - uses translation keys
-  // Priority: upcomingClosure > prediction > fallback (matches iOS BridgeInfoGenerator)
-  const getTranslatedStatusInfoText = useCallback((
-    status: string,
-    prediction: BridgePrediction | null,
-    lastUpdated?: string,
-    upcomingClosure?: UpcomingClosure | null
-  ): string => {
-    switch (status) {
-      case "open":
-        if (lastUpdated) {
-          return tStatus("openedAt", { time: formatLastUpdated(lastUpdated) });
-        }
-        return tStatus("open");
-
-      case "closingSoon":
-        // 1. Check upcoming_closures FIRST (highest priority - matches iOS)
-        if (upcomingClosure) {
-          if (upcomingClosure.isOverdue) {
-            const overdueTime = new Date(upcomingClosure.time);
-            const timeStr = overdueTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
-            return tStatus("closingSoonForTypeOverdue", { type: upcomingClosure.type, time: timeStr });
-          }
-          return tStatus("closingSoonForTypeIn", { type: upcomingClosure.type, minutes: upcomingClosure.minutesUntil });
-        }
-
-        // 2. Fall back to predicted (statistics-based)
-        if (prediction?.closesIn) {
-          if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
-            return tStatus("closingSoonLonger");
-          }
-          return tStatus("closingSoonIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
-        }
-
-        // 3. Default fallback
-        return tStatus("closingSoon");
-
-      case "closing":
-        return tStatus("justMissedIt");
-
-      case "closed":
-        if (prediction?.opensIn) {
-          if (prediction.opensIn.min === 0 && prediction.opensIn.max === 0) {
-            if (lastUpdated) {
-              return tStatus("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
-            }
-            return tStatus("closedLonger");
-          }
-          if (prediction.opensIn.min === prediction.opensIn.max) {
-            return tStatus("closedOpensApprox", { min: prediction.opensIn.min });
-          }
-          return tStatus("closedOpensRange", { min: prediction.opensIn.min, max: prediction.opensIn.max });
-        }
-        if (lastUpdated) {
-          return tStatus("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
-        }
-        return tStatus("closedLonger");
-
-      case "opening":
-        return tStatus("openingSoon");
-
-      case "construction":
-        if (prediction?.opensIn) {
-          const min = prediction.opensIn.min;
-          if (min > 24 * 60) {
-            const days = Math.floor(min / (24 * 60));
-            return tStatus("constructionDays", { days });
-          } else if (min >= 60) {
-            const hours = Math.floor(min / 60);
-            const mins = min % 60;
-            if (mins > 0) {
-              return tStatus("constructionHoursMinutes", { hours, mins });
-            }
-            return tStatus("constructionHours", { hours });
-          } else if (min > 0) {
-            return tStatus("constructionMinutes", { min });
-          }
-        }
-        return tStatus("constructionUnknown");
-
-      default:
-        return tStatus("statusUnknown");
-    }
-  }, [tStatus]);
 
   // Keep callback ref up to date
   useEffect(() => {
     onRegionClearRef.current = onRegionClear;
   }, [onRegionClear]);
+
+  // Track mobile breakpoint for floating UI positioning
+  useEffect(() => {
+    const updateMobile = () => setIsMobile(window.innerWidth < 1024);
+    updateMobile(); // Set initial value
+    window.addEventListener("resize", updateMobile);
+    return () => window.removeEventListener("resize", updateMobile);
+  }, []);
 
   // Get responsible vessel MMSIs from bridge data (backend-provided)
   const getResponsibleVesselIds = useCallback((): { closingSoon: Set<number>; closed: Set<number> } => {
@@ -337,13 +260,16 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   useEffect(() => {
     if (!map.current || !mapLoaded || bridges.length === 0) return;
 
-    // Close popup when markers are recreated to prevent stale reference issues
-    // (which causes popup to jump to top-left corner)
+    // Check if selected bridge still exists in new data before clearing
+    // Only close popup if selected bridge was removed
     if (bridgeMarkersRef.current.length > 0 && selectedItem?.type === "bridge") {
-      setSelectedItem(null);
-      refs.setReference(null);
-      isClickPinnedRef.current = false;
-      selectedMarkerRef.current = null;
+      const selectedBridgeExists = bridges.some(b => b.name === selectedItem.name);
+      if (!selectedBridgeExists) {
+        setSelectedItem(null);
+        refs.setReference(null);
+        isClickPinnedRef.current = false;
+        selectedMarkerRef.current = null;
+      }
     }
 
     // Clear existing bridge markers
@@ -354,6 +280,9 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
     const MAP_CONTAINER_SIZE = 30;
     const MAP_ICON_SIZE = 28;
     const BADGE_SIZE = 12;
+
+    // Track element to bridge name mapping for popup re-anchoring
+    const bridgeElementMap = new Map<string, HTMLElement>();
 
     // Create markers for each bridge
     bridges.forEach((bridge: Bridge) => {
@@ -404,6 +333,9 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       }
 
       el.appendChild(pin);
+
+      // Track element for popup re-anchoring
+      bridgeElementMap.set(bridge.name, el);
 
       // Hover animation matching vessel markers (scale 1.3 with increased drop shadow)
       el.addEventListener("mouseenter", () => {
@@ -512,6 +444,18 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
 
       bridgeMarkersRef.current.push(marker);
     });
+
+    // Re-anchor popup to new marker element if a bridge was selected
+    if (selectedItem?.type === "bridge" && isClickPinnedRef.current) {
+      const newEl = bridgeElementMap.get(selectedItem.name);
+      if (newEl) {
+        refs.setReference(newEl);
+        selectedMarkerRef.current = newEl;
+        // Update z-index to keep selected marker on top
+        const markerEl = newEl.closest('.mapboxgl-marker') as HTMLElement;
+        if (markerEl) markerEl.style.zIndex = "10";
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- selectedItem checked via ref pattern to avoid infinite loop
   }, [bridges, mapLoaded, refs]);
 
@@ -519,13 +463,16 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
 
-    // Close popup when markers are recreated to prevent stale reference issues
-    // (which causes popup to jump to top-left corner)
+    // Check if selected vessel still exists in new data before clearing
+    // Only close popup if selected vessel was removed (by mmsi)
     if (vesselMarkersRef.current.length > 0 && selectedItem?.type === "vessel") {
-      setSelectedItem(null);
-      refs.setReference(null);
-      isClickPinnedRef.current = false;
-      selectedMarkerRef.current = null;
+      const selectedVesselExists = vessels.some(v => v.mmsi === selectedItem.mmsi);
+      if (!selectedVesselExists) {
+        setSelectedItem(null);
+        refs.setReference(null);
+        isClickPinnedRef.current = false;
+        selectedMarkerRef.current = null;
+      }
     }
 
     // Clear existing vessel markers
@@ -537,6 +484,9 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
 
     // Get responsible vessels from backend-provided data
     const { closingSoon: closingSoonIds, closed: closedIds } = getResponsibleVesselIds();
+
+    // Track element to vessel mmsi mapping for popup re-anchoring
+    const vesselElementMap = new Map<number, HTMLElement>();
 
     // Create markers for each vessel
     vessels.forEach((vessel: Vessel) => {
@@ -699,6 +649,9 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
 
       el.appendChild(inner);
 
+      // Track element for popup re-anchoring
+      vesselElementMap.set(vessel.mmsi, el);
+
       const baseScale = isActive ? 1 : 0.85;
       el.addEventListener("mouseenter", () => {
         inner.style.transform = `scale(${baseScale * 1.3})`;
@@ -745,6 +698,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
           markerEl.style.zIndex = "10"; // Bring to front
           setSelectedItem({
             type: "vessel",
+            mmsi: vessel.mmsi,
             name: vessel.name,
             emoji: vessel.emoji,
             typeName: vessel.typeName,
@@ -773,6 +727,7 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
           selectedMarkerRef.current = el;
           setSelectedItem({
             type: "vessel",
+            mmsi: vessel.mmsi,
             name: vessel.name,
             emoji: vessel.emoji,
             typeName: vessel.typeName,
@@ -809,9 +764,100 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
 
       vesselMarkersRef.current.push(marker);
     });
+
+    // Re-anchor popup to new marker element if a vessel was selected
+    if (selectedItem?.type === "vessel" && isClickPinnedRef.current) {
+      const newEl = vesselElementMap.get(selectedItem.mmsi);
+      if (newEl) {
+        refs.setReference(newEl);
+        selectedMarkerRef.current = newEl;
+        // Update z-index to keep selected marker on top
+        const markerEl = newEl.closest('.mapboxgl-marker') as HTMLElement;
+        if (markerEl) markerEl.style.zIndex = "10";
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- selectedItem checked via ref pattern to avoid infinite loop
   }, [vessels, mapLoaded, getResponsibleVesselIds, refs]);
 
+  // Update selected bridge popup with fresh data when bridges update
+  // Extract identifiers for dependency tracking (avoids complex expressions in deps)
+  const selectedBridgeName = selectedItem?.type === "bridge" ? selectedItem.name : null;
+  useEffect(() => {
+    if (!selectedItem || selectedItem.type !== "bridge") return;
+
+    const freshBridge = bridges.find(b => b.name === selectedItem.name);
+    if (freshBridge) {
+      // Shallow equality check to avoid unnecessary re-renders
+      const hasChanged =
+        selectedItem.status !== freshBridge.status ||
+        selectedItem.lastUpdated !== freshBridge.lastUpdated ||
+        selectedItem.region !== freshBridge.region ||
+        selectedItem.lng !== freshBridge.lng ||
+        selectedItem.lat !== freshBridge.lat ||
+        JSON.stringify(selectedItem.prediction) !== JSON.stringify(freshBridge.prediction) ||
+        JSON.stringify(selectedItem.upcomingClosure) !== JSON.stringify(freshBridge.upcomingClosure) ||
+        JSON.stringify(selectedItem.futureClosures) !== JSON.stringify(freshBridge.futureClosures);
+
+      if (hasChanged) {
+        setSelectedItem({
+          type: "bridge",
+          name: freshBridge.name,
+          region: freshBridge.region,
+          status: freshBridge.status,
+          lastUpdated: freshBridge.lastUpdated,
+          prediction: freshBridge.prediction,
+          upcomingClosure: freshBridge.upcomingClosure,
+          futureClosures: freshBridge.futureClosures,
+          lng: freshBridge.lng,
+          lat: freshBridge.lat,
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally excludes selectedItem to avoid infinite loop; selectedBridgeName tracks identity
+  }, [bridges, selectedBridgeName]);
+
+  // Update selected vessel popup with fresh data when vessels update
+  const selectedVesselMmsi = selectedItem?.type === "vessel" ? selectedItem.mmsi : null;
+  useEffect(() => {
+    if (!selectedItem || selectedItem.type !== "vessel") return;
+
+    const freshVessel = vessels.find(v => v.mmsi === selectedItem.mmsi);
+    if (freshVessel) {
+      // Shallow equality check to avoid unnecessary re-renders
+      const hasChanged =
+        selectedItem.name !== freshVessel.name ||
+        selectedItem.emoji !== freshVessel.emoji ||
+        selectedItem.typeName !== freshVessel.typeName ||
+        selectedItem.speedKnots !== freshVessel.speedKnots ||
+        selectedItem.destination !== freshVessel.destination ||
+        selectedItem.heading !== freshVessel.heading ||
+        selectedItem.source !== freshVessel.source ||
+        selectedItem.lastSeen !== freshVessel.lastSeen ||
+        selectedItem.lng !== freshVessel.lng ||
+        selectedItem.lat !== freshVessel.lat ||
+        selectedItem.dimensions?.length !== freshVessel.dimensions?.length ||
+        selectedItem.dimensions?.width !== freshVessel.dimensions?.width;
+
+      if (hasChanged) {
+        setSelectedItem({
+          type: "vessel",
+          mmsi: freshVessel.mmsi,
+          name: freshVessel.name,
+          emoji: freshVessel.emoji,
+          typeName: freshVessel.typeName,
+          speedKnots: freshVessel.speedKnots,
+          destination: freshVessel.destination,
+          dimensions: freshVessel.dimensions,
+          heading: freshVessel.heading,
+          source: freshVessel.source,
+          lastSeen: freshVessel.lastSeen,
+          lng: freshVessel.lng,
+          lat: freshVessel.lat,
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally excludes selectedItem to avoid infinite loop; selectedVesselMmsi tracks identity
+  }, [vessels, selectedVesselMmsi]);
 
   // Zoom to region when focusedRegion changes
   useEffect(() => {
@@ -1039,12 +1085,12 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
             <p className="font-semibold text-white text-sm">{selectedItem.name}</p>
             {/* Dynamic info text */}
             <p className="text-xs text-gray-300 mt-0.5">
-              {getTranslatedStatusInfoText(selectedItem.status, selectedItem.prediction, selectedItem.lastUpdated, selectedItem.upcomingClosure)}
+              {getTranslatedStatusInfoText(tStatus, selectedItem.status, selectedItem.prediction, selectedItem.lastUpdated, selectedItem.upcomingClosure)}
             </p>
             {/* Closures list */}
             {selectedItem.futureClosures.length > 0 && (
               <div className="mt-2 pt-2 border-t border-white/10">
-                <p className="text-[10px] text-gray-500 tracking-wide">Closures</p>
+                <p className="text-[10px] text-gray-500 tracking-wide">{t("closures")}</p>
                 <ul>
                   {selectedItem.futureClosures.map((fc, idx) => (
                     <li key={idx} className="text-[10px] text-gray-500 leading-tight">
@@ -1075,7 +1121,6 @@ export default function BridgeMap({ focusedRegion, onRegionClear }: BridgeMapPro
       {/* Vessel popup card */}
       {selectedItem && selectedItem.type === "vessel" && (
         <div
-          // eslint-disable-next-line react-hooks/refs
           ref={refs.setFloating}
           data-floating-popup
           className="z-50"

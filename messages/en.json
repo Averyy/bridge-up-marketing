@@ -73,6 +73,9 @@
     "closedLonger": "Closed (longer than usual)",
     "closedOpensApprox": "Closed, opens in ~{min}m",
     "closedOpensRange": "Closed, opens in {min}-{max}m",
+    "closedOpensDays": "Closed, opens in {days}d",
+    "closedOpensHours": "Closed, opens in {hours}h",
+    "closedOpensHoursMinutes": "Closed, opens in {hours}h {mins}m",
     "openingSoon": "Will be open in a few moments",
     "constructionDays": "Closed for construction, opens in {days}d",
     "constructionHoursMinutes": "Closed for construction, opens in {hours}h {mins}m",
@@ -205,7 +208,8 @@
     "vesselSpeed": "Speed",
     "vesselDest": "Dest",
     "vesselSize": "Size",
-    "secondsAgo": "{seconds}s ago"
+    "secondsAgo": "{seconds}s ago",
+    "closures": "Closures"
   },
   "legal": {
     "englishOnlyNotice": "This document is available in English only for legal accuracy.",

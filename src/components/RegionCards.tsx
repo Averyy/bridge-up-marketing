@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useBridges } from "@/lib/useBridges";
+import { useData } from "@/lib/useData";
 import { Region } from "@/lib/bridges";
 
 interface StatusStyle {
@@ -65,7 +65,7 @@ export function RegionCards({
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const t = useTranslations("bridgeStatus");
 
-  const { regions, loading } = useBridges();
+  const { regions, loading } = useData();
 
   // Get translated status label
   const getStatusLabel = (status: string): string => {

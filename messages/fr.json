@@ -73,6 +73,9 @@
     "closedLonger": "Fermé (plus long que prévu)",
     "closedOpensApprox": "Fermé, ouvre dans ~{min}m",
     "closedOpensRange": "Fermé, ouvre dans {min}-{max}m",
+    "closedOpensDays": "Fermé, ouvre dans {days}j",
+    "closedOpensHours": "Fermé, ouvre dans {hours}h",
+    "closedOpensHoursMinutes": "Fermé, ouvre dans {hours}h {mins}m",
     "openingSoon": "Ouverture dans quelques instants",
     "constructionDays": "Fermé pour construction, ouvre dans {days}j",
     "constructionHoursMinutes": "Fermé pour construction, ouvre dans {hours}h {mins}m",
@@ -205,7 +208,8 @@
     "vesselSpeed": "Vitesse",
     "vesselDest": "Dest",
     "vesselSize": "Taille",
-    "secondsAgo": "il y a {seconds}s"
+    "secondsAgo": "il y a {seconds}s",
+    "closures": "Fermetures"
   },
   "legal": {
     "englishOnlyNotice": "Ce document est disponible en anglais uniquement pour des raisons de précision juridique.",

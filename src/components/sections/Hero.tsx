@@ -1,10 +1,11 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useBridges } from "@/lib/useBridges";
-import { BridgePrediction, UpcomingClosure, formatLastUpdated } from "@/lib/bridges";
+import { useData } from "@/lib/useData";
+import { getTranslatedStatusInfoText } from "@/lib/bridges";
 import { BridgeStatusIcon } from "@/components/ui/BridgeStatusIcon";
 
 const container = {
@@ -56,146 +57,66 @@ function getStatusBg(): string {
 }
 
 export function Hero() {
-  const { bridges } = useBridges();
+  const { bridges } = useData();
   const t = useTranslations("hero");
   const tStatus = useTranslations("bridgeStatus");
 
-  // Translated status info text - uses translation keys
-  // Priority: upcomingClosure > prediction > fallback (matches iOS BridgeInfoGenerator)
-  function getTranslatedStatusInfoText(
-    status: string,
-    prediction: BridgePrediction | null,
-    lastUpdated?: string,
-    upcomingClosure?: UpcomingClosure | null
-  ): string {
-    switch (status) {
-      case "open":
-        if (lastUpdated) {
-          return tStatus("openedAt", { time: formatLastUpdated(lastUpdated) });
-        }
-        return tStatus("open");
+  // Memoize card computations to avoid unnecessary re-renders
+  const { leftCards, rightCards } = useMemo(() => {
+    // Fallback static cards for loading state
+    const fallbackCards = {
+      left: [
+        { id: "f1", name: "Highway 20", status: "open", subtitle: tStatus("open") },
+        { id: "f2", name: "Carlton St", status: "closed", subtitle: tStatus("closedOpensRange", { min: 8, max: 12 }) },
+        { id: "f3", name: "Glendale Ave", status: "closingSoon", subtitle: tStatus("closingSoonIn", { min: 3, max: 7 }) },
+        { id: "f4", name: "Queenston St", status: "open", subtitle: tStatus("open") },
+        { id: "f5", name: "Lakeshore Rd", status: "open", subtitle: tStatus("open") },
+      ],
+      right: [
+        { id: "f6", name: "Victoria Upstream", status: "open", subtitle: tStatus("open") },
+        { id: "f7", name: "Victoria Downstream", status: "closed", subtitle: tStatus("closedOpensRange", { min: 5, max: 9 }) },
+        { id: "f8", name: "Ste-Catherine", status: "open", subtitle: tStatus("open") },
+        { id: "f9", name: "Clarence St", status: "open", subtitle: tStatus("open") },
+      ],
+    };
 
-      case "closingSoon":
-        // 1. Check upcoming_closures FIRST (highest priority - matches iOS)
-        if (upcomingClosure) {
-          if (upcomingClosure.isOverdue) {
-            const overdueTime = new Date(upcomingClosure.time);
-            const timeStr = overdueTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
-            return tStatus("closingSoonForTypeOverdue", { type: upcomingClosure.type, time: timeStr });
-          }
-          return tStatus("closingSoonForTypeIn", { type: upcomingClosure.type, minutes: upcomingClosure.minutesUntil });
-        }
+    // Filter bridges by region
+    const stCatharinesBridges = bridges.filter(b => b.regionId === "st-catharines");
+    const montrealBridges = bridges.filter(b => b.regionId === "montreal");
+    const portColborneBridges = bridges.filter(b => b.regionId === "port-colborne");
 
-        // 2. Fall back to predicted (statistics-based)
-        if (prediction?.closesIn) {
-          if (prediction.closesIn.min === 0 && prediction.closesIn.max === 0) {
-            return tStatus("closingSoonLonger");
-          }
-          return tStatus("closingSoonIn", { min: prediction.closesIn.min, max: prediction.closesIn.max });
-        }
+    // Right side: Montreal (3) + first Port Colborne bridge (1) = 4
+    const rightSideBridges = [...montrealBridges, ...portColborneBridges.slice(0, 1)];
 
-        // 3. Default fallback
-        return tStatus("closingSoon");
+    // Use live data or fallback
+    const left = stCatharinesBridges.length > 0
+      ? stCatharinesBridges.map((bridge, i) => ({
+          id: bridge.id,
+          name: bridge.name,
+          status: bridge.status,
+          subtitle: getTranslatedStatusInfoText(tStatus, bridge.status, bridge.prediction, bridge.lastUpdated, bridge.upcomingClosure),
+          ...leftPositions[i % leftPositions.length],
+        }))
+      : fallbackCards.left.map((card, i) => ({
+          ...card,
+          ...leftPositions[i % leftPositions.length],
+        }));
 
-      case "closing":
-        return tStatus("justMissedIt");
+    const right = rightSideBridges.length > 0
+      ? rightSideBridges.map((bridge, i) => ({
+          id: bridge.id,
+          name: bridge.name,
+          status: bridge.status,
+          subtitle: getTranslatedStatusInfoText(tStatus, bridge.status, bridge.prediction, bridge.lastUpdated, bridge.upcomingClosure),
+          ...rightPositions[i % rightPositions.length],
+        }))
+      : fallbackCards.right.map((card, i) => ({
+          ...card,
+          ...rightPositions[i % rightPositions.length],
+        }));
 
-      case "closed":
-        if (prediction?.opensIn) {
-          if (prediction.opensIn.min === 0 && prediction.opensIn.max === 0) {
-            if (lastUpdated) {
-              return tStatus("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
-            }
-            return tStatus("closedLonger");
-          }
-          if (prediction.opensIn.min === prediction.opensIn.max) {
-            return tStatus("closedOpensApprox", { min: prediction.opensIn.min });
-          }
-          return tStatus("closedOpensRange", { min: prediction.opensIn.min, max: prediction.opensIn.max });
-        }
-        if (lastUpdated) {
-          return tStatus("closedLongerAt", { time: formatLastUpdated(lastUpdated) });
-        }
-        return tStatus("closedLonger");
-
-      case "opening":
-        return tStatus("openingSoon");
-
-      case "construction":
-        if (prediction?.opensIn) {
-          const min = prediction.opensIn.min;
-          if (min > 24 * 60) {
-            const days = Math.floor(min / (24 * 60));
-            return tStatus("constructionDays", { days });
-          } else if (min >= 60) {
-            const hours = Math.floor(min / 60);
-            const mins = min % 60;
-            if (mins > 0) {
-              return tStatus("constructionHoursMinutes", { hours, mins });
-            }
-            return tStatus("constructionHours", { hours });
-          } else if (min > 0) {
-            return tStatus("constructionMinutes", { min });
-          }
-        }
-        return tStatus("constructionUnknown");
-
-      default:
-        return tStatus("statusUnknown");
-    }
-  }
-
-  // Fallback static cards for loading state (using translated messages)
-  const fallbackCards = {
-    left: [
-      { id: "f1", name: "Highway 20", status: "open", subtitle: tStatus("open") },
-      { id: "f2", name: "Carlton St", status: "closed", subtitle: tStatus("closedOpensRange", { min: 8, max: 12 }) },
-      { id: "f3", name: "Glendale Ave", status: "closingSoon", subtitle: tStatus("closingSoonIn", { min: 3, max: 7 }) },
-      { id: "f4", name: "Queenston St", status: "open", subtitle: tStatus("open") },
-      { id: "f5", name: "Lakeshore Rd", status: "open", subtitle: tStatus("open") },
-    ],
-    right: [
-      { id: "f6", name: "Victoria Upstream", status: "open", subtitle: tStatus("open") },
-      { id: "f7", name: "Victoria Downstream", status: "closed", subtitle: tStatus("closedOpensRange", { min: 5, max: 9 }) },
-      { id: "f8", name: "Ste-Catherine", status: "open", subtitle: tStatus("open") },
-      { id: "f9", name: "Clarence St", status: "open", subtitle: tStatus("open") },
-    ],
-  };
-
-  // Filter bridges by region
-  const stCatharinesBridges = bridges.filter(b => b.regionId === "st-catharines");
-  const montrealBridges = bridges.filter(b => b.regionId === "montreal");
-  const portColborneBridges = bridges.filter(b => b.regionId === "port-colborne");
-
-  // Right side: Montreal (3) + first Port Colborne bridge (1) = 4
-  const rightSideBridges = [...montrealBridges, ...portColborneBridges.slice(0, 1)];
-
-  // Use live data or fallback
-  const leftCards = stCatharinesBridges.length > 0
-    ? stCatharinesBridges.map((bridge, i) => ({
-        id: bridge.id,
-        name: bridge.name,
-        status: bridge.status,
-        subtitle: getTranslatedStatusInfoText(bridge.status, bridge.prediction, bridge.lastUpdated, bridge.upcomingClosure),
-        ...leftPositions[i % leftPositions.length],
-      }))
-    : fallbackCards.left.map((card, i) => ({
-        ...card,
-        ...leftPositions[i % leftPositions.length],
-      }));
-
-  const rightCards = rightSideBridges.length > 0
-    ? rightSideBridges.map((bridge, i) => ({
-        id: bridge.id,
-        name: bridge.name,
-        status: bridge.status,
-        subtitle: getTranslatedStatusInfoText(bridge.status, bridge.prediction, bridge.lastUpdated, bridge.upcomingClosure),
-        ...rightPositions[i % rightPositions.length],
-      }))
-    : fallbackCards.right.map((card, i) => ({
-        ...card,
-        ...rightPositions[i % rightPositions.length],
-      }));
+    return { leftCards: left, rightCards: right };
+  }, [bridges, tStatus]);
 
   return (
     <section className="relative min-h-screen pt-20 overflow-hidden bg-gradient-to-b from-[#f0f7ff] via-white to-white">
