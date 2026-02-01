@@ -144,10 +144,12 @@ function useDataInternal(): DataContextValue {
 
           // Subscribe to bridges and boats channels
           try {
-            ws?.send(JSON.stringify({
-              action: "subscribe",
-              channels: ["bridges", "boats"]
-            }));
+            if (wsRef.current?.readyState === WebSocket.OPEN) {
+              wsRef.current.send(JSON.stringify({
+                action: "subscribe",
+                channels: ["bridges", "boats"]
+              }));
+            }
           } catch (err) {
             debugError("[WS] Failed to subscribe:", err);
           }
@@ -160,6 +162,18 @@ function useDataInternal(): DataContextValue {
             const msg = JSON.parse(event.data);
 
             switch (msg.type) {
+              case "ping":
+                // Respond to server keepalive ping
+                // Protocol: server sends {type: "ping"}, client responds with {action: "pong"}
+                try {
+                  if (wsRef.current?.readyState === WebSocket.OPEN) {
+                    wsRef.current.send(JSON.stringify({ action: "pong" }));
+                  }
+                } catch (err) {
+                  debugError("[WS] Failed to send pong:", err);
+                }
+                break;
+
               case "subscribed":
                 debugLog("[WS] Subscribed:", msg.channels);
                 break;
@@ -182,6 +196,10 @@ function useDataInternal(): DataContextValue {
                   setVessels(parsedVessels);
                   setLastUpdated(new Date());
                 }
+                break;
+
+              default:
+                debugLog("[WS] Unknown message type:", msg.type);
                 break;
             }
           } catch (err) {
@@ -224,6 +242,18 @@ function useDataInternal(): DataContextValue {
       }
     };
 
+    // Close WebSocket cleanly on page unload to prevent zombie connections
+    const handleBeforeUnload = () => {
+      try {
+        if (wsRef.current) {
+          wsRef.current.close(1000, "Page unloading");
+        }
+      } catch {
+        // Ignore errors during page unload
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     // Initial fetch, then connect to WebSocket
     fetchData().then(() => {
       if (mountedRef.current) {
@@ -234,6 +264,7 @@ function useDataInternal(): DataContextValue {
     // Cleanup
     return () => {
       mountedRef.current = false;
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       clearTimers();
       if (wsRef.current) {
         wsRef.current.close();
