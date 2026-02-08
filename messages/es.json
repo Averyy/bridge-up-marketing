@@ -17,7 +17,6 @@
     "about": "Acerca de",
     "getApp": "App",
     "getTheApp": "Obtener la app",
-    "comingSoon": "Próximamente",
     "buyMeCoffee": "Invítame un café",
     "coffeeTooltip": "¿Te gusta Bridge Up? ¡Invítame un café!",
     "toggleMenu": "Alternar menú",
@@ -51,7 +50,7 @@
     "badgePlatform": "CarPlay",
     "badgeBoatTracking": "Rastreo de barcos",
     "badgeLanguages": "Inglés, español, francés",
-    "ctaButton": "Próximamente",
+    "ctaButton": "Descargar ahora",
     "appScreenshotAlt": "La app Bridge Up mostrando el estado de puentes en tiempo real"
   },
   "bridgeStatus": {
@@ -130,8 +129,8 @@
   "download": {
     "heading": "Cruce sin preocupaciones",
     "description": "Estado de puentes en tiempo real, predicciones de reapertura y soporte CarPlay. Todas las funciones incluidas, completamente gratis.",
-    "ctaButton": "Próximamente",
-    "requirements": "Requiere iOS 26 o posterior • Compatible con CarPlay"
+    "ctaButton": "Descargar ahora",
+    "requirements": "Requiere iOS 26 o posterior • Compatible con CarPlay, iOS, iPadOS, macOS"
   },
   "about": {
     "title": "Acerca de",

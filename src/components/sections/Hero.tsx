@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useData } from "@/lib/useData";
 import { getTranslatedStatusInfoText } from "@/lib/bridges";
 import { BridgeStatusIcon } from "@/components/ui/BridgeStatusIcon";
+import { Link } from "@/i18n/navigation";
 
 const container = {
   hidden: { opacity: 0 },
@@ -66,17 +67,17 @@ export function Hero() {
     // Fallback static cards for loading state
     const fallbackCards = {
       left: [
-        { id: "f1", name: "Highway 20", status: "open", subtitle: tStatus("open") },
-        { id: "f2", name: "Carlton St", status: "closed", subtitle: tStatus("closedOpensRange", { min: 8, max: 12 }) },
-        { id: "f3", name: "Glendale Ave", status: "closingSoon", subtitle: tStatus("closingSoonIn", { min: 3, max: 7 }) },
-        { id: "f4", name: "Queenston St", status: "open", subtitle: tStatus("open") },
-        { id: "f5", name: "Lakeshore Rd", status: "open", subtitle: tStatus("open") },
+        { id: "f1", name: "Highway 20", status: "open", subtitle: tStatus("open"), regionId: "st-catharines" },
+        { id: "f2", name: "Carlton St", status: "closed", subtitle: tStatus("closedOpensRange", { min: 8, max: 12 }), regionId: "st-catharines" },
+        { id: "f3", name: "Glendale Ave", status: "closingSoon", subtitle: tStatus("closingSoonIn", { min: 3, max: 7 }), regionId: "st-catharines" },
+        { id: "f4", name: "Queenston St", status: "open", subtitle: tStatus("open"), regionId: "st-catharines" },
+        { id: "f5", name: "Lakeshore Rd", status: "open", subtitle: tStatus("open"), regionId: "st-catharines" },
       ],
       right: [
-        { id: "f6", name: "Victoria Upstream", status: "open", subtitle: tStatus("open") },
-        { id: "f7", name: "Victoria Downstream", status: "closed", subtitle: tStatus("closedOpensRange", { min: 5, max: 9 }) },
-        { id: "f8", name: "Ste-Catherine", status: "open", subtitle: tStatus("open") },
-        { id: "f9", name: "Clarence St", status: "open", subtitle: tStatus("open") },
+        { id: "f6", name: "Victoria Upstream", status: "open", subtitle: tStatus("open"), regionId: "montreal" },
+        { id: "f7", name: "Victoria Downstream", status: "closed", subtitle: tStatus("closedOpensRange", { min: 5, max: 9 }), regionId: "montreal" },
+        { id: "f8", name: "Ste-Catherine", status: "open", subtitle: tStatus("open"), regionId: "montreal" },
+        { id: "f9", name: "Clarence St", status: "open", subtitle: tStatus("open"), regionId: "port-colborne" },
       ],
     };
 
@@ -94,6 +95,7 @@ export function Hero() {
           id: bridge.id,
           name: bridge.name,
           status: bridge.status,
+          regionId: bridge.regionId,
           subtitle: getTranslatedStatusInfoText(tStatus, bridge.status, bridge.prediction, bridge.lastUpdated, bridge.upcomingClosure),
           ...leftPositions[i % leftPositions.length],
         }))
@@ -107,6 +109,7 @@ export function Hero() {
           id: bridge.id,
           name: bridge.name,
           status: bridge.status,
+          regionId: bridge.regionId,
           subtitle: getTranslatedStatusInfoText(tStatus, bridge.status, bridge.prediction, bridge.lastUpdated, bridge.upcomingClosure),
           ...rightPositions[i % rightPositions.length],
         }))
@@ -190,14 +193,17 @@ export function Hero() {
 
           {/* CTA Button */}
           <motion.div variants={item} className="mt-10">
-            <div
-              className="inline-flex items-center justify-center rounded-full bg-[var(--foreground)] px-8 py-4 text-base font-medium text-white shadow-xl shadow-gray-900/20"
+            <a
+              href="https://apps.apple.com/ca/app/bridge-up/id6557082394"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-full bg-[var(--foreground)] px-8 py-4 text-base font-medium text-white shadow-xl shadow-gray-900/20 hover:bg-gray-800 transition-colors"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
               </svg>
               {t("ctaButton")}
-            </div>
+            </a>
           </motion.div>
         </motion.div>
 
@@ -228,25 +234,27 @@ export function Hero() {
                       delay: index * 0.3,
                     }}
                   >
-                    <motion.div
-                      whileHover={{ scale: 1.05, x: 8 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
-                    >
-                      <div className="flex items-center gap-2 lg:gap-3">
-                        <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center shrink-0 ${getStatusBg()}`}>
-                          <div style={card.status === "closingSoon" ? { transform: "translateY(3px)" } : undefined}>
-                            <BridgeStatusIcon status={card.status} size={32} />
+                    <Link href={`/bridges?region=${card.regionId}`}>
+                      <motion.div
+                        whileHover={{ scale: 1.05, x: 8 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2 lg:gap-3">
+                          <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center shrink-0 ${getStatusBg()}`}>
+                            <div style={card.status === "closingSoon" ? { transform: "translateY(3px)" } : undefined}>
+                              <BridgeStatusIcon status={card.status} size={32} />
+                            </div>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">
+                              {card.name}
+                            </p>
+                            <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
                           </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">
-                            {card.name}
-                          </p>
-                          <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
-                        </div>
-                      </div>
-                    </motion.div>
+                      </motion.div>
+                    </Link>
                   </motion.div>
                 </motion.div>
               ))}
@@ -276,25 +284,27 @@ export function Hero() {
                       delay: index * 0.4,
                     }}
                   >
-                    <motion.div
-                      whileHover={{ scale: 1.05, x: -8 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
-                    >
-                      <div className="flex items-center gap-2 lg:gap-3">
-                        <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center shrink-0 ${getStatusBg()}`}>
-                          <div style={card.status === "closingSoon" ? { transform: "translateY(3px)" } : undefined}>
-                            <BridgeStatusIcon status={card.status} size={32} />
+                    <Link href={`/bridges?region=${card.regionId}`}>
+                      <motion.div
+                        whileHover={{ scale: 1.05, x: -8 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className="bg-white rounded-2xl shadow-xl shadow-gray-900/15 p-2.5 lg:p-3.5 max-w-[180px] lg:max-w-[220px] cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2 lg:gap-3">
+                          <div className={`w-8 h-8 lg:w-9 lg:h-9 rounded-full flex items-center justify-center shrink-0 ${getStatusBg()}`}>
+                            <div style={card.status === "closingSoon" ? { transform: "translateY(3px)" } : undefined}>
+                              <BridgeStatusIcon status={card.status} size={32} />
+                            </div>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">
+                              {card.name}
+                            </p>
+                            <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
                           </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="font-semibold text-xs lg:text-sm text-gray-900 truncate">
-                            {card.name}
-                          </p>
-                          <p className="text-[10px] lg:text-xs text-gray-500 mt-0.5">{card.subtitle}</p>
-                        </div>
-                      </div>
-                    </motion.div>
+                      </motion.div>
+                    </Link>
                   </motion.div>
                 </motion.div>
               ))}

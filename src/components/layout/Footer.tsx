@@ -20,7 +20,7 @@ export function Footer() {
       { href: "/" as const, label: t("home") },
       { href: "/bridges" as const, label: t("bridges") },
       { href: "/pricing" as const, label: t("pricing") },
-      { href: "/#download", label: t("download"), isAnchor: true },
+      { href: "https://apps.apple.com/ca/app/bridge-up/id6557082394", label: t("download"), external: true },
     ],
     more: [
       { href: "/about" as const, label: t("about") },
@@ -71,9 +71,11 @@ export function Footer() {
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.href}>
-                  {link.isAnchor ? (
+                  {link.external ? (
                     <a
                       href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
                     >
                       {link.label}

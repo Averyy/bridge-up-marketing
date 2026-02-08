@@ -82,6 +82,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       capable: true,
       statusBarStyle: "black-translucent",
     },
+    itunes: {
+      appId: "6557082394",
+    },
     openGraph: {
       title: t.openGraph.title,
       description: t.openGraph.description,
@@ -140,11 +143,8 @@ export default async function LocaleLayout({ children, params }: Props) {
       price: "0",
       priceCurrency: "CAD",
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "5",
-      ratingCount: "1",
-    },
+    url: "https://apps.apple.com/ca/app/bridge-up/id6557082394",
+    downloadUrl: "https://apps.apple.com/ca/app/bridge-up/id6557082394",
     featureList: [
       "Real-time bridge status",
       "Reopening predictions",

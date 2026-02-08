@@ -17,7 +17,6 @@
     "about": "About",
     "getApp": "Get app",
     "getTheApp": "Get the app",
-    "comingSoon": "Coming Soon",
     "buyMeCoffee": "Buy me a coffee",
     "coffeeTooltip": "Like Bridge Up? Buy me a coffee!",
     "toggleMenu": "Toggle menu",
@@ -51,7 +50,7 @@
     "badgePlatform": "CarPlay",
     "badgeBoatTracking": "Boat Tracking",
     "badgeLanguages": "English, Spanish, French",
-    "ctaButton": "Coming Soon",
+    "ctaButton": "Download Now",
     "appScreenshotAlt": "Bridge Up app showing real-time bridge status"
   },
   "bridgeStatus": {
@@ -130,8 +129,8 @@
   "download": {
     "heading": "Have a smooth crossing",
     "description": "Real time bridge status, reopening predictions, and CarPlay support. All features included, completely free.",
-    "ctaButton": "Coming Soon",
-    "requirements": "Requires iOS 26 or later • Works with CarPlay"
+    "ctaButton": "Download Now",
+    "requirements": "Requires iOS 26 or later • Works with CarPlay, iOS, iPadOS, macOS"
   },
   "about": {
     "title": "About",
