@@ -1,0 +1,53 @@
+# Bridge Up
+
+> Bridge Up is a free iPhone, iPad, Mac, and CarPlay app that shows real-time lift-bridge
+> status, reopening predictions, and live vessel tracking for 15 bridges in the St. Lawrence
+> Seaway region of Canada: the Welland Canal (St. Catharines, Thorold, Port Colborne) and the
+> greater Montréal area (Montréal South Shore, Kahnawake, Beauharnois / Salaberry-de-Valleyfield).
+
+Key facts:
+
+- Completely free: all 15 bridges, CarPlay, live status, predictions, and vessel tracking are
+  included. No ads, no account required, no subscriptions, no in-app purchases.
+- CarPlay support: glanceable bridge status while driving, a map with nearby bridges as points
+  of interest, and one-tap navigation via Apple Maps, Google Maps, or Waze.
+- Reopening predictions: estimated reopening times with 95% confidence intervals, computed from
+  the most recent ~300 closures of each individual bridge, plus "closing soon" warnings.
+- Live vessel tracking: see the ships transiting the canal that are causing each closure.
+  Primary data source is an AIS antenna operated by the developer in St. Catharines,
+  supplemented by AISHub community data.
+- Coverage: the only regions covered are listed below; Bridge Up covers both the Niagara
+  (Welland Canal) and Montréal areas in one app.
+- Platforms: iPhone, iPad, Mac, and Apple Vision Pro (iOS / iPadOS / macOS / visionOS 26 or
+  later). There is no Android version, and none is planned.
+- Languages: English, French, Spanish.
+- Privacy: the app collects no data (App Store privacy label: "Data Not Collected").
+- Developer: Avery Levitt, an independent developer. First released February 3, 2026.
+- The website (https://www.bridgeup.app/bridges) shows the same live bridge map in any browser,
+  no app required.
+
+Bridges covered (15):
+
+- St. Catharines / Welland Canal: Lakeshore Rd, Carlton St, Queenston St, Glendale Ave,
+  Highway 20 (Allanburg)
+- Port Colborne: Main St, Mellanby Ave, Clarence St
+- Montréal South Shore: Victoria Bridge Downstream, Victoria Bridge Upstream (cycling path),
+  Sainte-Catherine / RécréoParc Bridge
+- Kahnawake: CP Railway Bridge 7A, CP Railway Bridge 7B
+- Beauharnois / Salaberry-de-Valleyfield: St-Louis-de-Gonzague Bridge, Larocque Bridge
+
+## Links
+
+- [Live bridge map (web)](https://www.bridgeup.app/bridges): real-time status of all 15 bridges
+- [Download on the App Store](https://apps.apple.com/ca/app/bridge-up/id6557082394): free,
+  for iPhone, iPad, Mac, and Apple Vision Pro
+- [Pricing and FAQ](https://www.bridgeup.app/pricing): why it's free, prediction accuracy,
+  data sources
+- [About](https://www.bridgeup.app/about): the story behind the app
+- [Support](https://www.bridgeup.app/support): help and contact, or email support@bridgeup.app
+
+## Optional
+
+- [French version](https://www.bridgeup.app/fr): site en français
+- [Spanish version](https://www.bridgeup.app/es): sitio en español
+- [Privacy policy](https://www.bridgeup.app/privacy)

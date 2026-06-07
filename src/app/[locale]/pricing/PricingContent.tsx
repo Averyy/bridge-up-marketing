@@ -3,6 +3,7 @@
 import { Header, Footer } from "@/components/layout";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { PRICING_FAQ_IDS } from "./faq";
 
 export default function PricingContent() {
   const t = useTranslations("pricing");
@@ -183,15 +184,10 @@ export default function PricingContent() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
             >
-              {[
-                { q: t("faq.q1"), a: t("faq.a1") },
-                { q: t("faq.q2"), a: t("faq.a2") },
-                { q: t("faq.q3"), a: t("faq.a3") },
-                { q: t("faq.q4"), a: t("faq.a4") },
-              ].map((faq, i) => (
+              {PRICING_FAQ_IDS.map((i) => (
                 <div key={i} className="bg-gray-50 rounded-2xl p-6">
-                  <h3 className="font-semibold text-[var(--foreground)]">{faq.q}</h3>
-                  <p className="mt-2 text-gray-600">{faq.a}</p>
+                  <h3 className="font-semibold text-[var(--foreground)]">{t(`faq.q${i}`)}</h3>
+                  <p className="mt-2 text-gray-600">{t(`faq.a${i}`)}</p>
                 </div>
               ))}
             </motion.div>

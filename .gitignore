@@ -44,5 +44,8 @@ next-env.d.ts
 .claude/
 CLAUDE.md
 
+# internal planning docs (keep out of the public repo)
+TODO-marketingpush.md
+
 # scripts
 /scripts

@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "@/components/Providers";
 import { routing, Locale } from "@/i18n/routing";
+import { SITE_URL, APP_STORE_URL, APP_STORE_ID } from "@/lib/config";
+import { jsonLdHtml } from "@/lib/seo";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -34,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = messages.metadata;
 
   return {
-    metadataBase: new URL("https://bridgeup.app"),
+    metadataBase: new URL(SITE_URL),
     title: {
       default: t.title.default,
       template: "%s | Bridge Up",
@@ -83,7 +85,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       statusBarStyle: "black-translucent",
     },
     itunes: {
-      appId: "6557082394",
+      appId: APP_STORE_ID,
     },
     openGraph: {
       title: t.openGraph.title,
@@ -106,13 +108,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: t.openGraph.description,
       images: ["/og-image.png"],
     },
-    alternates: {
-      languages: {
-        en: "/",
-        fr: "/fr",
-        es: "/es",
-      },
-    },
   };
 }
 
@@ -132,25 +127,54 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: "Bridge Up",
-    operatingSystem: "iOS",
-    applicationCategory: "NavigationApplication",
-    description:
-      "Real-time bridge status and predictions for the St. Lawrence Seaway region. Know before you go.",
-    offers: {
-      "@type": "Offer",
-      price: "0",
-      priceCurrency: "CAD",
-    },
-    url: "https://apps.apple.com/ca/app/bridge-up/id6557082394",
-    downloadUrl: "https://apps.apple.com/ca/app/bridge-up/id6557082394",
-    featureList: [
-      "Real-time bridge status",
-      "Reopening predictions",
-      "CarPlay support",
-      "15 bridges monitored",
-      "Interactive map",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": `${SITE_URL}/#app`,
+        name: "Bridge Up",
+        operatingSystem: "iOS, iPadOS, macOS, visionOS",
+        applicationCategory: "NavigationApplication",
+        applicationSubCategory: "Travel",
+        description:
+          "Real-time bridge status and predictions for the St. Lawrence Seaway region. Know before you go.",
+        url: SITE_URL,
+        downloadUrl: APP_STORE_URL,
+        installUrl: APP_STORE_URL,
+        datePublished: "2026-02-03",
+        inLanguage: ["en", "fr", "es"],
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "CAD",
+        },
+        screenshot: [
+          `${SITE_URL}/screenshots/home.png`,
+          `${SITE_URL}/screenshots/map.png`,
+          `${SITE_URL}/screenshots/CarPlay-Map.png`,
+        ],
+        featureList: [
+          "Real-time bridge status",
+          "Reopening predictions",
+          "CarPlay support",
+          "Live vessel tracking",
+          "15 bridges monitored across the Welland Canal and Montréal regions",
+          "Interactive map",
+          "Available in English, French, and Spanish",
+        ],
+        author: {
+          "@type": "Person",
+          name: "Avery Levitt",
+          url: "https://apps.apple.com/ca/developer/avery-levitt/id1758364220",
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        name: "Bridge Up",
+        url: SITE_URL,
+        inLanguage: ["en", "fr", "es"],
+        about: { "@id": `${SITE_URL}/#app` },
+      },
     ],
   };
 
@@ -159,7 +183,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
         />
       </head>
       <body
