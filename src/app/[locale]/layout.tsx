@@ -31,6 +31,10 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  // Stray non-locale requests (e.g. /apple-touch-icon-precomposed.png) reach the
+  // [locale] segment because the middleware skips dotted paths; bail cleanly
+  // instead of trying to import messages/<filename>.json.
+  if (!routing.locales.includes(locale as Locale)) notFound();
 
   const messages = (await import(`../../../messages/${locale}.json`)).default;
   const t = messages.metadata;

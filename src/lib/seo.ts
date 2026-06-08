@@ -1,4 +1,5 @@
 import { routing, Locale } from "@/i18n/routing";
+import { SITE_URL } from "./config";
 
 // Build the locale-prefixed path for a route ("" = home).
 // localePrefix is "as-needed": the default locale (en) has no prefix.
@@ -9,6 +10,12 @@ export function localePath(locale: Locale, path: string): string {
   if (p.length > 1) p = p.replace(/\/+$/, ""); // strip trailing slash(es)
   const prefixed = locale === routing.defaultLocale ? p : `/${locale}${p}`;
   return prefixed === "" ? "/" : prefixed;
+}
+
+// Absolute canonical URL for a route in a locale (home → SITE_URL, no trailing slash).
+export function absUrl(locale: Locale, path: string = ""): string {
+  const p = localePath(locale, path);
+  return p === "/" ? SITE_URL : `${SITE_URL}${p}`;
 }
 
 // Per-page canonical + hreflang alternates, resolved against metadataBase.

@@ -1,24 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
-
-const regions = [
-  "St. Catharines",
-  "Port Colborne",
-  "Montréal South Shore",
-  "Salaberry-de-Valleyfield",
-  "Kahnawake",
-];
+import { Locale } from "@/i18n/routing";
+import { REGION_PAGE_ORDER, pageBridgeIdsForRegion, getBridgeSlugEntry } from "@/lib/bridgeSlugs";
+import { getBridgeEditorial } from "@/content/bridges";
+import { getRegionDisplay } from "@/content/regions";
 
 export function Footer() {
   const t = useTranslations("footer");
+  const locale = useLocale() as Locale;
+
+  const bridgeRegions = REGION_PAGE_ORDER.map((regionId) => ({
+    regionId,
+    name: getRegionDisplay(regionId, locale)?.name ?? regionId,
+    bridges: pageBridgeIdsForRegion(regionId)
+      .map((id) => {
+        const entry = getBridgeSlugEntry(id);
+        const name = entry ? getBridgeEditorial(entry.slug, locale)?.name : undefined;
+        return entry && name ? { slug: entry.slug, name } : null;
+      })
+      .filter((b): b is { slug: string; name: string } => b !== null),
+  })).filter((r) => r.bridges.length > 0);
 
   const footerLinks = {
     product: [
       { href: "/" as const, label: t("home") },
-      { href: "/bridges" as const, label: t("bridges") },
+      { href: "/bridges" as const, label: t("map") },
+      { href: "/bridges/list" as const, label: t("bridges") },
       { href: "/pricing" as const, label: t("pricing") },
       { href: "https://apps.apple.com/ca/app/bridge-up/id6557082394", label: t("download"), external: true },
     ],
@@ -82,7 +92,7 @@ export function Footer() {
                     </a>
                   ) : (
                     <Link
-                      href={link.href as "/" | "/bridges" | "/pricing"}
+                      href={link.href as "/" | "/bridges" | "/bridges/list" | "/pricing"}
                       className="text-sm text-[var(--dark-text-muted)] hover:text-white transition-colors"
                     >
                       {link.label}
@@ -139,25 +149,35 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Regions */}
-        <div className="mt-12 pt-8 border-t border-white/10">
-          <p className="text-sm text-[var(--dark-text-muted)] mb-3">
-            {t("monitoringBridges")}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {regions.map((region) => (
-              <span
-                key={region}
-                className="text-xs px-3 py-1 rounded-full bg-white/10 text-[var(--dark-text-muted)]"
-              >
-                {region}
-              </span>
+        {/* Monitored bridges, grouped by region */}
+        <div className="mt-10 pt-10 border-t border-white/10">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3 lg:grid-cols-4">
+            {bridgeRegions.map((r) => (
+              <div key={r.regionId}>
+                <Link
+                  href={`/bridges/${r.regionId}`}
+                  className="mb-2 block text-xs font-semibold text-white/70 transition-colors hover:text-white"
+                >
+                  {r.name}
+                </Link>
+                <div className="flex flex-wrap gap-1.5">
+                  {r.bridges.map((b) => (
+                    <Link
+                      key={b.slug}
+                      href={`/bridges/${r.regionId}/${b.slug}`}
+                      className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] text-[var(--dark-text-muted)] transition-colors hover:bg-white/15 hover:text-white"
+                    >
+                      {b.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="mt-10 pt-10 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-[var(--dark-text-muted)]">
             &copy; {new Date().getFullYear()} {t("copyright")}
           </p>

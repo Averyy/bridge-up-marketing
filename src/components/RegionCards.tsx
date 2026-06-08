@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useData } from "@/lib/useData";
 import { Region } from "@/lib/bridges";
+import { regionHref } from "@/lib/bridgeSlugs";
 
 interface StatusStyle {
   bg: string;
@@ -84,7 +85,7 @@ export function RegionCards({
     if (onRegionClick) {
       onRegionClick(regionId);
     } else {
-      router.push(`/bridges?region=${regionId}`);
+      router.push(regionHref(regionId));
     }
   };
 

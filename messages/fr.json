@@ -1,13 +1,13 @@
 {
   "metadata": {
     "title": {
-      "default": "Bridge Up - État des ponts en temps réel | St. Catharines, Welland, Montréal",
+      "default": "Bridge Up - État des ponts en temps réel | Montréal, Beauharnois, Valleyfield",
       "template": "{title} | Bridge Up"
     },
-    "description": "Sachez avant de partir. État des ponts et prédictions en temps réel pour St. Catharines, le canal Welland, Port Colborne et Montréal. Ne restez plus jamais coincé à un pont fermé.",
+    "description": "Sachez avant de partir : état des ponts en temps réel sur la Rive-Sud de Montréal, à Beauharnois et à Salaberry-de-Valleyfield, ainsi que le canal Welland. Ne restez plus jamais coincé à un pont levé.",
     "openGraph": {
       "title": "Bridge Up - État des ponts en temps réel",
-      "description": "État des ponts en temps réel pour St. Catharines, Welland, Port Colborne et Montréal. Les prédictions vous indiquent quand les ponts rouvrent."
+      "description": "État des ponts en temps réel sur la Rive-Sud de Montréal, à Beauharnois et à Salaberry-de-Valleyfield, ainsi que le canal Welland. Les prédictions vous indiquent quand les ponts rouvrent."
     }
   },
   "nav": {
@@ -17,10 +17,10 @@
     "about": "À propos",
     "getApp": "App",
     "getTheApp": "Obtenir l'app",
-    "buyMeCoffee": "M'offrir un café",
-    "coffeeTooltip": "Vous aimez Bridge Up? Offrez-moi un café!",
     "toggleMenu": "Ouvrir le menu",
-    "closeMenu": "Fermer le menu"
+    "closeMenu": "Fermer le menu",
+    "liveMap": "Carte",
+    "allBridges": "Ponts"
   },
   "footer": {
     "brandDescription": "État des ponts en temps réel pour la région de la Voie maritime du Saint-Laurent.",
@@ -37,15 +37,15 @@
     "buyMeCoffee": "M'offrir un café",
     "privacyPolicy": "Politique de confidentialité",
     "termsOfService": "Conditions d'utilisation",
-    "monitoringBridges": "Surveillance des ponts à :",
     "copyright": "Bridge Up. Tous droits réservés.",
-    "madeWith": "Fait avec 💙 à St. Catharines"
+    "madeWith": "Fait avec 💙 à St. Catharines",
+    "map": "Carte"
   },
   "hero": {
     "eyebrow": "Suivi de 15 ponts en temps réel",
     "headline": "N'attendez plus jamais à un",
     "headlineHighlight": "pont fermé.",
-    "subheadline": "État des ponts et prédictions de réouverture en temps réel avec support CarPlay. Conçu pour St. Catharines, Welland, Port Colborne et Montréal.",
+    "subheadline": "État des ponts et prédictions de réouverture en temps réel avec support CarPlay. Conçu pour la Rive-Sud de Montréal (ponts Victoria et Sainte-Catherine/RécréoParc), Beauharnois et Salaberry-de-Valleyfield (ponts Larocque et St-Louis-de-Gonzague), et la région de Niagara.",
     "badgeFree": "Gratuit",
     "badgePlatform": "CarPlay",
     "badgeBoatTracking": "Suivi des bateaux",
@@ -82,7 +82,8 @@
     "constructionMinutes": "Fermé pour construction, ouvre dans {min}m",
     "constructionUnknown": "Fermé pour construction imprévue, ouverture inconnue",
     "statusUnknown": "L'état du pont est inconnu ou indisponible",
-    "changedAt": "Changé {time}"
+    "changedAt": "Changé {time}",
+    "checking": "Vérification de l'état en direct…"
   },
   "features": {
     "smartTracking": {
@@ -237,5 +238,54 @@
       "developer": "Développeur",
       "contact": "Contact"
     }
+  },
+  "bridgePages": {
+    "titleTemplate": "État du pont {bridge}, {region}",
+    "h1": "Pont {bridge}",
+    "metaDescription": "État en direct, prédictions de réouverture et durée habituelle des fermetures du pont {bridge} sur {waterway} à {city}. Gratuit sur iPhone et CarPlay.",
+    "breadcrumbHome": "Accueil",
+    "breadcrumbBridges": "Ponts",
+    "answer": "En date du {date}, le pont {bridge} à {city} reste habituellement fermé environ {avg} minutes chaque fois qu'il s'ouvre pour un navire (en général de {ciLow} à {ciHigh} minutes), d'après {n} fermetures et alertes de fermeture enregistrées.",
+    "statsHeading": "Fermetures habituelles",
+    "statClosure": "Fermeture typique",
+    "statClosingSoon": "Préavis de fermeture",
+    "minutesValue": "{value} min",
+    "minutesRange": "{low}–{high} min",
+    "durationsHeading": "Durée des fermetures",
+    "durUnder9": "1–9 min",
+    "dur10_15": "10–15 min",
+    "dur16_30": "16–30 min",
+    "dur31_60": "31–60 min",
+    "durOver60": "60 min+",
+    "method": "D'après {n} fermetures et alertes de fermeture enregistrées. Les durées sont mesurées par levée; les barres représentent une part des fermetures terminées.",
+    "nearbyHeading": "Autres ponts à proximité",
+    "directions": "Itinéraire via Google",
+    "officialStatus": "État officiel de la Voie maritime",
+    "viewOnMap": "Voir sur la carte en direct",
+    "statChanged": "Dernier changement",
+    "breadcrumbLabel": "Fil d'Ariane",
+    "viewAllRegion": "Voir tous les ponts de {region}",
+    "closuresHeading": "Fermetures prévues",
+    "closuresNote": "Fermetures prévues pour des travaux ou des réparations. Les dates peuvent changer.",
+    "noClosures": "Aucune fermeture prévue pour le moment.",
+    "closureToday": "Aujourd'hui",
+    "closureTomorrow": "Demain",
+    "closureAllDay": "toute la journée",
+    "closureConstruction": "Travaux",
+    "allBridges": "Tous les ponts",
+    "closureBoat": "Navire"
+  },
+  "bridgeList": {
+    "title": "État des ponts en direct par région",
+    "metaDescription": "État en direct et durées de fermeture habituelles pour tous les ponts suivis par Bridge Up sur le canal Welland et la Voie maritime du Saint-Laurent, par région.",
+    "h1": "Ponts",
+    "intro": "Bridge Up surveille les ponts routiers qui s'ouvrent pour les navires sur deux voies d'eau : le canal Welland, dans Niagara, et la Voie maritime du Saint-Laurent, autour de Montréal. Quand un cargo passe, le pont s'ouvre et la circulation attend qu'il redescende, de quelques minutes à près d'une heure. Les pages ci-dessous regroupent les ponts par secteur, chacun avec son état en direct et sa durée habituelle de fermeture.",
+    "viewRegion": "Voir la région",
+    "cardStat": "Fermé ~{avg} min en moyenne"
+  },
+  "regionHub": {
+    "titleTemplate": "État des ponts à {region}",
+    "metaDescription": "État en direct et durées de fermeture habituelles pour les {count} ponts suivis par Bridge Up sur {waterway} à {region}.",
+    "h1Template": "Ponts : {region}"
   }
 }

@@ -39,6 +39,30 @@ Bridges covered (15):
 ## Links
 
 - [Live bridge map (web)](https://www.bridgeup.app/bridges): real-time status of all 15 bridges
+  on one interactive map
+- [All bridges by region](https://www.bridgeup.app/bridges/list): browsable directory of every
+  covered bridge with live status and typical closure times
+
+Bridge status pages. Each per-bridge page has live status, reopening predictions, the average
+closure time with a 95% confidence interval, and a closure-duration breakdown:
+
+- St. Catharines (Welland Canal): [region overview](https://www.bridgeup.app/bridges/st-catharines),
+  [Lakeshore Rd](https://www.bridgeup.app/bridges/st-catharines/lakeshore-rd),
+  [Carlton St](https://www.bridgeup.app/bridges/st-catharines/carlton-st),
+  [Queenston St](https://www.bridgeup.app/bridges/st-catharines/queenston-st),
+  [Glendale Ave](https://www.bridgeup.app/bridges/st-catharines/glendale-ave),
+  [Highway 20](https://www.bridgeup.app/bridges/st-catharines/highway-20)
+- Port Colborne (Welland Canal): [region overview](https://www.bridgeup.app/bridges/port-colborne),
+  [Main St](https://www.bridgeup.app/bridges/port-colborne/main-st),
+  [Mellanby Ave](https://www.bridgeup.app/bridges/port-colborne/mellanby-ave),
+  [Clarence St](https://www.bridgeup.app/bridges/port-colborne/clarence-st)
+- Montréal South Shore (St. Lawrence Seaway): [region overview](https://www.bridgeup.app/bridges/montreal),
+  [Victoria](https://www.bridgeup.app/bridges/montreal/victoria),
+  [Sainte-Catherine / RécréoParc](https://www.bridgeup.app/bridges/montreal/sainte-catherine-recreoparc)
+- Beauharnois & Salaberry-de-Valleyfield (St. Lawrence Seaway): [region overview](https://www.bridgeup.app/bridges/beauharnois),
+  [Saint-Louis-de-Gonzague](https://www.bridgeup.app/bridges/beauharnois/st-louis-de-gonzague),
+  [Larocque](https://www.bridgeup.app/bridges/beauharnois/larocque)
+
 - [Download on the App Store](https://apps.apple.com/ca/app/bridge-up/id6557082394): free,
   for iPhone, iPad, Mac, and Apple Vision Pro
 - [Pricing and FAQ](https://www.bridgeup.app/pricing): why it's free, prediction accuracy,

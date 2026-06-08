@@ -17,10 +17,10 @@
     "about": "Acerca de",
     "getApp": "App",
     "getTheApp": "Obtener la app",
-    "buyMeCoffee": "Invítame un café",
-    "coffeeTooltip": "¿Te gusta Bridge Up? ¡Invítame un café!",
     "toggleMenu": "Alternar menú",
-    "closeMenu": "Cerrar menú"
+    "closeMenu": "Cerrar menú",
+    "liveMap": "Mapa",
+    "allBridges": "Puentes"
   },
   "footer": {
     "brandDescription": "Estado de puentes en tiempo real para la región de la Vía Marítima del San Lorenzo.",
@@ -37,9 +37,9 @@
     "buyMeCoffee": "Invítame un café",
     "privacyPolicy": "Política de privacidad",
     "termsOfService": "Términos de servicio",
-    "monitoringBridges": "Monitoreando puentes en:",
     "copyright": "Bridge Up. Todos los derechos reservados.",
-    "madeWith": "Hecho con 💙 en St. Catharines"
+    "madeWith": "Hecho con 💙 en St. Catharines",
+    "map": "Mapa"
   },
   "hero": {
     "eyebrow": "Rastreando 15 puentes en tiempo real",
@@ -82,7 +82,8 @@
     "constructionMinutes": "Cerrado por construcción, abre en {min}m",
     "constructionUnknown": "Cerrado por construcción no programada, apertura desconocida",
     "statusUnknown": "El estado del puente es desconocido o no disponible",
-    "changedAt": "Cambió {time}"
+    "changedAt": "Cambió {time}",
+    "checking": "Comprobando el estado en vivo…"
   },
   "features": {
     "smartTracking": {
@@ -237,5 +238,54 @@
       "developer": "Desarrollador",
       "contact": "Contacto"
     }
+  },
+  "bridgePages": {
+    "titleTemplate": "Estado del puente {bridge}, {region}",
+    "h1": "Puente {bridge}",
+    "metaDescription": "Estado en vivo, predicciones de reapertura y cuánto suele estar cerrado el puente {bridge} sobre {waterway} en {city}. Gratis en iPhone y CarPlay.",
+    "breadcrumbHome": "Inicio",
+    "breadcrumbBridges": "Puentes",
+    "answer": "Al {date}, el puente {bridge} en {city} suele estar cerrado unos {avg} minutos cada vez que se abre para un barco (por lo general de {ciLow} a {ciHigh} minutos), según {n} cierres y avisos de cierre registrados.",
+    "statsHeading": "Cierres habituales",
+    "statClosure": "Cierre típico",
+    "statClosingSoon": "Aviso de cierre",
+    "minutesValue": "{value} min",
+    "minutesRange": "{low}–{high} min",
+    "durationsHeading": "Cuánto duran los cierres",
+    "durUnder9": "1–9 min",
+    "dur10_15": "10–15 min",
+    "dur16_30": "16–30 min",
+    "dur31_60": "31–60 min",
+    "durOver60": "60 min+",
+    "method": "Según {n} cierres y avisos de cierre registrados. Las duraciones se miden por elevación; las barras son una parte de los cierres completados.",
+    "nearbyHeading": "Otros puentes cercanos",
+    "directions": "Cómo llegar con Google",
+    "officialStatus": "Estado oficial de la vía marítima",
+    "viewOnMap": "Ver en el mapa en vivo",
+    "statChanged": "Último cambio",
+    "breadcrumbLabel": "Ruta de navegación",
+    "viewAllRegion": "Ver todos los puentes de {region}",
+    "closuresHeading": "Cierres programados",
+    "closuresNote": "Cierres previstos por obras o reparaciones. Las fechas pueden cambiar.",
+    "noClosures": "No hay cierres programados por ahora.",
+    "closureToday": "Hoy",
+    "closureTomorrow": "Mañana",
+    "closureAllDay": "todo el día",
+    "closureConstruction": "Obras",
+    "allBridges": "Todos los puentes",
+    "closureBoat": "Barco"
+  },
+  "bridgeList": {
+    "title": "Estado de los puentes en vivo por región",
+    "metaDescription": "Estado en vivo y duraciones de cierre habituales de todos los puentes que sigue Bridge Up en el canal Welland y la vía marítima del San Lorenzo, por región.",
+    "h1": "Puentes",
+    "intro": "Bridge Up vigila los puentes de carretera que se abren para los barcos en dos vías de agua: el canal Welland, en Niagara, y la vía marítima del San Lorenzo, alrededor de Montreal. Cuando pasa un carguero, el puente se abre y el tráfico espera a que vuelva a bajar, desde unos minutos hasta casi una hora. Las páginas de abajo agrupan los puentes por zona, cada uno con su estado en vivo y cuánto suele estar cerrado.",
+    "viewRegion": "Ver la región",
+    "cardStat": "Suele cerrar {avg} min"
+  },
+  "regionHub": {
+    "titleTemplate": "Estado de los puentes en {region}",
+    "metaDescription": "Estado en vivo y duraciones de cierre habituales de los {count} puentes que sigue Bridge Up en {waterway} en {region}.",
+    "h1Template": "Puentes: {region}"
   }
 }

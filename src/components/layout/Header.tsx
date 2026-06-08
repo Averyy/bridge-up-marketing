@@ -30,10 +30,19 @@ export function Header({ forceScrolled = false }: HeaderProps) {
     },
     {
       href: "/bridges" as const,
-      label: t("bridges"),
+      label: t("liveMap"),
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
+        </svg>
+      )
+    },
+    {
+      href: "/bridges/list" as const,
+      label: t("allBridges"),
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
         </svg>
       )
     },
@@ -126,7 +135,7 @@ export function Header({ forceScrolled = false }: HeaderProps) {
             </Link>
 
             {/* Desktop Navigation - Center (includes Language Selector after About) */}
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -157,28 +166,8 @@ export function Header({ forceScrolled = false }: HeaderProps) {
               />
             </div>
 
-            {/* CTA Button + Coffee */}
-            <div className="hidden md:flex items-center gap-4">
-              <a
-                href="https://buymeacoffee.com/averyy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`group relative inline-flex items-center justify-center rounded-full transition-all duration-300 ${
-                  showPillNav ? "w-9 h-9" : "w-10 h-10"
-                } ${
-                  showPillNav || useLightText
-                    ? "hover:bg-amber-500/20"
-                    : "hover:bg-amber-100"
-                }`}
-                aria-label={t("buyMeCoffee")}
-              >
-                <span className="text-base">☕</span>
-                <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-[var(--foreground)] text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
-                  {t("coffeeTooltip")}
-                  <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[var(--foreground)] rotate-45" />
-                </span>
-              </a>
-
+            {/* CTA Button */}
+            <div className="hidden lg:flex items-center gap-4">
               <a
                 href="https://apps.apple.com/ca/app/bridge-up/id6557082394"
                 target="_blank"
@@ -201,27 +190,12 @@ export function Header({ forceScrolled = false }: HeaderProps) {
             </div>
 
             {/* Mobile Controls */}
-            <div className="flex md:hidden items-center gap-2">
+            <div className="flex lg:hidden items-center gap-2">
               {/* Language Selector - Mobile */}
               <LanguageSelector
                 variant={showPillNav || useLightText ? "dark" : "light"}
                 showPillNav={showPillNav}
               />
-
-              {/* Coffee - hidden on small phones, visible on tablets */}
-              <a
-                href="https://buymeacoffee.com/averyy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`hidden sm:inline-flex items-center justify-center rounded-full w-8 h-8 transition-colors ${
-                  showPillNav || useLightText
-                    ? "hover:bg-amber-500/20"
-                    : "hover:bg-amber-100"
-                }`}
-                aria-label={t("buyMeCoffee")}
-              >
-                <span className="text-sm">☕</span>
-              </a>
 
               {/* Get the app */}
               <a
@@ -353,17 +327,6 @@ export function Header({ forceScrolled = false }: HeaderProps) {
                   ))}
                 </div>
 
-                {/* Coffee Link */}
-                <a
-                  href="https://buymeacoffee.com/averyy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-3 mt-2 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span className="text-lg">☕</span>
-                  <span className="font-medium">{t("buyMeCoffee")}</span>
-                </a>
               </div>
             </motion.div>
           </>

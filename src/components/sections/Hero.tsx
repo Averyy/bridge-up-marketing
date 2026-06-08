@@ -8,6 +8,7 @@ import { useData } from "@/lib/useData";
 import { getTranslatedStatusInfoText } from "@/lib/bridges";
 import { BridgeStatusIcon } from "@/components/ui/BridgeStatusIcon";
 import { Link } from "@/i18n/navigation";
+import { regionHref } from "@/lib/bridgeSlugs";
 
 const container = {
   hidden: { opacity: 0 },
@@ -234,7 +235,7 @@ export function Hero() {
                       delay: index * 0.3,
                     }}
                   >
-                    <Link href={`/bridges?region=${card.regionId}`}>
+                    <Link href={regionHref(card.regionId)}>
                       <motion.div
                         whileHover={{ scale: 1.05, x: 8 }}
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -284,7 +285,7 @@ export function Hero() {
                       delay: index * 0.4,
                     }}
                   >
-                    <Link href={`/bridges?region=${card.regionId}`}>
+                    <Link href={regionHref(card.regionId)}>
                       <motion.div
                         whileHover={{ scale: 1.05, x: -8 }}
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}

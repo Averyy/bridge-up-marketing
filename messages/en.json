@@ -17,10 +17,10 @@
     "about": "About",
     "getApp": "Get app",
     "getTheApp": "Get the app",
-    "buyMeCoffee": "Buy me a coffee",
-    "coffeeTooltip": "Like Bridge Up? Buy me a coffee!",
     "toggleMenu": "Toggle menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "liveMap": "Map",
+    "allBridges": "Bridges"
   },
   "footer": {
     "brandDescription": "Real-time bridge status for the St. Lawrence Seaway region.",
@@ -37,9 +37,9 @@
     "buyMeCoffee": "Buy me a coffee",
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
-    "monitoringBridges": "Monitoring bridges in:",
     "copyright": "Bridge Up. All rights reserved.",
-    "madeWith": "Made with 💙 in St. Catharines"
+    "madeWith": "Made with 💙 in St. Catharines",
+    "map": "Map"
   },
   "hero": {
     "eyebrow": "Now tracking 15 bridges in real-time",
@@ -82,7 +82,8 @@
     "constructionMinutes": "Closed for construction, opens in {min}m",
     "constructionUnknown": "Closed for unscheduled construction, unknown opening",
     "statusUnknown": "Bridge status is unknown or unavailable",
-    "changedAt": "Changed {time}"
+    "changedAt": "Changed {time}",
+    "checking": "Checking live status…"
   },
   "features": {
     "smartTracking": {
@@ -237,5 +238,54 @@
       "developer": "Developer",
       "contact": "Contact"
     }
+  },
+  "bridgePages": {
+    "titleTemplate": "{bridge} Bridge Status, {region}",
+    "h1": "{bridge} Bridge",
+    "metaDescription": "Live status, reopening predictions, and how long the {bridge} bridge over {waterway} in {city} usually stays closed. Free on iPhone and CarPlay.",
+    "breadcrumbHome": "Home",
+    "breadcrumbBridges": "Bridges",
+    "answer": "As of {date}, the {bridge} bridge in {city} usually stays closed about {avg} minutes each time it opens for a ship (typically {ciLow}–{ciHigh} minutes), based on {n} recorded closures and closing-soon alerts.",
+    "statsHeading": "Typical closures",
+    "statClosure": "Typical closure",
+    "statClosingSoon": "Closing-soon warning",
+    "minutesValue": "{value} min",
+    "minutesRange": "{low}–{high} min",
+    "durationsHeading": "How long closures last",
+    "durUnder9": "1–9 min",
+    "dur10_15": "10–15 min",
+    "dur16_30": "16–30 min",
+    "dur31_60": "31–60 min",
+    "durOver60": "60 min+",
+    "method": "Based on {n} recorded closures and closing-soon alerts. Durations are measured per lift; the bars are a share of completed closures.",
+    "nearbyHeading": "Other bridges nearby",
+    "directions": "Directions via Google",
+    "officialStatus": "Official Seaway status",
+    "viewOnMap": "See it on the live map",
+    "statChanged": "Status changed",
+    "breadcrumbLabel": "Breadcrumb",
+    "viewAllRegion": "View all {region} bridges",
+    "closuresHeading": "Scheduled closures",
+    "closuresNote": "Planned closures for construction or repairs. Dates can change.",
+    "noClosures": "No scheduled closures right now.",
+    "closureToday": "Today",
+    "closureTomorrow": "Tomorrow",
+    "closureAllDay": "all day",
+    "closureConstruction": "Construction",
+    "allBridges": "All bridges",
+    "closureBoat": "Ship"
+  },
+  "bridgeList": {
+    "title": "Live Bridge Status by Region",
+    "metaDescription": "Live status and typical closure times for every bridge Bridge Up tracks on the Welland Canal and the St. Lawrence Seaway, grouped by region.",
+    "h1": "Bridges",
+    "intro": "Bridge Up watches the road bridges that open for ships on two waterways: the Welland Canal through Niagara, and the St. Lawrence Seaway around Montréal. When a freighter comes through, the bridge opens and traffic waits until it's down again, anywhere from a couple of minutes to the better part of an hour. The pages below group the bridges by area, each with its live status and how long it usually stays closed.",
+    "viewRegion": "View region",
+    "cardStat": "Usually closed {avg} min"
+  },
+  "regionHub": {
+    "titleTemplate": "{region} Bridge Status",
+    "metaDescription": "Live status and typical closure times for the {count} bridges Bridge Up tracks on {waterway} in {region}.",
+    "h1Template": "{region} bridges"
   }
 }
