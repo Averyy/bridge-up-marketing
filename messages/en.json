@@ -267,13 +267,14 @@
     "viewAllRegion": "View all {region} bridges",
     "closuresHeading": "Scheduled closures",
     "closuresNote": "Planned closures for construction or repairs. Dates can change.",
-    "noClosures": "No scheduled closures right now.",
+    "noClosures": "No planned closures right now. The bridge opens for ships as they pass; check the live status above.",
     "closureToday": "Today",
     "closureTomorrow": "Tomorrow",
     "closureAllDay": "all day",
     "closureConstruction": "Construction",
     "allBridges": "All bridges",
-    "closureBoat": "Ship"
+    "closureBoat": "Ship",
+    "canalHubLink": "All Welland Canal bridges"
   },
   "bridgeList": {
     "title": "Live Bridge Status by Region",
@@ -287,5 +288,12 @@
     "titleTemplate": "{region} Bridge Status",
     "metaDescription": "Live status and typical closure times for the {count} bridges Bridge Up tracks on {waterway} in {region}.",
     "h1Template": "{region} bridges"
+  },
+  "canalHub": {
+    "title": "Welland Canal Bridge Status",
+    "h1": "Welland Canal Bridges",
+    "metaDescription": "Live status and typical closure times for all eight road bridges over the Welland Canal, from Port Weller in St. Catharines down to Port Colborne, in canal order.",
+    "intro": "The Welland Canal carries ships 43 kilometres across the Niagara Peninsula, climbing almost 100 metres between Lake Ontario and Lake Erie to get around Niagara Falls. Eight road bridges cross it, from Bridge 1 at Port Weller in St. Catharines down to Bridge 21 in Port Colborne, and every one stops traffic when a freighter comes through. They're a mix of lift and bascule bridges, some sitting right beside the locks that do the climbing. Below are all eight in canal order, north to south, each with its live status and how long it usually stays down.",
+    "orderNote": "In canal order, north (Lake Ontario) to south (Lake Erie)."
   }
 }

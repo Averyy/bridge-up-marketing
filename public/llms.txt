@@ -42,6 +42,7 @@ Bridges covered (15):
   on one interactive map
 - [All bridges by region](https://www.bridgeup.app/bridges/list): browsable directory of every
   covered bridge with live status and typical closure times
+- [Welland Canal bridge status](https://www.bridgeup.app/bridges/welland-canal): all 8 canal road bridges (Bridge 1 to 21, St. Catharines down to Port Colborne) in canal order
 
 Bridge status pages. Each per-bridge page has live status, reopening predictions, the average
 closure time with a 95% confidence interval, and a closure-duration breakdown:

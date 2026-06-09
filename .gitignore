@@ -44,8 +44,9 @@ next-env.d.ts
 .claude/
 CLAUDE.md
 
-# internal planning docs (keep out of the public repo)
+# internal planning docs + analytics (keep out of the public repo)
 TODO-*.md
+seo-baseline-*.md
 
 # scripts
 /scripts

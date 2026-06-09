@@ -267,13 +267,14 @@
     "viewAllRegion": "Ver todos los puentes de {region}",
     "closuresHeading": "Cierres programados",
     "closuresNote": "Cierres previstos por obras o reparaciones. Las fechas pueden cambiar.",
-    "noClosures": "No hay cierres programados por ahora.",
+    "noClosures": "No hay cierres programados por ahora. El puente se abre al paso de los barcos; mira el estado en vivo arriba.",
     "closureToday": "Hoy",
     "closureTomorrow": "Mañana",
     "closureAllDay": "todo el día",
     "closureConstruction": "Obras",
     "allBridges": "Todos los puentes",
-    "closureBoat": "Barco"
+    "closureBoat": "Barco",
+    "canalHubLink": "Todos los puentes del canal Welland"
   },
   "bridgeList": {
     "title": "Estado de los puentes en vivo por región",
@@ -287,5 +288,12 @@
     "titleTemplate": "Estado de los puentes en {region}",
     "metaDescription": "Estado en vivo y duraciones de cierre habituales de los {count} puentes que sigue Bridge Up en {waterway} en {region}.",
     "h1Template": "Puentes: {region}"
+  },
+  "canalHub": {
+    "title": "Estado de los puentes del canal Welland",
+    "h1": "Puentes del canal Welland",
+    "metaDescription": "Estado en vivo y duraciones de cierre habituales de los ocho puentes de carretera del canal Welland, desde Port Weller en St. Catharines hasta Port Colborne, en orden del canal.",
+    "intro": "El canal Welland lleva a los barcos 43 kilómetros a través de la península del Niágara, elevándolos casi 100 metros entre el lago Ontario y el lago Erie para rodear las cataratas del Niágara. Ocho puentes de carretera lo cruzan, desde el puente 1 en Port Weller, en St. Catharines, hasta el puente 21 en Port Colborne, y cada uno detiene el tráfico cuando pasa un carguero. Son una mezcla de puentes de elevación vertical y basculantes, y algunos están justo al lado de las esclusas que elevan los barcos. Abajo están los ocho en orden del canal, de norte a sur, cada uno con su estado en vivo y cuánto suele estar cerrado.",
+    "orderNote": "En orden del canal, de norte (lago Ontario) a sur (lago Erie)."
   }
 }

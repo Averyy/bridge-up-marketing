@@ -267,13 +267,14 @@
     "viewAllRegion": "Voir tous les ponts de {region}",
     "closuresHeading": "Fermetures prévues",
     "closuresNote": "Fermetures prévues pour des travaux ou des réparations. Les dates peuvent changer.",
-    "noClosures": "Aucune fermeture prévue pour le moment.",
+    "noClosures": "Aucune fermeture prévue pour le moment. Le pont s'ouvre au passage des navires; voyez l'état en direct ci-dessus.",
     "closureToday": "Aujourd'hui",
     "closureTomorrow": "Demain",
     "closureAllDay": "toute la journée",
     "closureConstruction": "Travaux",
     "allBridges": "Tous les ponts",
-    "closureBoat": "Navire"
+    "closureBoat": "Navire",
+    "canalHubLink": "Tous les ponts du canal Welland"
   },
   "bridgeList": {
     "title": "État des ponts en direct par région",
@@ -287,5 +288,12 @@
     "titleTemplate": "État des ponts à {region}",
     "metaDescription": "État en direct et durées de fermeture habituelles pour les {count} ponts suivis par Bridge Up sur {waterway} à {region}.",
     "h1Template": "Ponts : {region}"
+  },
+  "canalHub": {
+    "title": "État des ponts du canal Welland",
+    "h1": "Ponts du canal Welland",
+    "metaDescription": "État en direct et durées de fermeture habituelles des huit ponts routiers du canal Welland, de Port Weller à St. Catharines jusqu'à Port Colborne, dans l'ordre du canal.",
+    "intro": "Le canal Welland fait franchir aux navires 43 kilomètres à travers la péninsule du Niagara, en les hissant de près de 100 mètres entre le lac Ontario et le lac Érié pour contourner les chutes du Niagara. Huit ponts routiers le traversent, du pont 1 à Port Weller, à St. Catharines, jusqu'au pont 21 à Port Colborne, et chacun arrête la circulation au passage d'un cargo. Ce sont des ponts levants et basculants, dont certains se trouvent juste à côté des écluses qui font monter les navires. Voici les huit dans l'ordre du canal, du nord au sud, chacun avec son état en direct et sa durée habituelle de fermeture.",
+    "orderNote": "Dans l'ordre du canal, du nord (lac Ontario) au sud (lac Érié)."
   }
 }

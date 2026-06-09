@@ -16,6 +16,7 @@ const STATIC_ROUTES: RouteDef[] = [
   { path: "", changeFrequency: "weekly", priority: 1 },
   { path: "/bridges", changeFrequency: "weekly", priority: 0.9 },
   { path: "/bridges/list", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/bridges/welland-canal", changeFrequency: "daily", priority: 0.8 },
   { path: "/about", changeFrequency: "monthly", priority: 0.8 },
   { path: "/pricing", changeFrequency: "monthly", priority: 0.8 },
   { path: "/support", changeFrequency: "monthly", priority: 0.7 },

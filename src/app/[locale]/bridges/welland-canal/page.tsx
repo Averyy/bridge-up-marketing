@@ -5,66 +5,61 @@ import { Link } from "@/i18n/navigation";
 import { routing, Locale } from "@/i18n/routing";
 import { localeAlternates, jsonLdHtml, absUrl } from "@/lib/seo";
 import { Header, Footer } from "@/components/layout";
-import { REGION_PAGE_ORDER, pageBridgeIdsForRegion } from "@/lib/bridgeSlugs";
 import { fetchBridgeStatics } from "@/lib/bridgeStats";
 import { regionBridgeCards } from "@/lib/bridgeCards";
-import { getRegionDisplay, REGION_META } from "@/content/regions";
+import { getRegionDisplay } from "@/content/regions";
 import { BridgeCard } from "@/components/bridges/BridgeCard";
-import { ExternalIcon } from "@/components/bridges/ExternalIcon";
 
+// Daily ISR; live status rides on top via the BridgeCard client islands.
 export const revalidate = 86400;
 
-type Props = { params: Promise<{ locale: string; region: string }> };
+type Props = { params: Promise<{ locale: string }> };
 
 export function generateStaticParams() {
-  const params: { locale: string; region: string }[] = [];
-  for (const region of REGION_PAGE_ORDER) {
-    for (const locale of routing.locales) params.push({ locale, region });
-  }
-  return params;
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale, region } = await params;
-  const display = getRegionDisplay(region, locale as Locale);
-  if (!display) return {};
-  const t = await getTranslations({ locale, namespace: "regionHub" });
-  const count = pageBridgeIdsForRegion(region).length;
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "canalHub" });
   return {
-    title: t("titleTemplate", { region: display.name }),
-    description: t("metaDescription", { region: display.name, waterway: display.waterway, count }),
-    alternates: localeAlternates(locale, `/bridges/${region}`),
+    title: t("title"),
+    description: t("metaDescription"),
+    alternates: localeAlternates(locale, "/bridges/welland-canal"),
   };
 }
 
-export default async function RegionPage({ params }: Props) {
-  const { locale, region } = await params;
+export default async function WellandCanalPage({ params }: Props) {
+  const { locale } = await params;
   setRequestLocale(locale);
   const loc = locale as Locale;
 
-  const display = getRegionDisplay(region, loc);
-  if (!display) notFound();
-
   const statics = await fetchBridgeStatics();
-  const t = await getTranslations({ locale, namespace: "regionHub" });
+  const t = await getTranslations({ locale, namespace: "canalHub" });
   const tl = await getTranslations({ locale, namespace: "bridgeList" });
   const tb = await getTranslations({ locale, namespace: "bridgePages" });
-  const regionMeta = REGION_META[region];
 
-  const bridges = regionBridgeCards(region, statics, loc, (a) => tl("cardStat", { avg: a }));
+  // The 8 canal road bridges in canal order: St. Catharines (Bridge 1 down to 11) then
+  // Port Colborne (19 to 21) — north (Lake Ontario) to south (Lake Erie).
+  const cardStat = (a: number) => tl("cardStat", { avg: a });
+  const bridges = [
+    ...regionBridgeCards("st-catharines", statics, loc, cardStat),
+    ...regionBridgeCards("port-colborne", statics, loc, cardStat),
+  ];
   if (bridges.length === 0) notFound();
 
-  const h1 = t("h1Template", { region: display.name });
-  const intro = display.description;
+  const h1 = t("h1");
+  const intro = t("intro");
+  const url = absUrl(loc, "/bridges/welland-canal");
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "CollectionPage",
-        "@id": `${absUrl(loc, `/bridges/${region}`)}#page`,
+        "@id": `${url}#page`,
         name: h1,
-        url: absUrl(loc, `/bridges/${region}`),
+        url,
         mainEntity: {
           "@type": "ItemList",
           itemListElement: bridges.map((b, i) => ({
@@ -80,7 +75,7 @@ export default async function RegionPage({ params }: Props) {
         itemListElement: [
           { "@type": "ListItem", position: 1, name: tb("breadcrumbHome"), item: absUrl(loc, "/") },
           { "@type": "ListItem", position: 2, name: tb("breadcrumbBridges"), item: absUrl(loc, "/bridges/list") },
-          { "@type": "ListItem", position: 3, name: display.name, item: absUrl(loc, `/bridges/${region}`) },
+          { "@type": "ListItem", position: 3, name: h1, item: url },
         ],
       },
     ],
@@ -110,7 +105,7 @@ export default async function RegionPage({ params }: Props) {
               </li>
               <li aria-hidden>/</li>
               <li aria-current="page" className="text-white/80">
-                {display.name}
+                {h1}
               </li>
             </ol>
           </nav>
@@ -119,7 +114,8 @@ export default async function RegionPage({ params }: Props) {
           <p className="mt-4 max-w-2xl leading-relaxed text-white/70">{intro}</p>
 
           <h2 className="sr-only">{tb("breadcrumbBridges")}</h2>
-          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <p className="mt-8 text-xs uppercase tracking-wide text-white/40">{t("orderNote")}</p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {bridges.map((b) => (
               <BridgeCard
                 key={b.apiId}
@@ -133,46 +129,23 @@ export default async function RegionPage({ params }: Props) {
 
           <section className="mt-10 flex flex-wrap gap-3">
             <Link
-              href={`/bridges?region=${region}`}
+              href="/bridges"
               className="rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-[var(--primary)]/25 transition-colors hover:bg-[var(--primary-dark)]"
             >
               {tb("viewOnMap")}
             </Link>
             <Link
-              href="/bridges/list"
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:border-white/30 hover:bg-white/5"
+              href="/bridges/st-catharines"
+              className="inline-flex items-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:border-white/30 hover:bg-white/5"
             >
-              <svg
-                aria-hidden
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                className="h-3.5 w-3.5"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
-              {tb("allBridges")}
+              {getRegionDisplay("st-catharines", loc)?.name ?? "St. Catharines"}
             </Link>
-            {(region === "st-catharines" || region === "port-colborne") && (
-              <Link
-                href="/bridges/welland-canal"
-                className="inline-flex items-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:border-white/30 hover:bg-white/5"
-              >
-                {tb("canalHubLink")}
-              </Link>
-            )}
-            {regionMeta && (
-              <a
-                href={regionMeta.seawayUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center rounded-full border border-[var(--primary)]/30 px-5 py-2.5 text-sm font-medium text-[var(--primary-light)] transition-colors hover:border-[var(--primary)]/60 hover:bg-[var(--primary)]/10"
-              >
-                {tb("officialStatus")}
-                <ExternalIcon />
-              </a>
-            )}
+            <Link
+              href="/bridges/port-colborne"
+              className="inline-flex items-center rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:border-white/30 hover:bg-white/5"
+            >
+              {getRegionDisplay("port-colborne", loc)?.name ?? "Port Colborne"}
+            </Link>
           </section>
         </div>
       </main>

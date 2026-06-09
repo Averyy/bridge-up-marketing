@@ -58,7 +58,7 @@ export function LiveClosures({ apiId }: { apiId: string }): React.ReactElement {
   // baked into the cached HTML and the row doesn't shift.
   if (!bridge) {
     return (
-      <p className="min-h-[1.5rem] text-sm text-white/40">
+      <p className="min-h-[1.5rem] text-xs text-white/40">
         {loading ? tStatus("checking") : t("noClosures")}
       </p>
     );
@@ -66,7 +66,7 @@ export function LiveClosures({ apiId }: { apiId: string }): React.ReactElement {
 
   const closures = bridge.futureClosures;
   if (closures.length === 0) {
-    return <p className="text-sm text-white/50">{t("noClosures")}</p>;
+    return <p className="text-xs text-white/50">{t("noClosures")}</p>;
   }
 
   const intl = intlLocale(locale);

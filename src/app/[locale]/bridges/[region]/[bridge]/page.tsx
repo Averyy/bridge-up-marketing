@@ -51,9 +51,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tb = await getTranslations({ locale, namespace: "bridgePages" });
   const ed = getBridgeEditorial(bridge, locale as Locale);
   const bridgeName = ed?.name ?? bridge;
+  const titleName = ed?.aliasName ? `${bridgeName} (${ed.aliasName})` : bridgeName;
 
   return {
-    title: tb("titleTemplate", { bridge: bridgeName, region: display.name }),
+    title: tb("titleTemplate", { bridge: titleName, region: display.name }),
     description: tb("metaDescription", {
       bridge: bridgeName,
       waterway: display.waterway,
@@ -84,6 +85,7 @@ export default async function BridgePage({ params }: Props) {
   const regionMeta = REGION_META[region];
 
   const bridgeName = editorial?.name ?? stat.name;
+  const displayName = editorial?.aliasName ? `${bridgeName} (${editorial.aliasName})` : bridgeName;
   const regionName = display.name;
   const city = editorial?.city ?? display.city;
 
@@ -113,7 +115,8 @@ export default async function BridgePage({ params }: Props) {
     ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
     : null;
 
-  const h1 = tb("h1", { bridge: bridgeName });
+  const h1 = tb("h1", { bridge: displayName });
+  const h1Clean = tb("h1", { bridge: bridgeName });
   const answer = tb("answer", { date: dateStr, bridge: bridgeName, city, avg, ciLow, ciHigh, n });
   const durLabels: [string, string, string, string, string] = [
     tb("durUnder9"),
@@ -144,8 +147,12 @@ export default async function BridgePage({ params }: Props) {
       {
         "@type": "Bridge",
         "@id": `${url}#bridge`,
-        name: h1,
-        alternateName: stat.name,
+        name: h1Clean,
+        alternateName: [
+          stat.name,
+          editorial?.aliasName ? `${editorial.aliasName} Bridge` : null,
+          editorial?.canalNumber ? `Welland Canal Bridge ${editorial.canalNumber}` : null,
+        ].filter(Boolean),
         url,
         ...(editorial?.intro ? { description: editorial.intro } : {}),
         ...(hasGeo
@@ -166,7 +173,7 @@ export default async function BridgePage({ params }: Props) {
           { "@type": "ListItem", position: 1, name: tb("breadcrumbHome"), item: absUrl(loc, "/") },
           { "@type": "ListItem", position: 2, name: tb("breadcrumbBridges"), item: absUrl(loc, "/bridges/list") },
           { "@type": "ListItem", position: 3, name: regionName, item: absUrl(loc, `/bridges/${region}`) },
-          { "@type": "ListItem", position: 4, name: h1, item: url },
+          { "@type": "ListItem", position: 4, name: h1Clean, item: url },
         ],
       },
     ],
@@ -319,22 +326,42 @@ export default async function BridgePage({ params }: Props) {
                   />
                 ))}
               </div>
-              <Link
-                href={`/bridges/${region}`}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:border-white/30 hover:bg-white/5"
-              >
-                {tb("viewAllRegion", { region: regionName })}
-                <svg
-                  aria-hidden
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  className="h-3.5 w-3.5"
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href={`/bridges/${region}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:border-white/30 hover:bg-white/5"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-              </Link>
+                  {tb("viewAllRegion", { region: regionName })}
+                  <svg
+                    aria-hidden
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="h-3.5 w-3.5"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </Link>
+                {(region === "st-catharines" || region === "port-colborne") && (
+                  <Link
+                    href="/bridges/welland-canal"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white/80 transition-colors hover:border-white/30 hover:bg-white/5"
+                  >
+                    {tb("canalHubLink")}
+                    <svg
+                      aria-hidden
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      className="h-3.5 w-3.5"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </Link>
+                )}
+              </div>
             </section>
           )}
         </article>

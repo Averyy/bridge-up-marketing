@@ -18,6 +18,10 @@ export interface BridgeSpan {
 
 export interface BridgeContent {
   name: string;
+  // Colloquial alias shown in brackets in the page title/H1 (e.g. "Homer", "Allanburg").
+  aliasName?: string;
+  // Welland Canal bridge number (e.g. "5", "3A"), surfaced in the JSON-LD alternateName.
+  canalNumber?: string;
   city?: string;
   // Extra movable spans shown as separate live statuses (e.g. the Victoria Bridge's
   // road deck + its upstream cycling/pedestrian path, tracked separately in the app).
@@ -28,6 +32,7 @@ export interface BridgeContent {
 export const BRIDGE_CONTENT: Record<string, BridgeContent> = {
   "lakeshore-rd": {
     name: "Lakeshore Rd",
+    canalNumber: "1",
     intro: {
       en: "Lakeshore Road crosses the Welland Canal at Port Weller, where the canal opens into Lake Ontario in St. Catharines. It's Bridge 1, a bascule: the deck tips back on a counterweight to clear the channel. Ships heading in from the lake pass under it first.",
       fr: "Lakeshore Road franchit le canal Welland à Port Weller, là où le canal débouche sur le lac Ontario à St. Catharines. C'est le pont 1, un pont basculant : le tablier bascule sur un contrepoids pour libérer le chenal. C'est le premier pont sous lequel passent les navires venus du lac.",
@@ -36,6 +41,7 @@ export const BRIDGE_CONTENT: Record<string, BridgeContent> = {
   },
   "carlton-st": {
     name: "Carlton St",
+    canalNumber: "3A",
     intro: {
       en: "Carlton Street, Regional Road 83, crosses the Welland Canal in St. Catharines as Bridge 3A. The odd number is a bit of canal history: it replaced the original Bridge 3 after an accident. It's a bascule, so the deck swings up on a counterweight when a ship needs through.",
       fr: "Carlton Street, la route régionale 83, traverse le canal Welland à St. Catharines : c'est le pont 3A. Le numéro vient d'un bout d'histoire du canal, puisqu'il a remplacé le pont 3 d'origine après un accident. C'est un pont basculant : le tablier se relève sur un contrepoids au passage d'un navire.",
@@ -44,6 +50,8 @@ export const BRIDGE_CONTENT: Record<string, BridgeContent> = {
   },
   "queenston-st": {
     name: "Queenston St",
+    aliasName: "Homer",
+    canalNumber: "4",
     intro: {
       en: "The Queenston Street bridge, which locals still call the Homer Bridge, has carried traffic over the Welland Canal in St. Catharines since 1928. It's Bridge 4, a rolling-lift bascule: the deck rolls back on a curved base to lift open for ships. Traffic backed up here so badly that the Garden City Skyway was built over the canal in 1963; Queenston Street still handles the local crossing.",
       fr: "Le pont de Queenston Street, que les gens du coin appellent encore le pont Homer, fait passer la circulation au-dessus du canal Welland à St. Catharines depuis 1928. C'est le pont 4, un pont basculant à roulement : le tablier roule vers l'arrière sur une base courbe pour se soulever et laisser passer les navires. Les bouchons y étaient tels qu'on a construit le Garden City Skyway par-dessus le canal en 1963; Queenston Street sert encore au passage local.",
@@ -52,6 +60,7 @@ export const BRIDGE_CONTENT: Record<string, BridgeContent> = {
   },
   "glendale-ave": {
     name: "Glendale Ave",
+    canalNumber: "5",
     intro: {
       en: "The Glendale Avenue bridge carries traffic over the Welland Canal in St. Catharines. It's Bridge 5, a vertical-lift bridge, so when a Seaway ship comes through the whole deck rises straight up and cars wait on both sides until it drops back down. Most lifts are quick, but they're easy to get caught by if you haven't checked first.",
       fr: "Le pont de Glendale Avenue traverse le canal Welland à St. Catharines. C'est le pont 5, un pont levant : quand un navire de la Voie maritime approche, le tablier monte à la verticale et la circulation attend des deux côtés qu'il redescende. La plupart des levées sont courtes, mais on se fait facilement prendre quand on n'a pas vérifié avant de partir.",
@@ -60,6 +69,8 @@ export const BRIDGE_CONTENT: Record<string, BridgeContent> = {
   },
   "highway-20": {
     name: "Highway 20",
+    aliasName: "Allanburg",
+    canalNumber: "11",
     city: "Thorold",
     intro: {
       en: "The Highway 20 bridge crosses the Welland Canal at Allanburg, in Thorold just south of St. Catharines. It's Bridge 11, a vertical-lift bridge from around 1930 that raises its deck for passing ships. In 2001 the laker Windoc was struck by the lowering span here, and the crossing stayed shut for months while it was rebuilt.",
@@ -69,6 +80,7 @@ export const BRIDGE_CONTENT: Record<string, BridgeContent> = {
   },
   "main-st": {
     name: "Main St",
+    canalNumber: "19",
     intro: {
       en: "Main Street, Regional Road 3, is the main crossing of the Welland Canal in Port Colborne, near the Lake Erie end where ships finish the canal. It's Bridge 19, a bascule that tips its deck up on a counterweight. A 2015 collision with a cargo ship shut it for a while as crews checked the damage.",
       fr: "Main Street, la route régionale 3, est le principal passage du canal Welland à Port Colborne, près de l'extrémité du lac Érié où les navires terminent le canal. C'est le pont 19, un pont basculant qui relève son tablier sur un contrepoids. Une collision avec un cargo en 2015 l'a fermé un temps, le temps d'évaluer les dégâts.",
@@ -77,6 +89,7 @@ export const BRIDGE_CONTENT: Record<string, BridgeContent> = {
   },
   "mellanby-ave": {
     name: "Mellanby Ave",
+    canalNumber: "19A",
     intro: {
       en: "Mellanby Avenue crosses the Welland Canal in Port Colborne as Bridge 19A, a short way from the Main Street crossing. It's a bascule, and it's the one drivers fall back on when Main Street is up or out of service. Both sit near Lock 8 at the canal's south end.",
       fr: "Mellanby Avenue traverse le canal Welland à Port Colborne : c'est le pont 19A, à deux pas du passage de Main Street. C'est un pont basculant, celui sur lequel on se rabat quand Main Street est levé ou hors service. Les deux se trouvent près de l'écluse 8, au sud du canal.",
@@ -85,6 +98,7 @@ export const BRIDGE_CONTENT: Record<string, BridgeContent> = {
   },
   "clarence-st": {
     name: "Clarence St",
+    canalNumber: "21",
     intro: {
       en: "Clarence Street crosses the Welland Canal near the Lake Erie end in Port Colborne. It's Bridge 21, a vertical-lift bridge built in the late 1920s when the current canal was dug, and one of only a handful of lift bridges still working on it. The deck rises straight up to let ships pass.",
       fr: "Clarence Street traverse le canal Welland près de l'extrémité du lac Érié, à Port Colborne. C'est le pont 21, un pont levant construit à la fin des années 1920, à l'époque du creusement du canal actuel, et l'un des rares ponts levants encore en service. Le tablier monte à la verticale pour laisser passer les navires.",
@@ -147,12 +161,14 @@ export function getBridgeEditorial(
   slug: string,
   locale: Locale
 ):
-  | { name: string; city?: string; intro?: string; spans?: { apiId: string; label: string }[] }
+  | { name: string; aliasName?: string; canalNumber?: string; city?: string; intro?: string; spans?: { apiId: string; label: string }[] }
   | undefined {
   const c = BRIDGE_CONTENT[slug];
   if (!c) return undefined;
   return {
     name: c.name,
+    aliasName: c.aliasName,
+    canalNumber: c.canalNumber,
     city: c.city,
     intro: c.intro[locale] ?? c.intro.en,
     spans: c.spans?.map((s) => ({ apiId: s.apiId, label: s.label[locale] ?? s.label.en ?? "" })),

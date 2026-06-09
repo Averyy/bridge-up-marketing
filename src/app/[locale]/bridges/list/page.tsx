@@ -88,6 +88,23 @@ export default async function BridgeListPage({ params }: Props) {
           <h1 className="text-3xl font-bold sm:text-4xl">{t("h1")}</h1>
           <p className="mt-4 max-w-2xl leading-relaxed text-white/70">{t("intro")}</p>
 
+          <Link
+            href="/bridges/welland-canal"
+            className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-[var(--primary)]/30 px-5 py-2.5 text-sm font-medium text-[var(--primary-light)] transition-colors hover:border-[var(--primary)]/60 hover:bg-[var(--primary)]/10"
+          >
+            {tb("canalHubLink")}
+            <svg
+              aria-hidden
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              className="h-3.5 w-3.5"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </Link>
+
           <div className="mt-12 space-y-12">
             {regions.map((r) => (
               <section key={r.regionId}>
